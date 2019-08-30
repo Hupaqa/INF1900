@@ -1,1 +1,5 @@
 .vscode
+.out*
+.hex
+.d
+.o
