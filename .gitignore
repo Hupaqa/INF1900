@@ -1,5 +1,5 @@
 .vscode
-.out*
-.hex
-.d
-.o
+*.out*
+*.hex
+*.d
+*.o
