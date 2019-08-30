@@ -1,1 +1,0 @@
-couleur.o: couleur.cpp
