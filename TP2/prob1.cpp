@@ -1,15 +1,15 @@
 /*
 ETAT PRESENT | BOUTON | ETAT SUIVANT | COULEUR LED
-INIT         |    0   |    INIT      |    0x00    
-INIT         |    1   |     ONE      |    0x00    
-ONE          |    0   |     ONE      |    0x00    
-ONE          |    1   |     TWO      |    0x00    
-TWO          |    0   |     TWO      |    0x00    
-TWO          |    1   |    THREE     |    0x00    
-THREE        |    0   |    THREE     |    0x00    
-THREE        |    1   |    FOUR      |    0x00    
-FOUR         |    0   |    FOUR      |    0x00   
-FOUR         |    1   |    INIT      |    0x02 
+INIT         |    0   |    INIT      |  NO_COLOR    
+INIT         |    1   |     ONE      |  NO_COLOR    
+ONE          |    1   |     TWO      |  NO_COLOR    
+ONE          |    0   |     ONE      |  NO_COLOR    
+TWO          |    0   |     TWO      |  NO_COLOR    
+TWO          |    1   |    THREE     |  NO_COLOR    
+THREE        |    0   |    THREE     |  NO_COLOR    
+THREE        |    1   |    FOUR      |  NO_COLOR    
+FOUR         |    0   |    FOUR      |  NO_COLOR   
+FOUR         |    1   |    INIT      |  COLOR_RED
 */
 
 
