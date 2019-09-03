@@ -24,7 +24,6 @@
 +--------------+----------------+-----------+--------------+
 */
 
-
 #define F_CPU 8000000
 #include <util/delay.h>
 #include <avr/io.h>
@@ -34,7 +33,7 @@ bool boutonDebounced()
 	if (PIND & 0x04) {
 		_delay_ms(10);
 		if (PIND & 0x04) {
-			while (PIND & 0x04);
+			while (PIND & 0x04); // Pour enregistrer une seule sortie
             return true;
 		}
 		else return false;
