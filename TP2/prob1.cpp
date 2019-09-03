@@ -39,7 +39,6 @@ enum Etat{
 };
 
 uint8_t changeState(Etat &currentState, bool inputPressed) {
-    const double ONE_SECOND = 1000; // 1000ms = 1sec
     const uint8_t NO_COLOR = 0x00; // Pas de couleur
     const uint8_t COLOR_RED = 0x02; // Couleur rouge
 
@@ -99,7 +98,6 @@ uint8_t changeState(Etat &currentState, bool inputPressed) {
 
 int main() {
     const double ONE_SECOND = 1000; // 1000ms = 1sec
-    const uint8_t NO_COLOR = 0x00; // Pas de couleur
     const uint8_t COLOR_RED = 0x02; // Couleur rouge
 
     DDRA = 0xff; // Mode sortie pour le port A
