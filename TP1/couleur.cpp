@@ -25,16 +25,16 @@ int main()
 	{
 		PORTA = VERT;
 		_delay_ms(250);
-		while (!boutonDebounced());
+		while (!boutonDebounced()){};
 		PORTA = ROUGE;
 		_delay_ms(250);
-		while (!boutonDebounced());
+		while (!boutonDebounced()){};
 		_delay_ms(250);
 		while (!boutonDebounced()){
 			PORTA = VERT;
-			_delay_ms(1);
+			_delay_ms(3);
 			PORTA = ROUGE;
-			_delay_ms(0.3);
+			_delay_ms(1);
 		}
 	}
 }
