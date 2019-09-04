@@ -28,20 +28,8 @@
 #include <util/delay.h>
 #include <avr/io.h>
 
-bool boutonDebounced()
+enum Etat
 {
-	if (PIND & 0x04) {
-		_delay_ms(10);
-		if (PIND & 0x04) {
-			while (PIND & 0x04); // Pour enregistrer une seule sortie
-            return true;
-		}
-		else return false;
-	}
-	else return false;
-}
-
-enum Etat{
     INIT,
     ONE,
     TWO,
@@ -49,65 +37,94 @@ enum Etat{
     FOUR
 };
 
-uint8_t changeState(Etat &currentState, bool inputPressed) {
-    const uint8_t NO_COLOR = 0x00; // Pas de couleur
+bool boutonDebounced()
+{
+    if (PIND & 0x04)
+    {
+        _delay_ms(10);
+        if (PIND & 0x04)
+        {
+            while (PIND & 0x04) // Pour enregistrer une seule sortie
+            return true;
+        }
+        else
+            return false;
+    }
+    else
+        return false;
+}
+
+uint8_t changeState(Etat &currentState, bool inputPressed)
+{
+    const uint8_t NO_COLOR = 0x00;  // Pas de couleur
     const uint8_t COLOR_RED = 0x02; // Couleur rouge
 
-    switch(currentState) {
-        case INIT:
-            if (inputPressed) {
-                currentState = ONE;
-                return NO_COLOR;    
-                }
-            else {
-                currentState = INIT;
-                return NO_COLOR;
-            }
-            break;
-        case ONE:
-            if (inputPressed) {
-                currentState = TWO;
-                return NO_COLOR;
-            }
-            else {
-                currentState = ONE;
-                return NO_COLOR;
-            }
-            break;
-        case TWO:
-            if (inputPressed) {
-                currentState = THREE;
-                return NO_COLOR;
-            }
-            else {
-                currentState = TWO;
-                return NO_COLOR;
-            }
-            break;
-        case THREE:
-            if (inputPressed) {
-                currentState = FOUR;
-                return NO_COLOR;
-            }
-            else {
-                currentState = THREE;
-                return NO_COLOR;
-            }
-            break;
-        case FOUR:
-            if (inputPressed) {
-                currentState = INIT;
-                return COLOR_RED;
-            }
-            else {
-                currentState = FOUR;
-                return NO_COLOR;
-            }
-            break;
+    switch (currentState)
+    {
+    case INIT:
+        if (inputPressed)
+        {
+            currentState = ONE;
+            return NO_COLOR;
+        }
+        else
+        {
+            currentState = INIT;
+            return NO_COLOR;
+        }
+
+    case ONE:
+        if (inputPressed)
+        {
+            currentState = TWO;
+            return NO_COLOR;
+        }
+        else
+        {
+            currentState = ONE;
+            return NO_COLOR;
+        }
+
+    case TWO:
+        if (inputPressed)
+        {
+            currentState = THREE;
+            return NO_COLOR;
+        }
+        else
+        {
+            currentState = TWO;
+            return NO_COLOR;
+        }
+
+    case THREE:
+        if (inputPressed)
+        {
+            currentState = FOUR;
+            return NO_COLOR;
+        }
+        else
+        {
+            currentState = THREE;
+            return NO_COLOR;
+        }
+
+    case FOUR:
+        if (inputPressed)
+        {
+            currentState = INIT;
+            return COLOR_RED;
+        }
+        else
+        {
+            currentState = FOUR;
+            return NO_COLOR;
+        }
     }
 }
 
-int main() {
+int main()
+{
     const double ONE_SECOND = 1000; // 1000ms = 1sec
     const uint8_t COLOR_RED = 0x02; // Couleur rouge
 
@@ -115,9 +132,11 @@ int main() {
     DDRD = 0x00; // Mode entrée pour le port D
 
     Etat currentState = INIT;
-    while(true) {
+    while (true)
+    {
         PORTA = changeState(currentState, boutonDebounced());
-        if (PORTA == COLOR_RED) {
+        if (PORTA == COLOR_RED)
+        {
             _delay_ms(ONE_SECOND);
         }
     }
