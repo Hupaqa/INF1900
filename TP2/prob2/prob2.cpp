@@ -33,10 +33,10 @@ void setLedToAmber()
     const uint8_t GREEN_COLOR = 0x01;
     const uint8_t RED_COLOR = 0x02;
 
-    PORTA = GREEN_COLOR;
-    _delay_ms(3); // A little bit more green to achieve amber
     PORTA = RED_COLOR;
     _delay_ms(1);
+    PORTA = GREEN_COLOR;
+    _delay_ms(2);
 }
 
 uint8_t changeState(Etat &currentState, bool inputPressed)
