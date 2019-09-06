@@ -2,7 +2,7 @@
 #include <util/delay.h>
 #include <avr/io.h>
 
-enum Etat
+enum State
 {
     INIT_STATE,
     AMBER_STATE,
@@ -12,7 +12,7 @@ enum Etat
     OFF_STATE
 };
 
-bool boutonDebounced()
+bool inputDebounced()
 {
     if (PIND & 0x04)
     {
@@ -28,24 +28,54 @@ bool boutonDebounced()
         return false;
 }
 
-void setLedToAmber()
+void turnLedRed()
 {
-    const uint8_t GREEN_COLOR = 0x01;
-    const uint8_t RED_COLOR = 0x02;
+    PORTA = (PORTA |= 0b00000010) & 0b11111110; // set to xxxxxx10
+}
 
-    PORTA = RED_COLOR;
+void turnLedGreen()
+{
+    PORTA = (PORTA |= 0b00000001) & 0b11111101; // set to xxxxxx01
+}
+
+void turnLedOff()
+{
+    PORTA &= 0b11111100; // set to xxxxxx00
+}
+
+void turnLedAmber()
+{
+    turnLedRed();
     _delay_ms(1);
-    PORTA = GREEN_COLOR;
+    turnLedGreen();
     _delay_ms(2);
 }
 
-uint8_t changeState(Etat &currentState, bool inputPressed)
+void doAction(const State &currentState)
 {
-    const uint8_t NO_COLOR = 0x00;
-    const uint8_t GREEN_COLOR = 0x01;
-    const uint8_t RED_COLOR = 0x02;
-    const uint8_t AMBER_COLOR = 0x03;
+    switch (currentState)
+    {
+    case INIT_STATE:
+        turnLedRed();
+        break;
+    case AMBER_STATE:
+        turnLedAmber();
+        break;
+    case GREEN1_STATE:
+    case GREEN2_STATE:
+        turnLedGreen();
+        break;
+    case RED_STATE:
+        turnLedRed();
+        break;
+    case OFF_STATE:
+        turnLedOff();
+        break;
+    }
+}
 
+void changeState(State &currentState, bool inputPressed)
+{
     switch (currentState)
     {
     case INIT_STATE:
@@ -57,7 +87,7 @@ uint8_t changeState(Etat &currentState, bool inputPressed)
         {
             currentState = INIT_STATE;
         }
-        return RED_COLOR;
+        break;
 
     case AMBER_STATE:
         if (inputPressed)
@@ -68,7 +98,7 @@ uint8_t changeState(Etat &currentState, bool inputPressed)
         {
             currentState = GREEN1_STATE;
         }
-        return AMBER_COLOR;
+        break;
 
     case GREEN1_STATE:
         if (inputPressed)
@@ -79,7 +109,7 @@ uint8_t changeState(Etat &currentState, bool inputPressed)
         {
             currentState = GREEN1_STATE;
         }
-        return GREEN_COLOR;
+        break;
 
     case RED_STATE:
         if (inputPressed)
@@ -90,7 +120,7 @@ uint8_t changeState(Etat &currentState, bool inputPressed)
         {
             currentState = OFF_STATE;
         }
-        return RED_COLOR;
+        break;
 
     case GREEN2_STATE:
         if (inputPressed)
@@ -101,7 +131,7 @@ uint8_t changeState(Etat &currentState, bool inputPressed)
         {
             currentState = INIT_STATE;
         }
-        return GREEN_COLOR;
+        break;
 
     case OFF_STATE:
         if (inputPressed)
@@ -112,33 +142,20 @@ uint8_t changeState(Etat &currentState, bool inputPressed)
         {
             currentState = OFF_STATE;
         }
-        return NO_COLOR;
-
-    default:
-        return NO_COLOR;
+        break;
     }
 }
 
 int main()
 {
-    const uint8_t AMBER_COLOR = 0x03;
+    DDRA = 0xff; // PORTA to output
+    DDRD = 0x00; // PORTD to input
 
-    DDRA = 0xff; // Mode sortie pour le port A
-    DDRD = 0x00; // Mode entrée pour le port D
-
-    Etat currentState = INIT_STATE;
-    uint8_t outputColor;
+    State currentState = State::INIT_STATE;
 
     while (true)
     {
-        outputColor = changeState(currentState, boutonDebounced());
-        if (outputColor == AMBER_COLOR)
-        {
-            setLedToAmber();
-        }
-        else
-        {
-            PORTA = outputColor;
-        }
+        doAction(currentState);
+        changeState(currentState, inputDebounced());
     }
 }

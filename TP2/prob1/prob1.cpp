@@ -28,7 +28,7 @@
 #include <util/delay.h>
 #include <avr/io.h>
 
-enum Etat
+enum State
 {
     INIT,
     ONE,
@@ -37,14 +37,16 @@ enum Etat
     FOUR
 };
 
-bool boutonDebounced()
+bool buttonDebounced()
 {
     if (PIND & 0x04)
     {
         _delay_ms(10);
         if (PIND & 0x04)
         {
-            while (PIND & 0x04) // Pour enregistrer une seule sortie
+            while (PIND & 0x04)
+            {
+            }
             return true;
         }
         else
@@ -54,90 +56,121 @@ bool boutonDebounced()
         return false;
 }
 
-uint8_t changeState(Etat &currentState, bool inputPressed)
+void turnLedRed()
 {
-    const uint8_t NO_COLOR = 0x00;  // Pas de couleur
-    const uint8_t COLOR_RED = 0x02; // Couleur rouge
+    PORTA = (PORTA |= 0b00000010) & 0b11111110; // set to xxxxxx10
+}
 
+
+void turnLedOff()
+{
+    PORTA &= 0b11111100; // set to xxxxxx00
+}
+
+
+bool changeState(State &currentState, bool inputPressed)
+{
     switch (currentState)
     {
     case INIT:
         if (inputPressed)
         {
             currentState = ONE;
-            return NO_COLOR;
+            return true;
         }
         else
         {
             currentState = INIT;
-            return NO_COLOR;
+            return false;
         }
 
     case ONE:
         if (inputPressed)
         {
             currentState = TWO;
-            return NO_COLOR;
+            return true;
         }
         else
         {
             currentState = ONE;
-            return NO_COLOR;
+            return false;
         }
 
     case TWO:
         if (inputPressed)
         {
             currentState = THREE;
-            return NO_COLOR;
+            return true;
         }
         else
         {
             currentState = TWO;
-            return NO_COLOR;
+            return false;
         }
 
     case THREE:
         if (inputPressed)
         {
             currentState = FOUR;
-            return NO_COLOR;
+            return true;
         }
         else
         {
             currentState = THREE;
-            return NO_COLOR;
+            return false;
         }
 
     case FOUR:
         if (inputPressed)
         {
             currentState = INIT;
-            return COLOR_RED;
+            return true;
         }
         else
         {
             currentState = FOUR;
-            return NO_COLOR;
+            return false;
         }
+    
+    default:
+        return false;
+    }
+}
+
+void doAction(const State &currentState, const bool inputPressed)
+{
+    const double ONE_SECOND = 1000; // 1000ms = 1sec
+
+    switch (currentState)
+    {
+    case INIT:
+    case ONE:
+    case TWO:
+    case THREE:
+        break;
+
+    case FOUR:
+        if (inputPressed)
+        {
+            turnLedRed();
+            _delay_ms(ONE_SECOND);
+            turnLedOff();
+        }
+        break;
     }
 }
 
 int main()
 {
-    const double ONE_SECOND = 1000; // 1000ms = 1sec
-    const uint8_t COLOR_RED = 0x02; // Couleur rouge
-
     DDRA = 0xff; // Mode sortie pour le port A
     DDRD = 0x00; // Mode entrée pour le port D
 
-    Etat currentState = INIT;
+    State currentState = State::INIT;
+    bool buttonPressed = false;
+
     while (true)
     {
-        PORTA = changeState(currentState, boutonDebounced());
-        if (PORTA == COLOR_RED)
-        {
-            _delay_ms(ONE_SECOND);
-        }
+        doAction(currentState, buttonPressed);
+        buttonPressed = changeState(currentState, buttonDebounced());
     }
 }
