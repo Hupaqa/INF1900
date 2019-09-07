@@ -1,3 +1,33 @@
+/*
++--------------+----------------+-----------+----------------+
+| currentState | input (button) | nextState |  output (LED)  |
++--------------+----------------+-----------+----------------+
+| INIT         |        0       | INIT      |  turnLedRed()  |
++--------------+----------------+-----------+----------------+
+| INIT         |        1       | AMBER     |  turnLedRed()  |
++--------------+----------------+-----------+----------------+
+| AMBER        |        0       | GREEN     | turnLedAmber() |
++--------------+----------------+-----------+----------------+
+| AMBER        |        1       | AMBER     | turnLedAmber() |
++--------------+----------------+-----------+----------------+
+| GREEN1       |        0       | GREEN1    | turnLedGreen() |
++--------------+----------------+-----------+----------------+
+| GREEN1       |        1       | RED       | turnLedGreen() |
++--------------+----------------+-----------+----------------+
+| RED          |        0       | OFF       |  turnLedRed()  |
++--------------+----------------+-----------+----------------+
+| RED          |        1       | RED       |  turnLedRed()  |
++--------------+----------------+-----------+----------------+
+| OFF          |        0       | OFF       |  turnLedOff()  |
++--------------+----------------+-----------+----------------+
+| OFF          |        1       | GREEN2    |  turnLedOff()  |
++--------------+----------------+-----------+----------------+
+| GREEN2       |        0       | INIT      | turnLedGreen() |
++--------------+----------------+-----------+----------------+
+| GREEN2       |        1       | GREEN2    | turnLedGreen() |
++--------------+----------------+-----------+----------------+
+*/
+
 #define F_CPU 8000000
 #include <util/delay.h>
 #include <avr/io.h>
@@ -30,12 +60,12 @@ bool inputDebounced()
 
 void turnLedRed()
 {
-    PORTA = (PORTA |= 0b00000010) & 0b11111110; // set to xxxxxx10
+    PORTA = (PORTA | 0b00000010) & 0b11111110; // set to xxxxxx10
 }
 
 void turnLedGreen()
 {
-    PORTA = (PORTA |= 0b00000001) & 0b11111101; // set to xxxxxx01
+    PORTA = (PORTA | 0b00000001) & 0b11111101; // set to xxxxxx01
 }
 
 void turnLedOff()
@@ -70,7 +100,6 @@ void doAction(const State &currentState)
         break;
     case OFF_STATE:
         turnLedOff();
-        break;
     }
 }
 
@@ -142,7 +171,6 @@ void changeState(State &currentState, bool inputPressed)
         {
             currentState = OFF_STATE;
         }
-        break;
     }
 }
 

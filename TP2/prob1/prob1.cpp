@@ -1,27 +1,27 @@
 /*
-+--------------+----------------+-----------+--------------+
-| currentState | input (button) | nextState | output (LED) |
-+--------------+----------------+-----------+--------------+
-| INIT         |        0       | INIT      |   NO_COLOR   |
-+--------------+----------------+-----------+--------------+
-| INIT         |        1       | ONE       |   NO_COLOR   |
-+--------------+----------------+-----------+--------------+
-| ONE          |        0       | ONE       |   NO_COLOR   |
-+--------------+----------------+-----------+--------------+
-| ONE          |        1       | TWO       |   NO_COLOR   |
-+--------------+----------------+-----------+--------------+
-| TWO          |        0       | TWO       |   NO_COLOR   |
-+--------------+----------------+-----------+--------------+
-| TWO          |        1       | THREE     |   NO_COLOR   |
-+--------------+----------------+-----------+--------------+
-| THREE        |        0       | THREE     |   NO_COLOR   |
-+--------------+----------------+-----------+--------------+
-| THREE        |        1       | FOUR      |   NO_COLOR   |
-+--------------+----------------+-----------+--------------+
-| FOUR         |        0       | FOUR      |   NO_COLOR   |
-+--------------+----------------+-----------+--------------+
-| FOUR         |        1       | INIT      |   COLOR_RED  |
-+--------------+----------------+-----------+--------------+
++--------------+----------------+-----------+------------------------+
+| currentState | input (button) | nextState |      output (LED)      |
++--------------+----------------+-----------+------------------------+
+| INIT         |        0       | INIT      |         nothing        |
++--------------+----------------+-----------+------------------------+
+| INIT         |        1       | ONE       |         nothing        |
++--------------+----------------+-----------+------------------------+
+| ONE          |        0       | ONE       |         nothing        |
++--------------+----------------+-----------+------------------------+
+| ONE          |        1       | TWO       |         nothing        |
++--------------+----------------+-----------+------------------------+
+| TWO          |        0       | TWO       |         nothing        |
++--------------+----------------+-----------+------------------------+
+| TWO          |        1       | THREE     |         nothing        |
++--------------+----------------+-----------+------------------------+
+| THREE        |        0       | THREE     |         nothing        |
++--------------+----------------+-----------+------------------------+
+| THREE        |        1       | FOUR      |         nothing        |
++--------------+----------------+-----------+------------------------+
+| FOUR         |        0       | FOUR      |         nothing        |
++--------------+----------------+-----------+------------------------+
+| FOUR         |        1       | INIT      | flashRedLedOneSecond() |
++--------------+----------------+-----------+------------------------+
 */
 
 #define F_CPU 8000000
@@ -58,89 +58,85 @@ bool buttonDebounced()
 
 void turnLedRed()
 {
-    PORTA = (PORTA |= 0b00000010) & 0b11111110; // set to xxxxxx10
+    PORTA = (PORTA | 0b00000010) & 0b11111110; // set to xxxxxx10
 }
-
 
 void turnLedOff()
 {
     PORTA &= 0b11111100; // set to xxxxxx00
 }
 
-
-bool changeState(State &currentState, bool inputPressed)
-{
-    switch (currentState)
-    {
-    case INIT:
-        if (inputPressed)
-        {
-            currentState = ONE;
-            return true;
-        }
-        else
-        {
-            currentState = INIT;
-            return false;
-        }
-
-    case ONE:
-        if (inputPressed)
-        {
-            currentState = TWO;
-            return true;
-        }
-        else
-        {
-            currentState = ONE;
-            return false;
-        }
-
-    case TWO:
-        if (inputPressed)
-        {
-            currentState = THREE;
-            return true;
-        }
-        else
-        {
-            currentState = TWO;
-            return false;
-        }
-
-    case THREE:
-        if (inputPressed)
-        {
-            currentState = FOUR;
-            return true;
-        }
-        else
-        {
-            currentState = THREE;
-            return false;
-        }
-
-    case FOUR:
-        if (inputPressed)
-        {
-            currentState = INIT;
-            return true;
-        }
-        else
-        {
-            currentState = FOUR;
-            return false;
-        }
-    
-    default:
-        return false;
-    }
-}
-
-void doAction(const State &currentState, const bool inputPressed)
+void flashRedLedOneSecond()
 {
     const double ONE_SECOND = 1000; // 1000ms = 1sec
 
+    turnLedRed();
+    _delay_ms(ONE_SECOND);
+    turnLedOff();
+}
+
+void changeState(State &currentState, const bool &inputPressed)
+{
+    switch (currentState)
+    {
+    case INIT:
+        if (inputPressed)
+        {
+            currentState = ONE;
+        }
+        else
+        {
+            currentState = INIT;
+        }
+        break;
+
+    case ONE:
+        if (inputPressed)
+        {
+            currentState = TWO;
+        }
+        else
+        {
+            currentState = ONE;
+        }
+        break;
+
+    case TWO:
+        if (inputPressed)
+        {
+            currentState = THREE;
+        }
+        else
+        {
+            currentState = TWO;
+        }
+        break;
+
+    case THREE:
+        if (inputPressed)
+        {
+            currentState = FOUR;
+        }
+        else
+        {
+            currentState = THREE;
+        }
+        break;
+
+    case FOUR:
+        if (inputPressed)
+        {
+            currentState = INIT;
+        }
+        else
+        {
+            currentState = FOUR;
+        }
+    }
+}
+
+void doAction(const State &currentState, const bool &inputPressed)
+{
     switch (currentState)
     {
     case INIT:
@@ -152,25 +148,23 @@ void doAction(const State &currentState, const bool inputPressed)
     case FOUR:
         if (inputPressed)
         {
-            turnLedRed();
-            _delay_ms(ONE_SECOND);
-            turnLedOff();
+            flashRedLedOneSecond();
         }
-        break;
     }
 }
 
 int main()
 {
-    DDRA = 0xff; // Mode sortie pour le port A
-    DDRD = 0x00; // Mode entrée pour le port D
+    DDRA = 0xff; // PORTA set to output
+    DDRD = 0x00; // PORTD set to input
 
     State currentState = State::INIT;
     bool buttonPressed = false;
 
     while (true)
     {
+        buttonPressed = buttonDebounced();
         doAction(currentState, buttonPressed);
-        buttonPressed = changeState(currentState, buttonDebounced());
+        changeState(currentState, buttonPressed);
     }
 }
