@@ -21,15 +21,15 @@ void delayNumberOfCycles(uint16_t nCycles)
     } 
 }
 
-void turnLedAccordingToBrightness(uint8_t ratio) 
+void turnRedLedAccordingToBrightness(uint8_t ratioOfRed) 
 {
-    uint16_t red = 0x50 * ratio; // 80 * ratio
-    uint16_t off = 0x1F40 - red; // 8000 - red
+    uint16_t redFactor = 0x50 * ratioOfRed; // 80 * ratio
+    uint16_t offFactor = 0x1F40 - redFactor; // 8000 - red
 
     turnLedRed();
-    delayNumberOfCycles(red);
+    delayNumberOfCycles(redFactor);
     turnLedOff();
-    delayNumberOfCycles(off);
+    delayNumberOfCycles(offFactor);
 }
 
 void dimRedLed() 
@@ -37,7 +37,7 @@ void dimRedLed()
     uint8_t brightness = 0x64; // 100
     for (uint16_t i = 0; i <= 0xBB8; i++)
     {
-        turnLedAccordingToBrightness(brightness);
+        turnRedLedAccordingToBrightness(brightness);
         if (i % 0x1E == 0) 
         {
             brightness -= 0b1; // decrease brightness by 1 every 30 iterations

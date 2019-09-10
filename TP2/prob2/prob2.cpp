@@ -1,4 +1,12 @@
 /*
+ * Nom :
+ * TP2
+ * Problème 2
+ * Polytechnique Montréal
+ * Cours : INF1900
+ * Groupe laboratoire : 2
+
+ * Table des états :
 +--------------+----------------+-----------+----------------+
 | currentState | input (button) | nextState |  output (LED)  |
 +--------------+----------------+-----------+----------------+
@@ -32,6 +40,9 @@
 #include <util/delay.h>
 #include <avr/io.h>
 
+/*
+ * Liste des états
+*/
 enum State
 {
     INIT_STATE,
@@ -42,7 +53,12 @@ enum State
     OFF_STATE
 };
 
-bool inputDebounced()
+/* 
+ * Vérifie le statut du bouton en prenant deux lectures avec un délai de 10 ms.
+ * 
+ * @return true si le bouton est enfoncé pendant 10ms, faux sinon
+*/
+bool returnInputDebounced()
 {
     const double DELAY = 10;
 
@@ -64,21 +80,34 @@ bool inputDebounced()
     }
 }
 
+/*
+ * Affecte la valeur correspondante à la couleur rouge aux pins 0 et 1 du port A. 
+*/
 void turnLedRed()
 {
     PORTA = (PORTA | 0b00000010) & 0b11111110; // set to xxxxxx10
 }
 
+/*
+ * Affecte la valeur correspondante à la couleur verte aux pins 0 et 1 du port A.
+*/
 void turnLedGreen()
 {
     PORTA = (PORTA | 0b00000001) & 0b11111101; // set to xxxxxx01
 }
 
+/*
+ * Affecte aucune tension sur les pins 0 et 1 pour fermer la LED.
+*/
 void turnLedOff()
 {
     PORTA &= 0b11111100; // set to xxxxxx00
 }
 
+/*
+ * Affecte en alternance les couleurs rouges et vertes pour obtenir la couleur
+ * ambre. 
+*/
 void turnLedAmber()
 {
     const double VERY_SHORT_DELAY = 1;
@@ -90,6 +119,11 @@ void turnLedAmber()
     _delay_ms(SHORT_DELAY); // Add a little more green to achieve amber
 }
 
+/*
+ * Effectue la ou les actions correspondant à l'état en cours
+ * 
+ * @param currentState l'état actuel 
+*/
 void doAction(const State &currentState)
 {
     switch (currentState)
@@ -112,7 +146,13 @@ void doAction(const State &currentState)
     }
 }
 
-void changeState(State &currentState, bool inputPressed)
+/*
+ * Met à jour l'état de la machine.
+ * 
+ * @param currentState état à modifier
+ * @param inputPressed true si le bouton est enfoncé, false sinon
+*/
+void changeState(State &currentState, const bool &inputPressed)
 {
     switch (currentState)
     {
@@ -169,6 +209,6 @@ int main()
     while (true)
     {
         doAction(currentState);
-        changeState(currentState, inputDebounced());
+        changeState(currentState, returnInputDebounced());
     }
 }
