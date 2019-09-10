@@ -50,10 +50,14 @@ bool buttonDebounced()
             return true;
         }
         else
+        {
             return false;
+        }
     }
     else
+    {
         return false;
+    }
 }
 
 void turnLedRed()
@@ -84,20 +88,12 @@ void changeState(State &currentState, const bool &inputPressed)
         {
             currentState = ONE;
         }
-        else
-        {
-            currentState = INIT;
-        }
         break;
 
     case ONE:
         if (inputPressed)
         {
             currentState = TWO;
-        }
-        else
-        {
-            currentState = ONE;
         }
         break;
 
@@ -106,10 +102,6 @@ void changeState(State &currentState, const bool &inputPressed)
         {
             currentState = THREE;
         }
-        else
-        {
-            currentState = TWO;
-        }
         break;
 
     case THREE:
@@ -117,39 +109,21 @@ void changeState(State &currentState, const bool &inputPressed)
         {
             currentState = FOUR;
         }
-        else
-        {
-            currentState = THREE;
-        }
         break;
 
     case FOUR:
         if (inputPressed)
         {
             currentState = INIT;
-        }
-        else
-        {
-            currentState = FOUR;
         }
     }
 }
 
 void doAction(const State &currentState, const bool &inputPressed)
 {
-    switch (currentState)
+    if (currentState == State::FOUR && inputPressed)
     {
-    case INIT:
-    case ONE:
-    case TWO:
-    case THREE:
-        break;
-
-    case FOUR:
-        if (inputPressed)
-        {
-            flashRedLedOneSecond();
-        }
+        flashRedLedOneSecond();
     }
 }
 

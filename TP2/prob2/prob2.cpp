@@ -52,10 +52,14 @@ bool inputDebounced()
             return true;
         }
         else
+        {
             return false;
+        }
     }
     else
+    {
         return false;
+    }
 }
 
 void turnLedRed()
@@ -112,18 +116,10 @@ void changeState(State &currentState, bool inputPressed)
         {
             currentState = AMBER_STATE;
         }
-        else
-        {
-            currentState = INIT_STATE;
-        }
         break;
 
     case AMBER_STATE:
-        if (inputPressed)
-        {
-            currentState = AMBER_STATE;
-        }
-        else
+        if (!inputPressed)
         {
             currentState = GREEN1_STATE;
         }
@@ -134,31 +130,12 @@ void changeState(State &currentState, bool inputPressed)
         {
             currentState = RED_STATE;
         }
-        else
-        {
-            currentState = GREEN1_STATE;
-        }
         break;
 
     case RED_STATE:
-        if (inputPressed)
-        {
-            currentState = RED_STATE;
-        }
-        else
+        if (!inputPressed)
         {
             currentState = OFF_STATE;
-        }
-        break;
-
-    case GREEN2_STATE:
-        if (inputPressed)
-        {
-            currentState = GREEN2_STATE;
-        }
-        else
-        {
-            currentState = INIT_STATE;
         }
         break;
 
@@ -167,9 +144,12 @@ void changeState(State &currentState, bool inputPressed)
         {
             currentState = GREEN2_STATE;
         }
-        else
+        break;
+
+    case GREEN2_STATE:
+        if (!inputPressed)
         {
-            currentState = OFF_STATE;
+            currentState = INIT_STATE;
         }
     }
 }
