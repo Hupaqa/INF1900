@@ -44,9 +44,11 @@ enum State
 
 bool inputDebounced()
 {
+    const double DELAY = 10;
+
     if (PIND & 0x04)
     {
-        _delay_ms(10);
+        _delay_ms(DELAY);
         if (PIND & 0x04)
         {
             return true;
@@ -79,10 +81,13 @@ void turnLedOff()
 
 void turnLedAmber()
 {
+    const double VERY_SHORT_DELAY = 1;
+    const double SHORT_DELAY = 2;
+
     turnLedRed();
-    _delay_ms(1);
+    _delay_ms(VERY_SHORT_DELAY);
     turnLedGreen();
-    _delay_ms(2);
+    _delay_ms(SHORT_DELAY); // Add a little more green to achieve amber
 }
 
 void doAction(const State &currentState)

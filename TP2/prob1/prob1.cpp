@@ -39,9 +39,11 @@ enum State
 
 bool buttonDebounced()
 {
+    const double DELAY = 10;
+
     if (PIND & 0x04)
     {
-        _delay_ms(10);
+        _delay_ms(DELAY);
         if (PIND & 0x04)
         {
             while (PIND & 0x04)
