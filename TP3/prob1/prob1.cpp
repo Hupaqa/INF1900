@@ -34,13 +34,13 @@ void turnRedLedAccordingToBrightness(uint8_t ratioOfRed)
 
 void dimRedLed() 
 {
-    uint8_t brightness = 0x64; // 100
+    uint8_t brightness = 0x64; // 100%
     for (uint16_t i = 0; i <= 0xBB8; i++)
     {
         turnRedLedAccordingToBrightness(brightness);
         if (i % 0x1E == 0) 
         {
-            brightness -= 0b1; // decrease brightness by 1 every 30 iterations
+            brightness -= 0b1; // decrease brightness by 1% every 30 iterations
         }
     }
 }
