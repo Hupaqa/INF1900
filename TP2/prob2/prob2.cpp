@@ -1,7 +1,8 @@
 /*
- * Nom :
+ * Nom : William Trépanier et Benjamin Theriault 
  * TP2
  * Problème 2
+ * Date : 13 septembre 2019
  * Polytechnique Montréal
  * Cours : INF1900
  * Groupe laboratoire : 2
