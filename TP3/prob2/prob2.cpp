@@ -17,7 +17,7 @@ void setMotorOff()
     PORTA = 0x00;
 }
 
-void delayNbCycles(int nCycles) 
+void delayNbCycles(uint32_t nCycles) 
 {
 
     if (nCycles != 0)
@@ -27,7 +27,7 @@ void delayNbCycles(int nCycles)
     }
 }
 
-void doOnePeriod(int high, int low)
+void doOnePeriod(uint32_t high, uint32_t low)
 {
     setMotorFoward();
     delayNbCycles(high);
@@ -35,14 +35,14 @@ void doOnePeriod(int high, int low)
     delayNbCycles(low);
 }
 
-void moveRobot(int frequency, int ratio, int seconds)
+void moveRobot(uint32_t frequency, uint8_t ratio, uint32_t seconds)
 {
-    int nbCycles = (8000000 / frequency);
-    int high = (nbCycles / 100) * ratio;
-    int low = nbCycles - high;
-    int nbPeriods = (8000000 / nbCycles) * seconds;
-
-    for (int i = 0; i < nbPeriods; i++)
+    uint32_t nbCycles = (8000000 / frequency);
+    uint32_t high = (nbCycles / 100) * ratio;
+    uint32_t low = nbCycles - high;
+    uint32_t nbPeriods = frequency * seconds;
+    
+    for (uint32_t i = 0; i < nbPeriods; i++)
     {
         doOnePeriod(high, low);
     }
@@ -52,14 +52,15 @@ int main()
 {
     DDRA = 0xff;  // PORTA set to output
 
-    moveRobot(60, 100, 2);
-    moveRobot(60, 75, 2);
-    moveRobot(60, 50, 2);
-    moveRobot(60, 25, 2);
     moveRobot(60, 0, 2);
-    moveRobot(400, 100, 2);
-    moveRobot(400, 75, 2);
-    moveRobot(400, 50, 2);
-    moveRobot(400, 25, 2);
+    moveRobot(60, 25, 2);
+    moveRobot(60, 50, 2);
+    moveRobot(60, 75, 2);
+    moveRobot(60, 100, 2);
+
     moveRobot(400, 0, 2);
+    moveRobot(400, 25, 2);
+    moveRobot(400, 50, 2);
+    moveRobot(400, 75, 2);
+    moveRobot(400, 100, 2);
 }
