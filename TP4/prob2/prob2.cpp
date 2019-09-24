@@ -7,34 +7,6 @@
  * Cours : INF1900
  * Groupe laboratoire : 2
 
- * Table des états :
-+--------------+----------------+-----------+----------------+
-| currentState | input (button) | nextState |  output (LED)  |
-+--------------+----------------+-----------+----------------+
-| INIT         |        0       | INIT      |  turnLedRed()  |
-+--------------+----------------+-----------+----------------+
-| INIT         |        1       | AMBER     |  turnLedRed()  |
-+--------------+----------------+-----------+----------------+
-| AMBER        |        0       | GREEN     | turnLedAmber() |
-+--------------+----------------+-----------+----------------+
-| AMBER        |        1       | AMBER     | turnLedAmber() |
-+--------------+----------------+-----------+----------------+
-| GREEN1       |        0       | GREEN1    | turnLedGreen() |
-+--------------+----------------+-----------+----------------+
-| GREEN1       |        1       | RED       | turnLedGreen() |
-+--------------+----------------+-----------+----------------+
-| RED          |        0       | OFF       |  turnLedRed()  |
-+--------------+----------------+-----------+----------------+
-| RED          |        1       | RED       |  turnLedRed()  |
-+--------------+----------------+-----------+----------------+
-| OFF          |        0       | OFF       |  turnLedOff()  |
-+--------------+----------------+-----------+----------------+
-| OFF          |        1       | GREEN2    |  turnLedOff()  |
-+--------------+----------------+-----------+----------------+
-| GREEN2       |        0       | INIT      | turnLedGreen() |
-+--------------+----------------+-----------+----------------+
-| GREEN2       |        1       | GREEN2    | turnLedGreen() |
-+--------------+----------------+-----------+----------------+
 */
 
 #define F_CPU 8000000
@@ -42,17 +14,6 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-
-/*
- * Liste des états
-*/
-enum State
-{
-    INIT_STATE,
-
-};
-
-volatile State currentState = State::INIT_STATE;
 volatile uint8_t minuterieExpiree = 0;
 volatile uint8_t boutonPoussoir = 0;
 
@@ -82,19 +43,33 @@ void turnLedOff()
 
 ISR (INT0_vect)
 {
-    // laisser un delai avant de confirmer la réponse du
-    // bouton-poussoir: environ 30 ms (anti-rebond)
     _delay_ms(30);
-
-    // se souvenir ici si le bouton est pressé ou relâché
     if (PIND & 0x04)
     {
         boutonPoussoir = 1;
     }
 
-
     // Voir la note plus bas pour comprendre cette instruction et son rôle
     EIFR |= (1 << INTF0) ;
+}
+
+ISR (TIMER1_COMPA_vect)
+{
+    minuterieExpiree = 1;
+}
+
+void partirMinuterie ( uint16_t duree ) {
+
+    minuterieExpiree = 0;
+
+    // interruption après la durée spécifiée
+
+    TCNT1 = 0; // Timer/Counter1
+    OCR1A = duree; // Output compare register 1 A
+    TCCR1A = 0; // timer/counter control register A
+    TCCR1B |= (1 << CS12); // timer/counter control register B
+    TCCR1C = 0; // timer/counter control register A
+    TIMSK1 |= (1 << OCIE1A); // Timer/Counter1 Interrupt Mask Register
 }
 
 void initialisation ( void ) {
@@ -110,7 +85,8 @@ void initialisation ( void ) {
 
     // cette procédure ajuste le registre EIMSK
     // de l’ATmega324PA pour permettre les interruptions externes
-    EIMSK |= (1 << INT0) ;
+    EIMSK |= (1 << INT0)
+    ;
 
     // il faut sensibiliser les interruptions externes aux
     // changements de niveau du bouton-poussoir
@@ -123,9 +99,20 @@ void initialisation ( void ) {
 
 int main()
 {
-    initialisation();
-    while (true)
-    {
-        doAction();
+    initialisation(); 
+    _delay_ms(10000);
+    turnLedRed();
+    _delay_ms(100);
+    turnLedOff();
+    partirMinuterie(31250);
+    while ( minuterieExpiree == 0 && boutonPoussoir == 0 );
+    // Une interruption s'est produite. Arrêter toute
+    // forme d'interruption. Une seule réponse suffit.
+    cli ();
+    // Verifier la réponse
+    if(boutonPoussoir == 1){
+        turnLedGreen();
+    }else{
+        turnLedRed();
     }
 }
