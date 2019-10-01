@@ -216,7 +216,7 @@ void initialisation ( void ) {
     // il faut sensibiliser les interruptions externes aux
     // changements de niveau du bouton-poussoir
     // en ajustant le registre EICRA
-    EICRA |= 1;
+    EICRA |= (1 << ISC00);
 
     // sei permet de recevoir à nouveau des interruptions.
     sei ();
