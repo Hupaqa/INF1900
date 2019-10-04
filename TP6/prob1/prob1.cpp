@@ -1,67 +1,56 @@
+/*
+    Safezone
+*/
 #define F_CPU 8000000
 #include <util/delay.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <string.h>
 
 enum Etat
 {
-    INIT,
+    ATTENTE,
     INCREMENTATION,
     OUTPUT,
 };
 
-volatile bool bontonEnfonce = false;
+volatile bool boutonEnfonce = false;
 volatile uint8_t compteur = 0;
 
-void initialisationUART() 
-{
-    // 2400 bauds. Nous vous donnons la valeur des deux
-    // premier registres pour vous éviter des complications
-    UBRR0H = 0;
-    UBRR0L = 0xCF;
-
-    // permettre la réception et la transmission par le UART0
-    UCSR0B |= (1 << RXEN0) | (1 << TXEN0);
-
-    // Format des trames: 8 bits, 1 stop bits, none parity
-    UCSR0C |= (1 << UCSZ01) | (1 << UCSZ00);
-}
-
-void transmissionUART(uint8_t donnee) 
-{
-    while ( !( UCSR0A & (1<<UDRE0)) )
-    {
-    }
-    UDR0 = donnee;
-}
-
+/*
+ * Interrupt lorsque l'on appuie ou l'on relache le bouton.
+*/
 ISR (INT0_vect)
 {
     _delay_ms(30);
     if (PIND & 0x04)
     {
-        bontonEnfonce = false;
+        boutonEnfonce = false;
     }
     else
     {
-        bontonEnfonce = true;
+        boutonEnfonce = true;
     }
     EIFR |= (1 << INTF0);
 }
 
+/*
+ * Interrupt qui incrémente le compteur à chaque 100 ms.
+*/
 ISR (TIMER1_COMPA_vect)
 {
     compteur++;
 }
 
+/*
+ * Affecte la valeur correspondante à la couleur rouge aux pins 0 et 1 du port B.
+*/
 void turnLedRed()
 {
     PORTB = (PORTB | (1 << PORTB1)) & ~(1 << PORTB0); // set to xxxxxx10
 }
 
 /*
- * Affecte la valeur correspondante à la couleur verte aux pins 0 et 1 du port A.
+ * Affecte la valeur correspondante à la couleur verte aux pins 0 et 1 du port B.
 */
 void turnLedGreen()
 {
@@ -76,6 +65,9 @@ void turnLedOff()
     PORTB &= ~((1 << PORTB1) | (1 << PORTB0)); // set to xxxxxx00
 }
 
+/*
+ * Fait clignoter la lumière une fois sur 500 ms.
+*/
 void flashRed()
 {
     turnLedRed();
@@ -84,83 +76,112 @@ void flashRed()
     _delay_ms(250);
 }
 
-void initialisationInit()
+/*
+ * Initialise les registres pour qu'il y ait interuption lorsqu'on relache 
+ * le bouton.
+*/
+void initialisationAttente()
 {
     EIMSK |= (1 << INT0); // Permet les external interrupts
     EICRA |= (1 << ISC01); // Interrupt on falling edge
+    EICRA &= ~(1 << ISC00); // Interrupt on falling edge
     sei(); // Active les interrupts
 }
 
+/*
+ * Initialise les registres pour qu'il y ait interuption lorsqu'on appuie 
+ * sur le bouton. Configure une interuption qui incrémente le compteur à
+ * chaque 100ms.
+*/
 void initialisationIncrementation()
 {
     EIMSK |= (1 << INT0); // Permet les external interrupts
     EICRA |= (1 << ISC01) | (1 << ISC00); // Interrupt on rising edge
     TCNT1 = 0; // Initialise le compteur = 0
+    compteur = 0;
     OCR1A = 12500; // Permet un interrupt a chaque 100ms
     TCCR1B |= (1 << WGM12) | (1 << CS11) | (1 << CS10); // Prescaler de 64 et CTC
     TIMSK1 |= (1 << OCIE1A); // Active les interrupts
     sei(); // Active les interrupts
 }
 
+/*
+ * Allume la led verte, puis clignote la led rouge au nombre de compteur/2. Allume
+ * ensuite la led verte.
+*/
+void sequenceClignotement()
+{
+    turnLedGreen();
+    _delay_ms(500);
+    turnLedOff();
+    _delay_ms(2000);
+    compteur /= 0b10;
+    for (uint8_t i = 0; i < compteur; i++)
+    {
+        flashRed();
+    }
+    turnLedGreen();
+    _delay_ms(1000);
+    turnLedOff();
+}
+
+/*
+ * Fait les actions en fonction des états.
+*/
 void doAction(const Etat& etat)
 {
     switch(etat)
     {
-    case INIT:
-        compteur = 0;
-        bontonEnfonce = false;
-        initialisationInit();
+    case ATTENTE:
         break;
+
     case INCREMENTATION:
-        initialisationIncrementation();
         break;
+
     case OUTPUT:
-        turnLedGreen();
-        _delay_ms(500);
-        turnLedOff();
-        _delay_ms(2000);
-        compteur /= 0b10;
-        for (uint8_t i = 0; i < compteur; i++)
-        {
-            flashRed();
-            transmissionUART(i);
-        }
-        turnLedGreen();
-        _delay_ms(1000);
-        turnLedOff();
+        sequenceClignotement();
         break;
     }
 }
 
+/*
+ * Change d'état selon les conditions.
+*/
 void changeState(Etat& etat)
 {
     switch (etat)
     {
-    case INIT:
-        
-        while(!bontonEnfonce);
-        cli();
-        etat = Etat::INCREMENTATION;
-        break;
-    case INCREMENTATION:
-        while (bontonEnfonce && compteur < 0x78)
+    case ATTENTE:
+        if (boutonEnfonce)
         {
+            cli();
+            etat = Etat::INCREMENTATION;
+            initialisationIncrementation();
         }
-        cli();
-        etat = Etat::OUTPUT;
         break;
+
+    case INCREMENTATION:
+        if (!boutonEnfonce || compteur >= 0x78)
+        {   
+            cli();
+            etat = Etat::OUTPUT;
+        }
+        break;
+
     case OUTPUT:
-        etat = Etat::INIT;
+        etat = Etat::ATTENTE;
+        initialisationAttente();
         break;
     }
 }
 
 int main()
 {
-    DDRD = 0x00;
-    DDRB = 0xff;
-    initialisationUART();
-    Etat etat = Etat::INIT;
+    DDRD = 0x00; // Port D en entrée
+    DDRB = 0xff; // Port B en sortie
+    Etat etat = Etat::ATTENTE;
+    initialisationAttente();
+
     while (true)
     {
         doAction(etat);
