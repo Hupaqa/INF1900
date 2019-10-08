@@ -1,3 +1,3 @@
 # INF1900
 
-Projet
+Projet fantastique
