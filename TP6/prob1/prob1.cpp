@@ -1,6 +1,36 @@
 /*
-    Safezone
+ * Nom : William Trépanier et Benjamin Theriault 
+ * TP6
+ * Problème 1
+ * Date : 8 octobre 2019
+ * Polytechnique Montréal
+ * Cours : INF1900
+ * Groupe laboratoire : 2
+
+
+ * Diagramme d'états
++----------------+-----------------+------------------+----------------+----------------------+
+|  Current state | interrupt timer | interrupt bouton |   next state   |      couleur led     |
++----------------+-----------------+------------------+----------------+----------------------+
+|     ATTENTE    |        X        |         0        |     ATTENTE    |          off         |
++----------------+-----------------+------------------+----------------+----------------------+
+|     ATTENTE    |        X        |         1        | INCREMENTATION |          off         |
++----------------+-----------------+------------------+----------------+----------------------+
+| INCREMENTATION |        0        |         0        | INCREMENTATION |          off         |
++----------------+-----------------+------------------+----------------+----------------------+
+| INCREMENTATION |        X        |         1        |     OUTPUT     |          off         |
++----------------+-----------------+------------------+----------------+----------------------+
+| INCREMENTATION |        1        |         X        |     OUTPUT     |          off         |
++----------------+-----------------+------------------+----------------+----------------------+
+|     OUTPUT     |        X        |         X        |     ATTENTE    | sequenceClignotement |
++----------------+-----------------+------------------+----------------+----------------------+
+
+* Directives de branchement :
+* Bouton : D2
+* LED : B0 et B1
+
 */
+
 #define F_CPU 8000000
 #include <util/delay.h>
 #include <avr/io.h>
@@ -21,7 +51,9 @@ volatile uint8_t compteur = 0;
 */
 ISR (INT0_vect)
 {
-    _delay_ms(30);
+    const uint8_t DEBOUNCE = 30;
+
+    _delay_ms(DEBOUNCE);
     if (PIND & 0x04)
     {
         boutonEnfonce = false;
@@ -34,7 +66,7 @@ ISR (INT0_vect)
 }
 
 /*
- * Interrupt qui incrémente le compteur à chaque 100 ms.
+ * Interrupt qui incrémente le compteur.
 */
 ISR (TIMER1_COMPA_vect)
 {
@@ -70,10 +102,12 @@ void turnLedOff()
 */
 void flashRed()
 {
+    const uint8_t DELAY = 250;
+
     turnLedRed();
-    _delay_ms(250);
+    _delay_ms(DELAY);
     turnLedOff();
-    _delay_ms(250);
+    _delay_ms(DELAY);
 }
 
 /*
@@ -115,7 +149,7 @@ void sequenceClignotement()
     _delay_ms(500);
     turnLedOff();
     _delay_ms(2000);
-    compteur /= 0b10;
+    compteur /= 0x2;
     for (uint8_t i = 0; i < compteur; i++)
     {
         flashRed();
@@ -133,8 +167,6 @@ void doAction(const Etat& etat)
     switch(etat)
     {
     case ATTENTE:
-        break;
-
     case INCREMENTATION:
         break;
 

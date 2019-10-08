@@ -98,7 +98,7 @@ void turnLedOff()
 /*
  * Affecte la couleur rouge sur la LED pendant une seconde.
 */
-void flashRedLedOneSecond()
+void flashRedLed()
 {
     const double ONE_SECOND = 1000;
 
