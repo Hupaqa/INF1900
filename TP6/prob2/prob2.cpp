@@ -1,31 +1,23 @@
+/*
+ * Nom : William Trépanier et Benjamin Theriault 
+ * TP6
+ * Problème 2
+ * Date : 8 octobre 2019
+ * Polytechnique Montréal
+ * Cours : INF1900
+ * Groupe laboratoire : 2
+
+ * Directive de branchage (débute à 0):
+ * LED : B0 et B1
+ * Tension analogique : A0
+ * Tension AREF : 5V
+*/
+
 #define F_CPU 8000000
 #include <util/delay.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "can.h"
-
-void initialisationUART() 
-{
-    // 2400 bauds. Nous vous donnons la valeur des deux
-    // premier registres pour vous éviter des complications
-    UBRR0H = 0;
-    UBRR0L = 0xCF;
-
-    // permettre la réception et la transmission par le UART0
-    UCSR0B |= (1 << RXEN0) | (1 << TXEN0);
-
-    // Format des trames: 8 bits, 1 stop bits, none parity
-    UCSR0C |= (1 << UCSZ01) | (1 << UCSZ00);
-}
-
-// De l'USART vers le PC
-void transmissionUART(uint8_t donnee) 
-{
-    while ( !( UCSR0A & (1<<UDRE0)) )
-    {
-    }
-    UDR0 = donnee;
-}
 
 /*
  * Affecte la valeur correspondante à la couleur rouge aux pins 0 et 1 du port B.
@@ -54,47 +46,53 @@ void turnLedOff()
 /*
  * Affecte en alternance les couleurs rouges et vertes pour obtenir la couleur
  * ambre. 
+ * 
+ * @param   ms   nombre de ms où la DEL est ambrée (max 65535ms)
 */
-void turnLedAmber()
+void turnLedAmber(uint16_t ms)
 {
     const double VERY_SHORT_DELAY = 1;
     const double SHORT_DELAY = 3;
+    uint16_t nTimes = ms >> 2; // to divize by four
 
+    for (uint16_t i = 0; i < nTimes; i++)
+    {
     turnLedRed();
     _delay_ms(VERY_SHORT_DELAY);
     turnLedGreen();
     _delay_ms(SHORT_DELAY); // Add a little more green to achieve amber
+    }
 }
 
 int main()
 {
-    DDRB = 0xff;
-    DDRA = 0x00;
-    initialisationUART();
-    can convertisseur = can();
-    uint8_t position = 0x00;
+    DDRB = 0xff; // Port B en sortie
+    DDRA = 0x00; // Port A en entrée
+    const uint8_t POSITION_LECTURE = 0x00;
+    const uint8_t BASSE_INTENSITE = 0x50;
+    const uint8_t HAUTE_INTENSITE = 0xB4;
+    const uint16_t DELAY_LUMIERE = 12;
 
-    turnLedGreen();
+    can convertisseur = can();
+    uint8_t lecture = convertisseur.lecture(POSITION_LECTURE) >> 2;
 
     while(true)
-    {
-        uint8_t lecture = convertisseur.lecture(position) & 0xFF;
-        if (lecture < 0x70)
+    {   
+        if (lecture < BASSE_INTENSITE)
         {
             turnLedGreen();
-            _delay_ms(1000);
+            _delay_ms(DELAY_LUMIERE);
         }
-        else if (lecture >= 0x70 && lecture <= 0x80)
+        else if (lecture >= BASSE_INTENSITE && lecture < HAUTE_INTENSITE)
         {
-            for (uint8_t i = 0; i < 0xfa; i++)
-            {
-                turnLedAmber();
-            }
+            turnLedAmber(DELAY_LUMIERE);
         }
         else
         {
             turnLedRed();
-            _delay_ms(1000);
+            _delay_ms(DELAY_LUMIERE);
         }
+
+        lecture = convertisseur.lecture(POSITION_LECTURE) >> 2;
     }   
 }
