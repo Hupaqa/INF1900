@@ -23,19 +23,23 @@ MCU=atmega324pa
 
 # Nom de votre projet
 # (utilisez un seul mot, exemple: 'monprojet')
-PROJECTNAME=test
+PROJECTNAME=INF1900
 
 # Fichiers sources
 # Utilisez le suffixe .cpp pour les fichiers C++
 # Listez tous les fichiers a compiler, separes par
 # un espace. exemple: 'tp1.c tp2.cpp':
-PRJSRC= couleur.cpp
+SRC_dir = ./src
+BUILD_dir = ./build
+PRJSRC= $(wildcard $(SRC_dir)/*.cpp) \
+	$(wildcard $(SRC_dir)/*.c)
+
 
 # Inclusions additionnels (ex: -I/path/to/mydir)
-INC=
+INC=./libutils
 
 # Libraires a lier (ex: -lmylib)
-LIBS=
+LIBS=utils
 
 # Niveau d'optimization
 # Utilisez s (size opt), 1, 2, 3 ou 0 (off)
@@ -135,10 +139,10 @@ $(TRG): $(OBJDEPS)
 
 # Production des fichiers object
 # De C a objet
-%.o: %.c
+$(BUILD_dir)/%.o: $(SRC_dir)/%.c
 	$(CC) $(CFLAGS) -c $<
 # De C++ a objet
-%.o: %.cpp
+$(BUILD_dir)/%.o: $(SRC_dir)/%.cpp
 	$(CC) $(CFLAGS) $(CXXFLAGS) -c $<
 
 # Verification des dependances (header dependencies)
