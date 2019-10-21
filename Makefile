@@ -21,25 +21,14 @@
 # (exemple: 'at90s8515')
 MCU=atmega324pa
 
-# Nom de votre projet
-# (utilisez un seul mot, exemple: 'monprojet')
-PROJECTNAME=INF1900
-
-# Fichiers sources
-# Utilisez le suffixe .cpp pour les fichiers C++
-# Listez tous les fichiers a compiler, separes par
-# un espace. exemple: 'tp1.c tp2.cpp':
-SRC_dir = ./src
-BUILD_dir = ./build
-PRJSRC= $(wildcard $(SRC_dir)/*.cpp) \
-	$(wildcard $(SRC_dir)/*.c)
-
-
 # Inclusions additionnels (ex: -I/path/to/mydir)
-INC=./libutils
+INC=-I $(LIBINC)
+LIBINC=../libutils 
 
 # Libraires a lier (ex: -lmylib)
-LIBS=utils
+LIBDIR=../libutils
+LIBNAME=utils
+LIBS=-L $(LIBDIR) -l $(LIBNAME)
 
 # Niveau d'optimization
 # Utilisez s (size opt), 1, 2, 3 ou 0 (off)
@@ -84,12 +73,11 @@ CFLAGS=-I. -MMD $(INC) -g -mmcu=$(MCU) -O$(OPTLEVEL) \
 	-fpack-struct -fshort-enums             \
 	-funsigned-bitfields -funsigned-char    \
 	-Wall                                        
-
 # Flags pour le compilateur en C++
 CXXFLAGS=-fno-exceptions     
 
 # Linker pour lier les librairies utilisees
-LDFLAGS=-Wl,-Map,$(TRG).map -mmcu=$(MCU)
+LDFLAGS=-Wl,-Map,$(TRG).map -mmcu=$(MCU) -L $(LIBDIR)
 
 
 
@@ -99,7 +87,6 @@ LDFLAGS=-Wl,-Map,$(TRG).map -mmcu=$(MCU)
 TRG=$(PROJECTNAME).out
 HEXROMTRG=$(PROJECTNAME).hex
 HEXTRG=$(HEXROMTRG) $(PROJECTNAME).ee.hex
-
 
 
 ####### Definition de tout les fichiers objets #######
@@ -119,6 +106,8 @@ OBJDEPS=$(CFILES:.c=.o) \
 # http://bit.ly/257R53E	
 # Les fonctions $(filter pattern…,text) &
 # $(patsubst pattern,replacement,text) sont pertinentes
+	
+
 
 ####### Creation des commandes du Makefile ####### 
 
@@ -139,10 +128,10 @@ $(TRG): $(OBJDEPS)
 
 # Production des fichiers object
 # De C a objet
-$(BUILD_dir)/%.o: $(SRC_dir)/%.c
+%.o: %.c
 	$(CC) $(CFLAGS) -c $<
 # De C++ a objet
-$(BUILD_dir)/%.o: $(SRC_dir)/%.cpp
+%.o: %.cpp
 	$(CC) $(CFLAGS) $(CXXFLAGS) -c $<
 
 # Verification des dependances (header dependencies)
