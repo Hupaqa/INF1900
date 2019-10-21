@@ -4,12 +4,28 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-void turnLedRed(int port, int pin1, int pin2);
+enum Port
+{
+    PORT_A,
+    PORT_B, 
+    PORT_C,
+    PORT_D
+};
 
-void turnLedGreen(int port, int pin1, int pin2);
+class Led
+{
+    public:
+    Led(Port port, uint8_t pin0, uint8_t pin1);
 
-void turnLedOff(int port, int pin1, int pin2);
+    void turnRed();
+    void turnGreen();
+    void turnOff();
+    void turnAmber(uint16_t ms);
 
-void turnLedAmber(uint16_t ms, int port, int pin1, int pin2);
+    private:
+    Port port;
+    uint8_t pin0;
+    uint8_t pin1;
+};
 
 #endif // LED_H

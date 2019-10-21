@@ -3,12 +3,13 @@
 #include <avr/io.h>
 #include "led.h"
 #include "uart.h"
-#include "utils.h"
+#include "delay.h"
+#include "navigator.h"
 
 int main() 
 {
-    turnLedAmber(1, PORTB, PORTB0, PORTB1);
-    turnLedGreen(PORTB, PORTB0, PORTB1);
+    Led led(PORT_C, 0, 1);
+    led.turnGreen();
     initialisationUART();
     delay_cycles(0x80);
     ajustementPWM(10, 90);
