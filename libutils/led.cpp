@@ -4,34 +4,89 @@
 
 #include "led.h"
 
-void turnLedRed(int port, int pin1, int pin2)
+Led::Led(Port port, uint8_t pin0, uint8_t pin1) :
+    port(port),
+    pin0(pin0),
+    pin1(pin1)
 {
-    port |= (1 << pin1);
-    port &= ~(1 << pin2); // set to xxxxxx10
 }
 
-void turnLedGreen(int port, int pin1, int pin2)
+void Led::turnRed()
 {
-    port |= (1 << pin1);
-    port &= ~(1 << pin2); // set to xxxxxx01
+    switch(port)
+    {
+    case PORT_A:
+        PORTA |= pin0;
+        PORTA &= ~pin1;
+        break;
+    case PORT_B:
+        PORTB |= pin0;
+        PORTB &= ~pin1;
+        break;
+    case PORT_C:
+        PORTC |= pin0;
+        PORTC &= ~pin1;
+        break;
+    case PORT_D:
+        PORTD |= pin0;
+        PORTD &= ~pin1;
+        break;
+    }
 }
 
-void turnLedOff(int port, int pin1, int pin2)
+void Led::turnGreen()
 {
-    port &= ~((1 << pin2) | (1 << pin1)); // set to xxxxxx00
+    switch(port)
+    {
+    case PORT_A:
+        PORTA |= pin1;
+        PORTA &= ~pin0;
+        break;
+    case PORT_B:
+        PORTB |= pin1;
+        PORTB &= ~pin0;
+        break;
+    case PORT_C:
+        PORTC |= pin1;
+        PORTC &= ~pin0;
+        break;
+    case PORT_D:
+        PORTD |= pin1;
+        PORTD &= ~pin0;
+        break;
+    }
 }
 
-void turnLedAmber(uint16_t ms, int port, int pin1, int pin2)
+void Led::turnOff()
+{
+    switch(port)
+    {
+    case PORT_A:
+        PORTA &= ~(pin0 | pin1);
+        break;
+    case PORT_B:
+        PORTB &= ~(pin0 | pin1);
+        break;
+    case PORT_C:
+        PORTC &= ~(pin0 | pin1);
+        break;
+    case PORT_D:
+        PORTD &= ~(pin0 | pin1);
+        break;
+    }
+}
+
+void Led::turnAmber(uint16_t ms)
 {
     const double VERY_SHORT_DELAY = 1;
     const double SHORT_DELAY = 3;
-    uint16_t nTimes = ms >> 2; // to divize by four
+    uint16_t n = ms >> 2; // divise par 4
 
-    for (uint16_t i = 0; i < nTimes; i++)
+    for (uint16_t i = 0; i < n; i++)
     {
-    turnLedRed(port, pin1, pin2);
+    turnRed();
     _delay_ms(VERY_SHORT_DELAY);
-    turnLedGreen(port, pin1, pin2);
-    _delay_ms(SHORT_DELAY); // Add a little more green to achieve amber
+    turnGreen();
+    _delay_ms(SHORT_DELAY);
     }
 }
