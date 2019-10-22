@@ -90,7 +90,7 @@ CXXFLAGS=-fno-exceptions
 LDFLAGS=-Wl,-Map,$(TRG).map -mmcu=$(MCU)
 
 # Flags pour l'archiveur
-ARFLAG=-crs
+ARFLAGS=-crs
 
 ####### Cible (Target) #######
 
@@ -135,7 +135,7 @@ all: $(TRG)
 
 # Implementation de la cible
 $(TRG): $(OBJDEPS)
-	$(AR) $(ARFLAG) -o $(TRG) $(OBJDEPS)
+	$(AR) $(ARFLAGS) -o $(TRG) $(OBJDEPS)
 
 # Production des fichiers object
 # De C a objet

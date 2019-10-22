@@ -24,13 +24,12 @@
 MCU=atmega324pa
 
 # Inclusions additionnels (ex: -I/path/to/mydir)
-INC=-I $(LIBINC)
-LIBINC=../libutils 
+INC=$(LIBINC)
+LIBINC=-I ../libutils 
 
 # Libraires a lier (ex: -lmylib)
-LIBDIR=../libutils
-LIBNAME=utils
-LIBS=-L $(LIBDIR) -l $(LIBNAME)
+LIBDIR=-L ../libutils
+LIBS=-l utils
 
 # Niveau d'optimization
 # Utilisez s (size opt), 1, 2, 3 ou 0 (off)
@@ -79,7 +78,7 @@ CFLAGS=-I. -MMD $(INC) -g -mmcu=$(MCU) -O$(OPTLEVEL) \
 CXXFLAGS=-fno-exceptions     
 
 # Linker pour lier les librairies utilisees
-LDFLAGS=-Wl,-Map,$(TRG).map -mmcu=$(MCU) -L $(LIBDIR)
+LDFLAGS=-Wl,-Map,$(TRG).map -mmcu=$(MCU) $(LIBDIR)
 
 
 
