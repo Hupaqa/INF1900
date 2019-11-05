@@ -4,6 +4,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-void delay_cycles(uint16_t cycles);
+void delay_ms(uint16_t delais_ms);
 
 #endif // UTILS_H

@@ -7,4 +7,6 @@ void initialisationUART();
 
 void transmissionUART(uint8_t donnee);
 
+uint8_t receptionUART();
+
 #endif // UART_H

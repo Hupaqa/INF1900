@@ -21,8 +21,13 @@ void initialisationUART()
 // De l'USART vers le PC
 void transmissionUART(uint8_t donnee) 
 {
-    while ( !( UCSR0A & (1<<UDRE0)) )
-    {
-    }
+    while ( !( UCSR0A & (1<<UDRE0)) );
     UDR0 = donnee;
 }
+
+ // Du PC vers le robot
+ uint8_t receptionUART()
+ {
+     while ( !(UCSR0A & (1 << RXC0)) );
+     return UDR0;
+ }

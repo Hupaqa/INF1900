@@ -23,6 +23,8 @@
 #include <avr/io.h>
 #include <util/twi.h>
 
+const uint8_t MEM_DELAY = 5;
+
 class Memoire24CXXX
 {
 public:
