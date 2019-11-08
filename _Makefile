@@ -1,13 +1,23 @@
-# Nom de votre projet
-# (utilisez un seul mot, exemple: 'monprojet')
-PROJECTNAME=main
+########       AVR Project Makefile       ########
+#####                                        #####
+#####      Makefile produit et ecrit par     #####
+#####   Simon Barrette & Jerome Collin pour  #####
+#####           INF1900 - 2016               #####
+#####                                        #####
+#####         Inspire de Pat Deegan -        #####
+#####  Psychogenic Inc (www.psychogenic.com) #####
+##################################################
 
-# Fichiers sources
-# Utilisez le suffixe .cpp pour les fichiers C++
-# Listez tous les fichiers a compiler, separes par
-# un espace. exemple: 'tp1.c tp2.cpp':
-SRCDIR=.
-PRJSRC=$(wildcard $(SRCDIR)/*.cpp) $(wildcard $(SRCDIR)/*.c)
+# Ce Makefile vous permet de compiler des projets
+# pour les microcontroleurs Atmel AVR sur 
+# Linux ou Unix, en utilisant l'outil AVR-GCC. 
+# Ce Makefile supporte C & C++
+# Ce Makefile est incomplet et celui-ci doit être inclus dans
+# un autre Makefile
+
+
+#####      Details specifique a la cible       #####
+#####  Vous devez les adapter a votre projet   #####
 
 # Nom du microcontroleur cible
 # (exemple: 'at90s8515')
@@ -15,10 +25,10 @@ MCU=atmega324pa
 
 # Inclusions additionnels (ex: -I/path/to/mydir)
 INC=$(LIBINC)
-LIBINC=-I ../../lib_dir 
+LIBINC=-I ../libutils 
 
 # Libraires a lier (ex: -lmylib)
-LIBDIR=-L ../../lib_dir
+LIBDIR=-L ../libutils
 LIBS=-l utils
 
 # Niveau d'optimization
@@ -147,3 +157,16 @@ install: $(HEXROMTRG)
 # lors de la compilation
 clean:
 	$(REMOVE) $(TRG) $(TRG).map $(OBJDEPS) $(HEXTRG) *.d
+
+# Pour plus d'information sur les phony target, consulter:
+# http://bit.ly/1WBQe61
+
+# De plus, pour mieux comprendre les makefiles et 
+# leur fonctionnement, consulter la documentation de GNU Make:
+# http://bit.ly/23Vpk8s
+
+# Finalement, ce tutoriel en ligne constitut une bonne 
+# introduction au Makefile:
+# http://bit.ly/1XvxsN3
+
+#####                    EOF                   #####

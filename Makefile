@@ -27,6 +27,7 @@ MCU=atmega324pa
 INC=$(LIBINC)
 LIBINC=-I ../lib_dir
 
+
 # Libraires a lier (ex: -lmylib)
 LIBDIR=-L ../lib_dir
 LIBS=-l utils
