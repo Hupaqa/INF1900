@@ -25,10 +25,10 @@ MCU=atmega324pa
 
 # Inclusions additionnels (ex: -I/path/to/mydir)
 INC=$(LIBINC)
-LIBINC=-I ../libutils 
+LIBINC=-I ../lib_dir
 
 # Libraires a lier (ex: -lmylib)
-LIBDIR=-L ../libutils
+LIBDIR=-L ../lib_dir
 LIBS=-l utils
 
 # Niveau d'optimization
