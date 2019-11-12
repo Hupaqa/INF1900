@@ -2,6 +2,7 @@
 
 #include "mur.h"
 #include "uart.h"
+#include "suiveurLigne.h"
 
 void init()
 {
@@ -19,6 +20,7 @@ void fetch()
     PORTB &= ~(1 << PORTB4);
 
     listening = true;
+    repondu = false;
 
     EIMSK |= (1 << INT2); // Active les interruptions sur INT2
     sei(); // Active les interruptions
@@ -54,15 +56,24 @@ int main()
 {
     DDRB |= (1 << PORTB4); 
     DDRB &= ~(1 << PORTB2);
+    DDRD = 0xff;
     initialisationUART();
-
 
     init();
     while(true)
     {
         fetch();
         while(!repondu);
+        if (distance >= 17)
+        {
+            suiveurLigne::redressementGauche();
+        }
+        else if (distance <= 13)
+        {
+            suiveurLigne::redressementDroit();
+        }
         transmissionUART(distance);
-        _delay_ms(500);
+
+        _delay_ms(1000);
     }
 }

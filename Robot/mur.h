@@ -13,8 +13,4 @@ void init();
 
 void fetch();
 
-
-
-
-
 #endif // MUR_H
