@@ -4,11 +4,11 @@
 #include "navigator.h"
 
 namespace suiveurLigne {
-    void redressementDroit();
-    void redressementGauche();
+    void redressementDroit(uint8_t vitesse);
+    void redressementGauche(uint8_t vitesse);
 
-    void tournerDroit();
-    void tournerGauche();
+    void tournerDroit(uint8_t vitesse);
+    void tournerGauche(uint8_t vitesse);
 }
 
 
