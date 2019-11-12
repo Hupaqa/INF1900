@@ -15,6 +15,7 @@ U5 = PC7
 #include "delay.h"
 
 enum ETAT {
+    INIT,
     COULOIR,
     MUR, 
     COUPURE,
@@ -36,7 +37,9 @@ volatile ETAT etatPresent = COULOIR;
 
 void suivreLigne(){
     if (!(PINC & 0b00010000)){
-        if(PINC & 0b01000000){
+        if ((PINC & 0b00010000)&&(PINC & 0b00001000)&&(PINC & 0b00000100)){
+            suiveurLigne::tournerGauche();
+        }else if(PINC & 0b01000000){
             suiveurLigne::redressementDroit();
         }
         else if (PINC & 0b00000100) {
@@ -49,17 +52,7 @@ void suivreLigne(){
         ajustementPWM(128, 0, 128, 0);
     }
 }
-/*
-void changer_etat(){
-    switch(etatPresent){
-        case COULOIR : etatPresent = MUR; break;
-        case MUR : etatPresent = BOUCLE ; break;
-        case BOUCLE : etatPresent = COUPURE ; break;
-        case COUPURE : etatPresent = COULOIR ; break;
-        case default : break;
-    }
-}
-*/
+
 
 
 
