@@ -106,9 +106,24 @@ void doAction(){
 void actionCoupure(){
     switch(etatCoupure){
         case ETAT_COUPURE::DEBUT :
-
+            while(suivreLigne());
+            suiveurLigne::tournerD
             break;
-        case ETAT_COUPURE::    
+        case ETAT_COUPURE::COUPURE1 :
+
+            break;   
+        case ETAT_COUPURE::COUPURE2 :
+
+            break;  
+        case ETAT_COUPURE::COUPURE3 :
+
+            break;  
+        case ETAT_COUPURE::COUPURE4 :
+
+            break;     
+        case ETAT_COUPURE::FIN :
+
+            break;                                      
     }
 }
 
