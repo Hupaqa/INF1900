@@ -64,7 +64,7 @@ ISR(TIMER2_OVF_vect)
 
 void tourner()
 {
-    const uint8_t BASE = 85;
+    const uint8_t BASE = 92;
     const uint8_t DEMARAGE = 254;
     const uint8_t GEARSHIFT = 180;
     const uint8_t DELAY_DEMARAGE = 5;
