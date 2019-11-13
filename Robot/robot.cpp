@@ -46,7 +46,7 @@ enum ETAT_BOUCLE {
     FIN_BOUCLE
 };
 
-volatile ETAT etatPresent = INIT;
+volatile ETAT etatPresent = COUPURE;
 volatile ETAT_BOUCLE etatBoucle = ALLER_GROSSE_BOUCLE;
 volatile ETAT_COUPURE etatCoupure = DEBUT_COUPURE;
 volatile ETAT_MUR etatMur = DEBUT_MUR;
@@ -54,16 +54,16 @@ volatile ETAT_MUR etatMur = DEBUT_MUR;
 bool suivreLigne(){
     delay_ms(5);
     if (!(PINC & 0b00010000)){
-        if(PINC & 0b00100000){
+        if(PINC & 0b01100000){
             suiveurLigne::redressementDroit(VITESSE);
         }
-        else if (PINC & 0b00001000) {
+        else if (PINC & 0b00001100) {
             suiveurLigne::redressementGauche(VITESSE);
         }
         return true;
-    }else if (!(PINC & 0b01111100)){
-        ajustementPWM(0, 0, 0, 0);
-        return false;
+    //}else if (!(PINC & 0b01111100)){
+        //ajustementPWM(0, 0, 0, 0);
+        //return false;
     }
     else{
         ajustementPWM(VITESSE, 0, VITESSE, 0);
@@ -232,11 +232,12 @@ void doAction(){
 int main(){
     DDRC = 0x00;
     DDRD = 0xff;
-
-    while(true){
-        doAction();
-        changeState();
-    }
+    while(true)
+        suivreLigne();
+    //while(true){
+      //  doAction();
+        //changeState();
+    //}
     return 0;
 }
 
