@@ -12,6 +12,9 @@ class SuiveurLigne : public PathCorrector {
 
         void tournerDroit();
         void tournerGauche();
+
+        bool suivreLigne();
+        bool suiveurLigneAllume();
 };
 
 #endif
