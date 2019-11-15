@@ -19,16 +19,28 @@
 #####      Details specifique a la cible       #####
 #####  Vous devez les adapter a votre projet   #####
 
+# Nom de votre projet
+# (utilisez un seul mot, exemple: 'monprojet')
+PROJECTNAME=main
+
+# Fichiers sources
+# Utilisez le suffixe .cpp pour les fichiers C++
+# Listez tous les fichiers a compiler, separes par
+# un espace. exemple: 'tp1.c tp2.cpp':
+SRCDIR=.
+PRJSRC=$(wildcard *.cpp) $(wildcard *.c)
+
 # Nom du microcontroleur cible
 # (exemple: 'at90s8515')
 MCU=atmega324pa
 
 # Inclusions additionnels (ex: -I/path/to/mydir)
 INC=$(LIBINC)
-LIBINC=-I ../libutils 
+LIBINC=-I ../lib_dir
+
 
 # Libraires a lier (ex: -lmylib)
-LIBDIR=-L ../libutils
+LIBDIR=-L ../lib_dir
 LIBS=-l utils
 
 # Niveau d'optimization
