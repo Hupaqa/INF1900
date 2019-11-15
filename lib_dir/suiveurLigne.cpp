@@ -33,7 +33,7 @@ void suiveurLigne::redressementGauche(uint8_t vitesse){
 void suiveurLigne::tournerDroit(uint8_t vitesse){
     ajustementPWM(255, 1, 255, 0);
     _delay_ms(5);
-    ajustementPWM(vitesse, 1, vitesse, 0);
+    ajustementPWM(vitesse + 20, 1, vitesse, 0);
     while(!(PINC & (1 << DDROITE)));
     ajustementPWM(vitesse, 0, vitesse, 0);
 }
@@ -41,7 +41,7 @@ void suiveurLigne::tournerDroit(uint8_t vitesse){
 void suiveurLigne::tournerGauche(uint8_t vitesse){
     ajustementPWM(255, 0, 255, 1);
     _delay_ms(5);
-    ajustementPWM(vitesse, 0, vitesse, 1);
+    ajustementPWM(vitesse, 0, vitesse + 20, 1);
     while(!(PINC & (1 << GGAUCHE)));
     ajustementPWM(vitesse, 0, vitesse, 0);
 }

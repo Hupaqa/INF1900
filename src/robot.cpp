@@ -9,12 +9,17 @@ U5 = PC7
 */
 
 #define F_CPU 8000000UL
+#define ddr_lcd DDRA
+#define port_lcd PORTA
 
 #include "suiveurLigne.h"
 #include "navigator.h"
 #include "delay.h"
 #include "play_music.h"
 #include "uart.h"
+#include "display.h"
+
+#include "customprocs.h"
 
 uint8_t VITESSE = 100;
 
@@ -53,6 +58,8 @@ enum ETAT_COULOIR {
     FIN_COULOIR
 };
 
+LCM ecriture(&ddr_lcd, &port_lcd);
+
 volatile ETAT etatPresent = COUPURE;
 volatile ETAT_BOUCLE etatBoucle = ALLER_GROSSE_BOUCLE;
 volatile ETAT_COUPURE etatCoupure = DEBUT_COUPURE;
@@ -69,7 +76,7 @@ bool suivreLigne(){
     _delay_ms(10);
     if (!(PINC & 0b01111100))
     {
-        _delay_ms(15);
+        _delay_ms(25);
         if (!(PINC & 0b01111100))
         {
             ajustementPWM(0, 0, 0, 0);
@@ -118,10 +125,12 @@ bool suivreCouloir(){
 void actionCoupure(){
     switch(etatCoupure){
         case DEBUT_COUPURE :
+            ecriture.write("DEBUT_COUPURE", 0, true);
             while(suivreLigne());
             etatCoupure = COUPURE1;
             break;
         case COUPURE1 :
+            ecriture.write("COUPURE1", 0, true);
             start_sound(81);
             suiveurLigne::tournerDroit(VITESSE);
             stop_sound();
@@ -129,6 +138,7 @@ void actionCoupure(){
             etatCoupure = COUPURE2;
             break;   
         case COUPURE2 :
+            ecriture.write("COUPURE2", 0, true);
             start_sound(45);
             suiveurLigne::tournerGauche(VITESSE);
             stop_sound();
@@ -136,6 +146,7 @@ void actionCoupure(){
             etatCoupure = COUPURE3;
             break;  
         case COUPURE3 :
+            ecriture.write("COUPURE3", 0, true);
             start_sound(81);
             suiveurLigne::tournerDroit(VITESSE);
             stop_sound();
@@ -143,6 +154,7 @@ void actionCoupure(){
             etatCoupure = COUPURE4;
             break;
         case COUPURE4 :
+            ecriture.write("COUPURE4", 0, true); 
             start_sound(45);
             suiveurLigne::tournerGauche(VITESSE);
             stop_sound();
@@ -150,6 +162,7 @@ void actionCoupure(){
             etatCoupure = COUPURE_FIN;
             break;     
         case COUPURE_FIN :
+            ecriture.write("COUPURE_FIN", 0, true);
             while(suivreLigne());
             suiveurLigne::tournerGauche(VITESSE);
             break;                                      
@@ -160,14 +173,17 @@ void actionCouloir(){
     switch (etatCouloir)
     {
         case DEBUT_COULOIR :
+            ecriture.write("DEBUT_COULOIR", 0, true);
             while (suivreLigne());
             etatCouloir = ACTION_COULOIR;
             break;
         case ACTION_COULOIR :
+            ecriture.write("ACTION_COULOIR", 0, true);
             while(suivreCouloir());
             etatCouloir = FIN_COULOIR;
             break;
         case FIN_COULOIR :
+            ecriture.write("FIN_COULOIR", 0, true);
             while(suivreLigne());
             suiveurLigne::tournerGauche(VITESSE);
             break;
@@ -291,8 +307,9 @@ int main()
 {
     DDRC = 0x00;
     DDRD = 0xff;
+    DDRA = 0xff;
     initPWM();
-
+    
     while(true)
     {
         doAction();
