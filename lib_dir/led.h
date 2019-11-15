@@ -2,20 +2,17 @@
 #define LED_H
 
 #include <avr/io.h>
-#include <util/delay.h>
 
-enum Port
-{
-    PORT_A,
-    PORT_B, 
-    PORT_C,
-    PORT_D
+#define SortieLed 0b00000011
+#define Entree 0x00
+
+class Led {
+    public:
+        Led();
+
+        void turnRed();
+        void turnGreen();
+        void turnOff();
 };
 
-void turnRed();
-
-void turnGreen();
-
-void turnOff();
-
-#endif // LED_H
+#endif //DEL_H
