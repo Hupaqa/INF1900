@@ -4,12 +4,18 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-void initPWM();
-void ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissanceGauche, bool directionGauche);
+#define MILIEU PINC4
+#define GAUCHE PINC5
+#define GGAUCHE PINC6
+#define DROITE PINC3
+#define DDROITE PINC2
 
-void turndroite();
-void turngauche();
+class Navigator {
+    public : 
+        Navigator(){};
 
-void stopPWM();
-
+        void initPWM();
+        void ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissanceGauche, bool directionGauche);
+        void stopPWM();
+};
 #endif // NAVIGATOR_H
