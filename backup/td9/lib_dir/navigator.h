@@ -4,6 +4,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+
+void initPWM();
 void ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissanceGauche, bool directionGauche);
 
 void turndroite();

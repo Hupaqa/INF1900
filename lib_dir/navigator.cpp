@@ -4,16 +4,19 @@
 
 #include "navigator.h"
 
-void ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissanceGauche, bool directionGauche)
+void initPWM()
 {
     TCNT1 = 0;
-
-    OCR1A = puissanceDroit;
-    OCR1B = puissanceGauche;
-    
     TCCR1A = (1<<COM1A1) | (1<<WGM10) | (1<<COM1B1);
     TCCR1B = (1<<CS11);
     TCCR1C = 0;
+}
+
+void ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissanceGauche, bool directionGauche)
+{
+
+    OCR1A = puissanceDroit;
+    OCR1B = puissanceGauche;
 
     if (directionDroit)
     {   
@@ -33,7 +36,6 @@ void ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissan
     }
 }
 
-
 void turndroite(){
     ajustementPWM(255,1,255,0);
     _delay_ms(10);
@@ -52,12 +54,6 @@ void turngauche(){
 
 
 void stopPWM(){
-    TCNT1 = 0;
-
     OCR1A = 0;
     OCR1B = 0;
-    
-    TCCR1A = 0;
-    TCCR1B = 0;
-    TCCR1C = 0;
 }
