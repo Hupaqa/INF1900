@@ -14,8 +14,9 @@ U5 = PC7
 #include "navigator.h"
 #include "delay.h"
 #include "play_music.h"
+#include "uart.h"
 
-uint8_t VITESSE = 96;
+uint8_t VITESSE = 88;
 
 enum ETAT {
     INIT,
@@ -51,21 +52,39 @@ volatile ETAT_BOUCLE etatBoucle = ALLER_GROSSE_BOUCLE;
 volatile ETAT_COUPURE etatCoupure = DEBUT_COUPURE;
 volatile ETAT_MUR etatMur = DEBUT_MUR;
 
+#define MILIEU PINC4
+#define GAUCHE PINC5
+#define GGAUCHE PINC6
+#define DROITE PINC3
+#define DDROITE PINC2
+
 bool suivreLigne(){
-    delay_ms(5);
-    if (!(PINC & 0b00010000)){
-        if(PINC & 0b01100000){
+    _delay_ms(50);
+    if (!(PINC & 0b01111100))
+    {
+        _delay_ms(30);
+        if (!(PINC & 0b01111100))
+        {
+            ajustementPWM(0, 0, 0, 0);
+            return false;
+        }
+    }
+    else if (!(PINC & (1 << MILIEU)))
+    {
+        if(PINC & ((1 << GGAUCHE) | (1 << GAUCHE)) || PINC & (1 << GGAUCHE))
+        {
             suiveurLigne::redressementDroit(VITESSE);
         }
-        else if (PINC & 0b00001100) {
+        else if (PINC & ((1 << DDROITE) | (1 << DROITE) || PINC & (1 << DDROITE))) 
+        {
             suiveurLigne::redressementGauche(VITESSE);
         }
         return true;
-    //}else if (!(PINC & 0b01111100)){
-        //ajustementPWM(0, 0, 0, 0);
-        //return false;
     }
-    else{
+    else
+    {
+        ajustementPWM(255, 0, 255, 0);
+        _delay_ms(5);
         ajustementPWM(VITESSE, 0, VITESSE, 0);
         return true;
     }
@@ -99,7 +118,7 @@ void actionCoupure(){
             stop_sound();
             while(suivreLigne());
             etatCoupure = COUPURE4;
-            break;  suiveurLigne::tournerGauche(VITESSE);
+            break;
         case COUPURE4 :
             start_sound(45);
             suiveurLigne::tournerGauche(VITESSE);
@@ -229,15 +248,17 @@ void doAction(){
     }
 }
 
-int main(){
+int main()
+{
     DDRC = 0x00;
     DDRD = 0xff;
+    initPWM();
+
     while(true)
-        suivreLigne();
-    //while(true){
-      //  doAction();
-        //changeState();
-    //}
+    {
+        doAction();
+        changeState();
+    }
     return 0;
 }
 

@@ -100,19 +100,19 @@ void tourner()
 }
 
 
-int main()
-{
-    DDRB |= (1 << PORTB4); 
-    DDRB &= ~(1 << PORTB2);
-    DDRD = 0xff;
-    initialisationUART();
-    initPWM();
-
-    init();
-    while(true)
-    {
-        fetch();
-        while(!repondu);
-        tourner();
-    } 
-}
+//int main()
+//{
+//    DDRB |= (1 << PORTB4); 
+//    DDRB &= ~(1 << PORTB2);
+//    DDRD = 0xff;
+//    initialisationUART();
+//    initPWM();
+//
+//    init();
+//    while(true)
+//    {
+//        fetch();
+//        while(!repondu);
+//        tourner();
+//    } 
+//}
