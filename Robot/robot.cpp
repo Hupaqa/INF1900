@@ -59,13 +59,17 @@ volatile ETAT_MUR etatMur = DEBUT_MUR;
 #define DDROITE PINC2
 
 bool suivreLigne(){
+    uint8_t vitesse = 88;//Vitesse determine experimentalement
+    SuiveurLigne suiveurLigne(vitesse); 
+    Navigator navigator();
+
     _delay_ms(50);
     if (!(PINC & 0b01111100))
     {
         _delay_ms(30);
         if (!(PINC & 0b01111100))
         {
-            ajustementPWM(0, 0, 0, 0);
+            navigator.ajustementPWM(0, 0, 0, 0);
             return false;
         }
     }
@@ -73,19 +77,17 @@ bool suivreLigne(){
     {
         if(PINC & ((1 << GGAUCHE) | (1 << GAUCHE)) || PINC & (1 << GGAUCHE))
         {
-            suiveurLigne::redressementDroit(VITESSE);
+            suiveurLigne.redressementDroit();
         }
         else if (PINC & ((1 << DDROITE) | (1 << DROITE) || PINC & (1 << DDROITE))) 
         {
-            suiveurLigne::redressementGauche(VITESSE);
+            suiveurLigne.redressementGauche();
         }
         return true;
     }
     else
     {
-        ajustementPWM(255, 0, 255, 0);
-        _delay_ms(5);
-        ajustementPWM(VITESSE, 0, VITESSE, 0);
+        navigator.ajustementPWM(VITESSE, 0, VITESSE, 0);
         return true;
     }
 }

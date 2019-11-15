@@ -4,7 +4,7 @@
 
 #include "navigator.h"
 
-void initPWM()
+void Navigator::initPWM()
 {
     TCNT1 = 0;
     TCCR1A = (1<<COM1A1) | (1<<WGM10) | (1<<COM1B1);
@@ -12,12 +12,8 @@ void initPWM()
     TCCR1C = 0;
 }
 
-void ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissanceGauche, bool directionGauche)
+void Navigator::ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissanceGauche, bool directionGauche)
 {
-
-    OCR1A = puissanceDroit;
-    OCR1B = puissanceGauche;
-
     if (directionDroit)
     {   
         PORTD |= 0b10000000;
@@ -34,26 +30,66 @@ void ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissan
     {
         PORTD &= 0b10111111;
     }
+
+    //Vitesse maximal pour surpasser l'inertie
+    OCR1A = (puissanceDroit) ? UINT8_MAX : 0;
+    OCR1B = (puissanceGauche) ? UINT8_MAX : 0;
+
+    _delay_ms(5); //temps determine experimentalement
+
+    OCR1A = puissanceDroit;
+    OCR1B = puissanceGauche;
 }
 
-void turndroite(){
-    ajustementPWM(255,1,255,0);
-    _delay_ms(10);
-    ajustementPWM(124,1,124,0);  //determiner puissance necessaire deux moteurs ?
-    _delay_ms(1020); //determiner pour tourner 90 deg droite
-    stopPWM();
-}
-
-void turngauche(){
-    ajustementPWM(255,0,255,1);
-    _delay_ms(10);
-    ajustementPWM(124,0,124,1); //determiner puissance necessaire deux moteurs ?
-    _delay_ms(1000); // determiner pour tourner 90 deg gauche
-    stopPWM();
-}
-
-
-void stopPWM(){
+void Navigator::stopPWM(){
     OCR1A = 0;
     OCR1B = 0;
+}
+
+void SuiveurLigne::redressementDroit(){
+    Navigator navigator();
+
+    navigator.ajustementPWM(32, 0, 96, 0);
+    while(!(PINC & (1 << MILIEU)));
+    navigator.(vitesse, 0, vitesse, 0);
+}
+
+void SuiveurLigne::redressementGauche(){
+    Navigator navigator();
+    
+    navigator.ajustementPWM(96, 0, 32, 0);
+    while(!(PINC & (1 << MILIEU)));
+    navigator.ajustementPWM(_vitesse, 0, _vitesse, 0);
+}
+
+void SuiveurLigne::tournerDroit(){
+    Navigator navigator();
+    
+    navigator.ajustementPWM(_vitesse, 1, _vitesse, 0);
+    while(!(PINC & (1 << DDROITE)));
+    navigator.ajustementPWM(_vitesse, 0, _vitesse, 0);
+}
+
+void SuiveurLigne::tournerGauche(){
+    Navigator navigator();
+    
+    ajustementPWM(_vitesse, 0, _vitesse, 1);
+    while(!(PINC & (1 << GGAUCHE)));
+    ajustementPWM(_vitesse, 0, _vitesse, 0);
+}
+
+void SuiveurCouloir::redressementDroit(){
+    Navigator navigator();
+    
+    ajustementPWM(32, 0, 96, 0);
+    _delay_ms(50);
+    ajustementPWM(_vitesse, 0, _vitesse, 0);
+}
+
+void SuiveurCouloir::redressementGauche(){
+    Navigator navigator();
+
+    ajustementPWM(96, 0, 32, 0);
+    _delay_ms(50);
+    ajustementPWM(_vitesse, 0, _vitesse, 0);
 }
