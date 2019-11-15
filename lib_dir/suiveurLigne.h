@@ -1,15 +1,17 @@
-#ifndef SUIVEURLIGNE_H
-#define SUIVEURLIGNE_H
+#ifndef SUIVEUR_LIGNE
+#define SUIVEUR_LIGNE
 
-#include "navigator.h"
+#include "pathCorrector.h"
 
-namespace suiveurLigne {
-    void redressementDroit(uint8_t vitesse);
-    void redressementGauche(uint8_t vitesse);
+class SuiveurLigne : public PathCorrector {
+    public:
+        SuiveurLigne(uint8_t vitesse) : PathCorrector(vitesse) {};
 
-    void tournerDroit(uint8_t vitesse);
-    void tournerGauche(uint8_t vitesse);
-}
+        void redressementDroit();
+        void redressementGauche();
 
+        void tournerDroit();
+        void tournerGauche();
+};
 
 #endif
