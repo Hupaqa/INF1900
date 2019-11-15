@@ -16,7 +16,7 @@ U5 = PC7
 #include "play_music.h"
 #include "uart.h"
 
-uint8_t VITESSE = 88;
+uint8_t VITESSE = 100;
 
 enum ETAT {
     INIT,
@@ -47,10 +47,17 @@ enum ETAT_BOUCLE {
     FIN_BOUCLE
 };
 
+enum ETAT_COULOIR {
+    DEBUT_COULOIR,
+    ACTION_COULOIR,
+    FIN_COULOIR
+};
+
 volatile ETAT etatPresent = COUPURE;
 volatile ETAT_BOUCLE etatBoucle = ALLER_GROSSE_BOUCLE;
 volatile ETAT_COUPURE etatCoupure = DEBUT_COUPURE;
 volatile ETAT_MUR etatMur = DEBUT_MUR;
+volatile ETAT_COULOIR etatCouloir = DEBUT_COULOIR;
 
 #define MILIEU PINC4
 #define GAUCHE PINC5
@@ -59,15 +66,16 @@ volatile ETAT_MUR etatMur = DEBUT_MUR;
 #define DDROITE PINC2
 
 bool suivreLigne(){
-    _delay_ms(50);
+    _delay_ms(10);
     if (!(PINC & 0b01111100))
     {
-        _delay_ms(30);
+        _delay_ms(15);
         if (!(PINC & 0b01111100))
         {
             ajustementPWM(0, 0, 0, 0);
             return false;
         }
+        return true;
     }
     else if (!(PINC & (1 << MILIEU)))
     {
@@ -90,7 +98,22 @@ bool suivreLigne(){
     }
 }
 
-
+bool suivreCouloir(){
+    delay_ms(10);
+    if(PINC & (1 << GGAUCHE)){
+        suiveurLigne::redressementDroit(VITESSE);
+    }else if(PINC & (1 << DDROITE)){
+        suiveurLigne::redressementGauche(VITESSE);
+    }else if(PINC & ((1 << MILIEU) || PINC & (1 << GAUCHE)) || PINC & (1 << DROITE)){
+        delay_ms(10);
+        if(PINC & ((1 << MILIEU) || PINC & (1 << GAUCHE)) || PINC & (1 << DROITE))
+            return false;
+    }
+    ajustementPWM(255, 0, 255, 0);
+    _delay_ms(5);
+    ajustementPWM(VITESSE, 0, VITESSE, 0);
+    return true;
+}
 
 void actionCoupure(){
     switch(etatCoupure){
@@ -134,6 +157,21 @@ void actionCoupure(){
 }
 
 void actionCouloir(){
+    switch (etatCouloir)
+    {
+        case DEBUT_COULOIR :
+            while (suivreLigne());
+            etatCouloir = ACTION_COULOIR;
+            break;
+        case ACTION_COULOIR :
+            while(suivreCouloir());
+            etatCouloir = FIN_COULOIR;
+            break;
+        case FIN_COULOIR :
+            while(suivreLigne());
+            suiveurLigne::tournerGauche(VITESSE);
+            break;
+    }
     while (suivreLigne());
 
     ajustementPWM(VITESSE, 0, VITESSE, 0);
@@ -219,7 +257,8 @@ void changeState(){
                 etatPresent = COULOIR;
             break;
         case COULOIR : 
-            etatPresent = MUR;
+            if(etatCouloir == FIN_COULOIR)
+                etatPresent = MUR;
             break;
         case MUR :
             if(etatMur == FIN)
