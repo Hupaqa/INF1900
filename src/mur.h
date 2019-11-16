@@ -1,19 +1,32 @@
 #ifndef MUR_H
 #define MUR_H
 
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <avr/delay.h>
+#include "suiveurLigne.h"
+#include "sonar.h"
 
-volatile uint8_t distance;
-volatile bool repondu;
-volatile bool listening;
+enum EtatMur
+{
+    debutLigne, 
+    mur,
+    finLigne, 
+    virage
+};
 
-void init();
+class Mur
+{
+public:
+    Mur(uint8_t vitesse);
+    void run();
+    void suivreMur();
+    void suivreLigne();
+    void virageGauche();
 
-void fetch();
+private:
+    SuiveurLigne _suiveurLigne;
+    Sonar _sonar;
+    Etat _etat;
+};
 
-void tourner(const uint8_t& distance);
 
 
 #endif // MUR_H

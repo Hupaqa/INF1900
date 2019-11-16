@@ -3,15 +3,19 @@
 
 #include "pathCorrector.h"
 
-class SuiveurLigne : public PathCorrector {
+class SuiveurLigne : public PathCorrector 
+{
     public:
-        SuiveurLigne(uint8_t vitesse) : PathCorrector(vitesse) {};
+        SuiveurLigne(uint8_t vitesse);
 
         void redressementDroit();
         void redressementGauche();
 
         void tournerDroit();
         void tournerGauche();
+    
+    private:
+
 };
 
 #endif
