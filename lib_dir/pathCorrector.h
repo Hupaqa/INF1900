@@ -10,22 +10,23 @@
 #define DROITE PINC3
 #define EXTREME_DROITE PINC2
 
-class PathCorrector {
-    public:
-        PathCorrector(uint8_t vitesse = UINT8_MAX/2);
+class PathCorrector 
+{
+public:
+    PathCorrector(uint8_t vitesse = UINT8_MAX/2);
 
-        virtual void redressementDroit() = 0;
-        virtual void redressementGauche() = 0;
+    virtual void redressementDroit() = 0;
+    virtual void redressementGauche() = 0;
 
-        void initPWM();
-        void ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissanceGauche, bool directionGauche);
-        void stopPWM();
+    void initPWM();
+    void ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissanceGauche, bool directionGauche);
+    void stopPWM();
+    
+    uint8_t getVitesse();
 
-        uint8_t getVitesse();
-
-    protected:
-        uint8_t _vitesse;
-        Navigator _navigator;
+protected:
+    uint8_t _vitesse;
+    Navigator _navigator;
 };
 
 #endif

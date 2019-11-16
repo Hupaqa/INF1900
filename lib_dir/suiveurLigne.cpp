@@ -1,5 +1,9 @@
 #include "suiveurLigne.h"
 
+SuiveurLigne::SuiveurLigne(uint8_t vitesse) :
+    PathCorrector(vitesse)
+{}
+
 void SuiveurLigne::redressementDroit(){
     _navigator.ajustementPWM(32, 0, 96, 0);
     while(!(PINC & (1 << MILIEU)));
