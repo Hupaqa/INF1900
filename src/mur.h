@@ -9,24 +9,24 @@ enum EtatMur
     debutLigne, 
     mur,
     finLigne, 
-    virage
+    virage,
+    fin
 };
 
-class Mur
+class Mur : public SuiveurLigne
 {
 public:
     Mur(uint8_t vitesse);
+
     void run();
+    void doAction();
+    void changeState();
+
     void suivreMur();
-    void suivreLigne();
-    void virageGauche();
 
 private:
-    SuiveurLigne _suiveurLigne;
     Sonar _sonar;
-    Etat _etat;
+    EtatMur _etat;
 };
-
-
 
 #endif // MUR_H
