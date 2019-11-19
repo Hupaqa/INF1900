@@ -164,17 +164,14 @@ void Mur::followWall()
     if (distance < 14 && distance > 1)
     {
         moveAgainstWall();
-        turnRed();
     }
     else if (distance > 16 && distance < 36)
     {
         moveToWall();
-        turnRed();
     }
     else
     {
         goStraight();
-        turnGreen();
     }
     transmissionUART(distance);
     _delay_ms(DELAY); // Pour respecter la frequence maximale du sonar
