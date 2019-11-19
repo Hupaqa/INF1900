@@ -1,9 +1,9 @@
 #ifndef SUIVEUR_LIGNE
 #define SUIVEUR_LIGNE
 
-#include "pathCorrector.h"
+#include "navigator.h"
 
-class SuiveurLigne : public PathCorrector 
+class SuiveurLigne : public Navigator 
 {
     public:
         SuiveurLigne(uint8_t vitesse);

@@ -44,7 +44,8 @@ ISR(TIMER2_OVF_vect)
 
 Mur::Mur(uint8_t vitesse) : 
     SuiveurLigne(vitesse), 
-    _etat(EtatMur::debutLigne)
+    _etat(EtatMur::debutLigne),
+    _led(Led())
 {
     // Initialisation du compteur
     TCCR2B |= (1 << CS22); // Prescaler de 64
@@ -126,29 +127,17 @@ void Mur::fetchSonar()
 
 void Mur::moveToWall()
 {
-    const uint8_t DELAY_DEMARAGE = 5;
-
-    _navigator.ajustementPWM(DEMARAGE, AVANT, DEMARAGE, AVANT);
-    _delay_ms(DELAY_DEMARAGE);
-    _navigator.ajustementPWM(HAUTE_INTENSITE, AVANT, BASSE_INTENSITE, AVANT);
+    ajustementPWM(HAUTE_INTENSITE, DIRECTION::AVANT, BASSE_INTENSITE, DIRECTION::AVANT);
 }
 
 void Mur::moveAgainstWall()
 {
-    const uint8_t DELAY_DEMARAGE = 5;
-
-    _navigator.ajustementPWM(DEMARAGE, AVANT, DEMARAGE, AVANT);
-    _delay_ms(DELAY_DEMARAGE);
-    _navigator.ajustementPWM(BASSE_INTENSITE, AVANT, HAUTE_INTENSITE, AVANT);
+    ajustementPWM(BASSE_INTENSITE, DIRECTION::AVANT, HAUTE_INTENSITE, DIRECTION::AVANT);
 }
 
 void Mur::goStraight()
 {
-    const uint8_t DELAY_DEMARAGE = 5;
-
-    _navigator.ajustementPWM(DEMARAGE, AVANT, DEMARAGE, AVANT);
-    _delay_ms(DELAY_DEMARAGE);
-    _navigator.ajustementPWM(_vitesse, AVANT, _vitesse, AVANT);
+    ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 }
 
 void Mur::followWall()
@@ -160,14 +149,17 @@ void Mur::followWall()
     if (distance < 14 && distance > 1)
     {
         moveAgainstWall();
+        _led.turnRed();
     }
     else if (distance > 16 && distance < 36)
     {
         moveToWall();
+        _led.turnRed();
     }
     else
     {
         goStraight();
+        _led.turnGreen();
     }
     transmissionUART(distance);
     _delay_ms(DELAY); // Pour respecter la frequence maximale du sonar
