@@ -1,17 +1,21 @@
 #include "suiveurLigne.h"
+#include "uart.h"
 
 SuiveurLigne::SuiveurLigne(uint8_t vitesse) :
     Navigator(vitesse)
-{};
+{
+};
 
 void SuiveurLigne::redressementDroit(){
-    uint8_t demi_vitesse = _vitesse;
+    uint8_t demi_vitesse = _vitesse >> 1;
     ajustementPWM(demi_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    transmissionUART(1);
 };
 
 void SuiveurLigne::redressementGauche(){  
-    uint8_t demi_vitesse = _vitesse;  
+    uint8_t demi_vitesse = _vitesse >> 1;  
     ajustementPWM(_vitesse, DIRECTION::AVANT, demi_vitesse, DIRECTION::AVANT);
+    transmissionUART(2);
 };
 
 void SuiveurLigne::tournerDroit(){
@@ -27,7 +31,7 @@ void SuiveurLigne::tournerGauche(){
 };
 
 bool SuiveurLigne::suivreLigne(){
-    _delay_ms(50);    
+    _delay_ms(40);    
 
     if (!suiveurLigneAllume())
     {
@@ -40,11 +44,11 @@ bool SuiveurLigne::suivreLigne(){
     }
     else if (!(PINC & (1 << MILIEU)))
     {
-        if(PINC & ((1 << EXTREME_GAUCHE) | (1 << GAUCHE)))
+        if(PINC & (1 << EXTREME_GAUCHE) || PINC & (1 << GAUCHE))
         {
             redressementDroit();
         }
-        else if (PINC & ((1 << EXTREME_DROITE) | (1 << DROITE))) 
+        else if (PINC & (1 << EXTREME_DROITE) || PINC & (1 << DROITE)) 
         {
             redressementGauche();
         }

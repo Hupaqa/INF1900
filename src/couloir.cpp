@@ -4,6 +4,7 @@
 Couloir::Couloir(uint8_t vitesse):
     SuiveurLigne(vitesse)
 {
+    initPWM();
     DDRC = 0x00; //DDRC en entree
 };
 

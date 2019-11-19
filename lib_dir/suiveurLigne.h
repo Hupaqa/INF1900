@@ -2,6 +2,11 @@
 #define SUIVEUR_LIGNE
 
 #include "navigator.h"
+#include "display.h"
+
+#define DDR DDRA
+#define PORT PORTA
+
 
 class SuiveurLigne : public Navigator 
 {
@@ -16,7 +21,6 @@ class SuiveurLigne : public Navigator
 
         virtual bool suivreLigne();
         bool suiveurLigneAllume();
-    
     private:
 
 };

@@ -20,29 +20,29 @@ void Navigator::initPWM()
     TCCR1C = 0;
 }
 
-void Navigator::ajustementPWM (uint8_t puissanceDroit, DIRECTION directionDroit, uint8_t puissanceGauche, DIRECTION directionGauche)
+void Navigator::ajustementPWM(uint8_t puissanceDroit, DIRECTION directionDroit, uint8_t puissanceGauche, DIRECTION directionGauche)
 {
     if (directionDroit == DIRECTION::AVANT)
     {   
-        PORTD |= 0b10000000;
-    }else
-    {
-        PORTD &= 0b01111111;
+        PORTD &= ~(1 << PORTD7);
     }
-    
+    else
+    {
+        PORTD |= (1 << PORTD7);   
+    }
 
     if (directionGauche == DIRECTION::AVANT)
     {
-        PORTD |= 0b01000000;
-    }else
+        PORTD &= ~(1 << PORTD6);
+    }
+    else
     {
-        PORTD &= 0b10111111;
+        PORTD |= (1 << PORTD6);
     }
 
     //Vitesse maximal pour surpasser l'inertie
-    OCR1A = (puissanceDroit) ? UINT8_MAX : 0;
-    OCR1B = (puissanceGauche) ? UINT8_MAX : 0;
-
+    OCR1A = (puissanceDroit) ? 250 : 0;
+    OCR1B = (puissanceGauche) ? 250 : 0;
     _delay_ms(5); //temps determine experimentalement
 
     OCR1A = puissanceDroit;

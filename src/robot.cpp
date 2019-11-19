@@ -21,6 +21,8 @@ U5 = PC7
 
 #include "customprocs.h"
 #include "mur.h"
+#include "navigator.h"
+#include "coupure.h"
 
 uint8_t VITESSE = 100;
 
@@ -312,12 +314,13 @@ int main()
 {
     DDRB |= (1 << PORTB4); 
     DDRB &= ~(1 << PORTB2);
+    DDRC = 0x00;
     DDRD = 0xff;
     initialisationUART();
+    SuiveurLigne suivre = SuiveurLigne(75);
+    suivre.initPWM();
 
-    Mur mur = Mur(75);
-    mur.run();
-
+    while(suivre.suivreLigne());
     return 0;
 }
 
