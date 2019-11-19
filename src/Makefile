@@ -87,7 +87,7 @@ CFLAGS=-I. -MMD $(INC) -g -mmcu=$(MCU) -O$(OPTLEVEL) \
 	-funsigned-bitfields -funsigned-char    \
 	-Wall                                        
 # Flags pour le compilateur en C++
-CXXFLAGS=-fno-exceptions     
+CXXFLAGS=-fno-exceptions -std=c++14     
 
 # Linker pour lier les librairies utilisees
 LDFLAGS=-Wl,-Map,$(TRG).map -mmcu=$(MCU) $(LIBDIR)

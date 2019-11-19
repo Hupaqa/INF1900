@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # INF1900
 
 ## Liste des ports (0-7)
@@ -18,3 +19,4 @@ C2-C7 : Capteur de ligne
 D0-D1 : RS-232  
 D2 : Bouton (INT0)  
 D4-D7 : Direction pour les roues (PWM sur D4, D5)  
+>>>>>>> 7cd7be0c2f4be77925f68fc5aebbb3b92395e72b
