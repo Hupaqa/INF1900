@@ -6,8 +6,9 @@
 A0-A7 : Display (0-7)  
 
 ### PORTB
+B0&B1 : DEL
 B3&B5 : Son (OC0A)  
-B4&B6 : Sonar  
+B2&B4 : Sonar  
 B4-B7 : Programmation  
 
 ### PORTC

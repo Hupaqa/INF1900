@@ -8,8 +8,8 @@ class SuiveurLigne : public PathCorrector
     public:
         SuiveurLigne(uint8_t vitesse);
 
-        void redressementDroit();
-        void redressementGauche();
+        virtual void redressementDroit();
+        virtual void redressementGauche();
 
         void tournerDroit();
         void tournerGauche();
