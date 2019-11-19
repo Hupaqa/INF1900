@@ -14,7 +14,7 @@ class SuiveurLigne : public Navigator
         void tournerDroit();
         void tournerGauche();
 
-        bool suivreLigne();
+        virtual bool suivreLigne();
         bool suiveurLigneAllume();
     
     private:
