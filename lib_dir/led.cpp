@@ -4,6 +4,10 @@
 
 #include "led.h"
 
+LED::Led(){
+    DDRB |= SortieDel;
+}
+
 void turnRed()
 {
     PORTB |= (1 << PORTB0);
