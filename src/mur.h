@@ -39,6 +39,7 @@ private:
     const uint8_t ARRIERE = 1;
     const uint8_t OFF = 0;
     EtatMur _etat;
+    Led _led;
 };
 
 #endif // MUR_H

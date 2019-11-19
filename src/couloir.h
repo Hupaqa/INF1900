@@ -2,16 +2,19 @@
 #define COULOIR_H
 
 #include "suiveurLigne.h"
-#include "suiveurCouloir.h"
 
-class Couloir {
+class Couloir : public SuiveurLigne {
     public:
+
+        /**
+         * 
+         * 
+         **/
         Couloir(uint8_t vitesse);
         void run();
+        void suivreCouloir();
 
     private:
-        SuiveurLigne _suiveurLigne;
-        SuiveurCouloir _suiveurCouloir;
 };
 
 #endif

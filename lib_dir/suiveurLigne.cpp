@@ -1,31 +1,29 @@
 #include "suiveurLigne.h"
 
 SuiveurLigne::SuiveurLigne(uint8_t vitesse) :
-    PathCorrector(vitesse)
-{}
+    Navigator(vitesse)
+{};
 
 void SuiveurLigne::redressementDroit(){
-    _navigator.ajustementPWM(32, 0, 96, 0);
-    while(!(PINC & (1 << MILIEU)));
-    _navigator.ajustementPWM(_vitesse, 0, _vitesse, 0);
+    uint8_t demi_vitesse = _vitesse;
+    ajustementPWM(demi_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 };
 
-void SuiveurLigne::redressementGauche(){    
-    _navigator.ajustementPWM(96, 0, 32, 0);
-    while(!(PINC & (1 << MILIEU)));
-    _navigator.ajustementPWM(_vitesse, 0, _vitesse, 0);
+void SuiveurLigne::redressementGauche(){  
+    uint8_t demi_vitesse = _vitesse;  
+    ajustementPWM(_vitesse, DIRECTION::AVANT, demi_vitesse, DIRECTION::AVANT);
 };
 
 void SuiveurLigne::tournerDroit(){
-    _navigator.ajustementPWM(_vitesse, 1, _vitesse, 0);
-    while(!(PINC & (1 << DDROITE)));
-    _navigator.ajustementPWM(_vitesse, 0, _vitesse, 0);
+    ajustementPWM(_vitesse, DIRECTION::ARRIERE, _vitesse, DIRECTION::AVANT);
+    while(!(PINC & (1 << EXTREME_DROITE)));
+    ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 };
 
 void SuiveurLigne::tournerGauche(){
-    _navigator.ajustementPWM(_vitesse, 0, _vitesse, 1);
-    while(!(PINC & (1 << GGAUCHE)));
-    _navigator.ajustementPWM(_vitesse, 0, _vitesse, 0);
+    ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::ARRIERE);
+    while(!(PINC & (1 << EXTREME_GAUCHE)));
+    ajustementPWM(_vitesse,DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 };
 
 bool SuiveurLigne::suivreLigne(){
@@ -33,10 +31,10 @@ bool SuiveurLigne::suivreLigne(){
 
     if (!suiveurLigneAllume())
     {
-        _delay_ms(30); //Delais de debounce
+        _delay_ms(15); //Delais de debounce
         if (!suiveurLigneAllume())
         {
-            _navigator.stopPWM();
+            stopPWM();
             return false;
         }
     }
@@ -54,7 +52,7 @@ bool SuiveurLigne::suivreLigne(){
     }
     else
     {
-        _navigator.ajustementPWM(_vitesse, 0, _vitesse, 0);
+        ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
         return true;
     }
 };
