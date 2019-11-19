@@ -3,7 +3,7 @@
 
 #include <avr/io.h>
 
-#define SortieLed 0b00000011
+#define SortieLED 0b00000011
 #define Entree 0x00
 
 class Led {

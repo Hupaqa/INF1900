@@ -31,21 +31,23 @@ void Boucle::doAction(){
         case ETAT_BOUCLE::FAIRE_BOUCLE: 
             for(uint8_t j = 0; j <2; j++){
                 while((PINC & EXTREME_GAUCHE)&&(PINC & GAUCHE)&&(PINC & MILIEU)){
-                    suivreLigne();
+                    _suiveurLigne.suivreLigne();
                 }
-                _suiveurLigne.tournerGauche(VITESSE);
+                _suiveurLigne.tournerGauche();
 
                 for (uint8_t i=0; i != 3; i++){
-                    while(suivreLigne());
-                    _suiveurLigne.tournerGauche(VITESSE);
+                    while(_suiveurLigne.suivreLigne());
+                    _suiveurLigne.tournerGauche();
                 }
             }
             break;
 
         case ETAT_BOUCLE::FIN_BOUCLE: 
-            while(suivreLigne());
-            _suiveurLigne.tournerGauche(VITESSE);            
+            while(_suiveurLigne.suivreLigne());
+            _suiveurLigne.tournerGauche();            
             break;
+        
+        case ETAT_BOUCLE::QUIT: break;
     }
 };
 
@@ -62,5 +64,7 @@ void Boucle::changeState(){
         case ETAT_BOUCLE::FIN_BOUCLE: 
             _etat = ETAT_BOUCLE::QUIT;            
             break;
+
+        case ETAT_BOUCLE::QUIT: break;
     }
 };
