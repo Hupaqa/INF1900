@@ -6,7 +6,7 @@
 #include "suiveurLigne.h"
 #include "led.h"
 
-enum EtatMur
+enum class EtatMur
 {
     debutLigne, 
     mur,

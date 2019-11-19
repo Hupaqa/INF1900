@@ -33,13 +33,9 @@ void actionCouloir(){
 
         while (!(PINC & ((1<<GAUCHE) | (1<<MILIEU) | (1<<DROITE))))
         {
-            if (PINC & (1<<EXTREME_GAUCHE)) {
-                _suiveurLigne.redressementDroit();
-            }   
-            else if (PINC & 0b00000100){
-                _suiveurLigne.redressementGauche();
-            }
+            _suiveurCouloir.suivreCouloir();
         }
+        
         while (_suiveurLigne.suivreLigne());
         _suiveurLigne.tournerGauche();
     };
