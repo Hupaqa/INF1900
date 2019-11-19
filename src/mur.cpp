@@ -49,11 +49,6 @@ Mur::Mur(uint8_t vitesse) :
 
 void Mur::run()
 {
-<<<<<<< HEAD
-    while (true)
-    {
-        suivreMur();
-=======
     while(_etat != EtatMur::fin)
     {
         doAction();
@@ -102,7 +97,6 @@ void Mur::changeState()
             {
                 _etat = EtatMur::fin;
             }
->>>>>>> dbc510c2f5222582b184ed01fe100d0af9e4802c
     }
     // switch(_etat)
     // {
@@ -138,12 +132,8 @@ void Mur::suivreMur()
     }
     else
     {
-<<<<<<< HEAD
-        turnGreen();
-=======
         _sonar.avancerDroit();
         // Led
->>>>>>> dbc510c2f5222582b184ed01fe100d0af9e4802c
     }
 
     _delay_ms(DELAY); // Pour respecter la frequence maximale du sonar

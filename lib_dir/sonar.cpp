@@ -33,11 +33,7 @@ void Sonar::redressementDroit()
 {
     const uint8_t DELAY_DEMARAGE = 5;
 
-<<<<<<< HEAD
-    _navigator.ajustementPWM(DEMARAGE, AVANT, OFF, AVANT);
-=======
     _navigator.ajustementPWM(DEMARAGE, AVANT, DEMARAGE, AVANT);
->>>>>>> dbc510c2f5222582b184ed01fe100d0af9e4802c
     _delay_ms(DELAY_DEMARAGE);
     _navigator.ajustementPWM(_vitesse, AVANT, BASSE_INTENSITE, AVANT);
 }
@@ -46,11 +42,7 @@ void Sonar::redressementGauche()
 {
     const uint8_t DELAY_DEMARAGE = 5;
 
-<<<<<<< HEAD
-    _navigator.ajustementPWM(OFF, AVANT, DEMARAGE, AVANT);
-=======
     _navigator.ajustementPWM(DEMARAGE, AVANT, DEMARAGE, AVANT);
->>>>>>> dbc510c2f5222582b184ed01fe100d0af9e4802c
     _delay_ms(DELAY_DEMARAGE);
     _navigator.ajustementPWM(BASSE_INTENSITE, AVANT, _vitesse, AVANT);
 }
