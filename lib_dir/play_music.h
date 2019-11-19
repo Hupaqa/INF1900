@@ -5,8 +5,6 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "notes.h"
-#include "bytecode.h"
-
 
 void start_sound (uint8_t note);
 void stop_sound ();

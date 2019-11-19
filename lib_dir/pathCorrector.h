@@ -4,16 +4,29 @@
 #include <avr/io.h>
 #include "navigator.h"
 
-class PathCorrector {
-    public:
-        PathCorrector(uint8_t vitesse = UINT8_MAX/2);
+#define MILIEU PINC4
+#define GAUCHE PINC5
+#define EXTREME_GAUCHE PINC6
+#define DROITE PINC3
+#define EXTREME_DROITE PINC2
 
-        virtual void redressementDroit() = 0;
-        virtual void redressementGauche() = 0;
+class PathCorrector 
+{
+public:
+    PathCorrector(uint8_t vitesse = UINT8_MAX/2);
 
-    protected:
-        uint8_t _vitesse;
-        Navigator _navigator;
+    virtual void redressementDroit() = 0;
+    virtual void redressementGauche() = 0;
+
+    void initPWM();
+    void ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissanceGauche, bool directionGauche);
+    void stopPWM();
+    
+    uint8_t getVitesse();
+
+protected:
+    uint8_t _vitesse;
+    Navigator _navigator;
 };
 
 #endif

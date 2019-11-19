@@ -8,6 +8,8 @@ U5 = PC7
 
 */
 
+/*
+
 #define F_CPU 8000000UL
 #define ddr_lcd DDRA
 #define port_lcd PORTA
@@ -320,5 +322,5 @@ int main()
     return 0;
 }
 
-
+*/
 
