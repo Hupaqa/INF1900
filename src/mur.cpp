@@ -71,13 +71,19 @@ bool Mur::doAction()
     {
         case (EtatMur::debutLigne):
         case (EtatMur::finLigne):
-            bool stayCurrentState = suivreLigne();
-            return stayCurrentState;
+        {
+            bool statut = suivreLigne();
+            return statut;
+        }
         case (EtatMur::mur):
+        {
             followWall();
             return true;
+        }
         case (EtatMur::virage):
+        {
             return true;
+        }
     }
 }
 
