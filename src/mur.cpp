@@ -1,34 +1,12 @@
 #define F_CPU 8000000UL
 
 #include "mur.h"
-#include "uart.h"
-#include "suiveurLigne.h"
-#include "navigator.h"
 
+volatile uint8_t distance = 0;
+volatile bool repondu;
+volatile bool listening;
 
-void init()
-{
-    // Compteur
-    TCCR2B |= (1 << CS22); // Prescaler de 64
-
-    // Interruption
-    EICRA |= (1 << ISC20); // Any edge
-}
-
-void fetch()
-{
-    PORTB |= (1 << PORTB4);
-    _delay_us(10);
-    PORTB &= ~(1 << PORTB4);
-
-    listening = true;
-    repondu = false;
-
-    TCCR2B |= (1 << CS22);
-    EIMSK |= (1 << INT2); // Active les interruptions sur INT2
-    sei(); // Active les interruptions
-}
-
+// Interrupt on all edges of INT2
 ISR(INT2_vect)
 {
     if (listening)
@@ -36,83 +14,114 @@ ISR(INT2_vect)
         TCNT2 = 0; // Reinitialise la valeur du compteur
         TIMSK2 |= (1 << TOIE2); // Interrupt on overflow
         listening = false;
-
     }
-    else 
+    else if (!repondu) 
     {   
         cli(); // Stop interrupts
-        TCCR2B = 0;
         TIMSK2 &= ~(1 << TOIE2); // Interrupt on overflow OFF
+        EIMSK &= ~(1 << INT2); // Interrupts on INT2 OFF
         distance = (TCNT2 * 8) / 58;
-        transmissionUART(distance);
         repondu = true;
         sei();
     }
 }
 
+// Interrupt on Timer2 overflow
 ISR(TIMER2_OVF_vect)
 {
-    cli();
-    TCCR2B = 0;
-    TIMSK2 &= ~(1 << TOIE2); // Interrupt on overflow OFF
-    distance = 35;
-    transmissionUART(distance);
-    repondu = true;
-    transmissionUART(1);
-    sei();
+    if (!repondu)
+    {
+        cli();
+        TIMSK2 &= ~(1 << TOIE2); // Interrupt on overflow OFF
+        EIMSK &= ~(1 << INT2); // Interrupts on INT2 OFF
+        distance = 35; // Le maximum supporté par le compteur
+        repondu = true;
+        sei();
+    }
 }
 
-void tourner()
+Mur::Mur(uint8_t vitesse) : 
+    SuiveurLigne(vitesse),
+    _sonar(Sonar(vitesse)), 
+    _etat(EtatMur::debutLigne)
 {
-    const uint8_t BASE = 92;
-    const uint8_t DEMARAGE = 254;
-    const uint8_t GEARSHIFT = 180;
-    const uint8_t DELAY_DEMARAGE = 5;
-    const uint8_t AVANT = 0;
-    const uint8_t ARRIERE = 1;
-    const uint8_t HAUTE_INTENSITE = 118;
+}
 
-    if (distance > 18) // tourne gauche
+void Mur::run()
+{
+    while(_etat != EtatMur::fin)
     {
-        ajustementPWM(DEMARAGE, AVANT, 0, AVANT);
-        _delay_ms(DELAY_DEMARAGE);
-        //ajustementPWM(GEARSHIFT, AVANT, 0, AVANT);
-        //_delay_ms(DELAY_DEMARAGE);
-        ajustementPWM(HAUTE_INTENSITE, AVANT, 0, AVANT);
+        doAction();
+        changeState();
     }
-    else if (distance < 13 && distance > 1) // tourne droite
+}
+
+void Mur::doAction()
+{
+    switch(_etat)
     {
-        ajustementPWM(0, AVANT, DEMARAGE, AVANT);
-        _delay_ms(DELAY_DEMARAGE);
-        //ajustementPWM(0, AVANT, GEARSHIFT, AVANT);
-        //_delay_ms(DELAY_DEMARAGE);
-        ajustementPWM(0, AVANT, HAUTE_INTENSITE, AVANT);
+        case (EtatMur::debutLigne):
+        case (EtatMur::finLigne):
+            suivreLigne();
+            break;
+        case (EtatMur::mur):
+            suivreMur();
+            break;
+        case (EtatMur::virage):
+            // fonction virage
+            break;
+    }
+}
+
+void Mur::changeState()
+{
+    switch(_etat)
+    {
+        case (EtatMur::debutLigne):
+            if (!suiveurLigneAllume())
+            {
+                _etat = EtatMur::mur;
+            }
+            break;
+        case (EtatMur::mur):
+            if (suiveurLigneAllume())
+            {
+                _etat = EtatMur::finLigne;
+            }
+            break;
+        case (EtatMur::finLigne):
+            // Detection virage
+            break;
+        case (EtatMur::virage):
+            if (suiveurLigneAllume())
+            {
+                _etat = EtatMur::fin;
+            }
+    }
+}
+
+void Mur::suivreMur()
+{
+    const uint8_t DELAY = 45;
+
+    _sonar.fetch();
+    while(!repondu); // Attendre la réponse du sonar
+
+    if (distance < 14 && distance > 1)
+    {
+        _sonar.redressementDroit();
+        // Led
+    }
+    else if (distance > 16 && distance < 36)
+    {
+        _sonar.redressementGauche();
+        // Led
     }
     else
     {
-        ajustementPWM(DEMARAGE, AVANT, DEMARAGE, AVANT);
-        _delay_ms(DELAY_DEMARAGE);
-        //ajustementPWM(GEARSHIFT, AVANT, GEARSHIFT, AVANT);
-        //_delay_ms(DELAY_DEMARAGE);
-        ajustementPWM(BASE, AVANT, BASE, AVANT);
+        _sonar.avancerDroit();
+        // Led
     }
-    _delay_ms(50);
+
+    _delay_ms(DELAY); // Pour respecter la frequence maximale du sonar
 }
-
-
-//int main()
-//{
-//    DDRB |= (1 << PORTB4); 
-//    DDRB &= ~(1 << PORTB2);
-//    DDRD = 0xff;
-//    initialisationUART();
-//    initPWM();
-//
-//    init();
-//    while(true)
-//    {
-//        fetch();
-//        while(!repondu);
-//        tourner();
-//    } 
-//}

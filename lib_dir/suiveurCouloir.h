@@ -7,8 +7,8 @@ class SuiveurCouloir : public PathCorrector {
     public:
         SuiveurCouloir(uint8_t vitesse): PathCorrector(vitesse) {};
 
-        void redressementDroit();
-        void redressementGauche();
+        virtual void redressementDroit();
+        virtual void redressementGauche();
 };
 
 #endif
