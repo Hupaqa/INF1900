@@ -94,39 +94,11 @@ void Coupure::doAction(){
     }          
 
 }
- 
-void Coupure::changeState(){
-    switch (etatCourant)
-    {
-        case ETAT_COUPURE::COUPURE1:
-            etatCourant = etatFutur;
-            break;
-        case ETAT_COUPURE::COUPURE2:
-            etatCourant = etatFutur;
-            break;
-        case ETAT_COUPURE::COUPURE3:
-            etatCourant = etatFutur;
-            break;      
-        case ETAT_COUPURE::COUPURE4:
-            etatCourant = etatFutur;
-            break;
-        case ETAT_COUPURE::FIN:
-            etatCourant = etatFutur;
-            break;    
-        case ETAT_COUPURE::REDRESSEMENT_DROIT:
-            etatCourant = etatFutur;
-            break;      
-        case ETAT_COUPURE::REDRESSEMENT_GAUCHE:
-            etatCourant = etatFutur;
-            break;                                                          
-    }          
-
-}
 
 void Coupure::run(){
     while(!isDone){
-        _delay_ms(20);
+        _delay_ms(50);
         doAction();
-        changeState();
+        etatCourant = etatFutur;
     }    
 }
