@@ -20,9 +20,11 @@ U5 = PC7
 #include "display.h"
 
 #include "customprocs.h"
+#include "mur.h"
 
 uint8_t VITESSE = 100;
 
+/*
 enum ETAT {
     INIT,
     COULOIR,
@@ -304,25 +306,6 @@ void doAction(){
             break;    
     }
 }
-
-<<<<<<< HEAD
-=======
-int main()
-{
-    DDRC = 0x00;
-    DDRD = 0xff;
-    DDRA = 0xff;
-    initPWM();
-    
-    while(true)
-    {
-        doAction();
-        changeState();
-    }
-    return 0;
-}
-
->>>>>>> master
 */
 
 int main()
@@ -334,6 +317,8 @@ int main()
 
     Mur mur = Mur(75);
     mur.run();
+
+    return 0;
 }
 
 

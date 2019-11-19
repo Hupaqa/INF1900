@@ -1,8 +1,12 @@
 #ifndef F_CPU
 # define F_CPU 8000000UL
 #endif
+#ifndef UINT8_MAX
+#define UINT8_MAX 255
+#endif
 
 #include "navigator.h"
+#include <stdint.h>
 
 void Navigator::initPWM()
 {

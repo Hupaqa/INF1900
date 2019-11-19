@@ -13,3 +13,12 @@ void SuiveurCouloir::redressementGauche(){
     _delay_ms(50);
     _navigator.ajustementPWM(_vitesse, 0, _vitesse, 0);
 }
+
+void SuiveurCouloir::suivreCouloir(){
+    if (PINC & (1<<EXTREME_GAUCHE)) {
+        redressementDroit();
+    }   
+    else if (PINC & 0b00000100){
+        redressementGauche();
+    }
+}

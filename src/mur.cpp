@@ -44,7 +44,8 @@ ISR(TIMER2_OVF_vect)
 
 Mur::Mur(uint8_t vitesse) : 
     SuiveurLigne(vitesse), 
-    _etat(EtatMur::debutLigne)
+    _etat(EtatMur::debutLigne),
+    _led(Led())
 {
     // Initialisation du compteur
     TCCR2B |= (1 << CS22); // Prescaler de 64
@@ -164,17 +165,17 @@ void Mur::followWall()
     if (distance < 14 && distance > 1)
     {
         moveAgainstWall();
-        turnRed();
+        _led.turnRed();
     }
     else if (distance > 16 && distance < 36)
     {
         moveToWall();
-        turnRed();
+        _led.turnRed();
     }
     else
     {
         goStraight();
-        turnGreen();
+        _led.turnGreen();
     }
     transmissionUART(distance);
     _delay_ms(DELAY); // Pour respecter la frequence maximale du sonar

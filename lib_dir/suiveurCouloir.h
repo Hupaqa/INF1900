@@ -9,6 +9,8 @@ class SuiveurCouloir : public PathCorrector {
 
         virtual void redressementDroit();
         virtual void redressementGauche();
+
+        void suivreCouloir();
 };
 
 #endif
