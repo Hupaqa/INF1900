@@ -8,6 +8,10 @@
 #include "navigator.h"
 #include <stdint.h>
 
+Navigator::Navigator(uint8_t vitesse) : 
+    _vitesse(vitesse)
+{};
+
 void Navigator::initPWM()
 {
     TCNT1 = 0;
@@ -16,9 +20,9 @@ void Navigator::initPWM()
     TCCR1C = 0;
 }
 
-void Navigator::ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint8_t puissanceGauche, bool directionGauche)
+void Navigator::ajustementPWM (uint8_t puissanceDroit, DIRECTION directionDroit, uint8_t puissanceGauche, DIRECTION directionGauche)
 {
-    if (directionDroit)
+    if (directionDroit == DIRECTION::AVANT)
     {   
         PORTD |= 0b10000000;
     }else
@@ -27,7 +31,7 @@ void Navigator::ajustementPWM (uint8_t puissanceDroit, bool directionDroit, uint
     }
     
 
-    if (directionGauche)
+    if (directionGauche == DIRECTION::AVANT)
     {
         PORTD |= 0b01000000;
     }else
@@ -49,3 +53,8 @@ void Navigator::stopPWM(){
     OCR1A = 0;
     OCR1B = 0;
 }
+
+uint8_t Navigator::getVitesse()
+{
+    return _vitesse;
+};
