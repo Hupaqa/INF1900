@@ -48,51 +48,44 @@ Mur::Mur(uint8_t vitesse) :
 {
     // Initialisation du compteur
     TCCR2B |= (1 << CS22); // Prescaler de 64
-
     // Interruption 
     EICRA |= (1 << ISC20); // Any edge
-
-    initPWM();
+    // Initialisation PWM
+    initPWM(); 
 }
 
 void Mur::run()
 {
-    while (true)
-    {
-        followWall();
-    }
-    /*
+    bool stayCurrentState = true;
     while(_etat != EtatMur::fin)
     {
-        doAction();
-        changeState();
+        stayCurrentState = doAction();
+        changeState(stayCurrentState);
     }
-    */
 }
 
-void Mur::doAction()
+bool Mur::doAction()
 {
     switch(_etat)
     {
         case (EtatMur::debutLigne):
         case (EtatMur::finLigne):
-            suivreLigne();
-            break;
+            bool stayCurrentState = suivreLigne();
+            return stayCurrentState;
         case (EtatMur::mur):
             followWall();
-            break;
+            return true;
         case (EtatMur::virage):
-            // fonction virage
-            break;
+            return true;
     }
 }
 
-void Mur::changeState()
+void Mur::changeState(bool stayCurrentState)
 {
     switch(_etat)
     {
         case (EtatMur::debutLigne):
-            if (!suiveurLigneAllume())
+            if (!stayCurrentState)
             {
                 _etat = EtatMur::mur;
             }
@@ -104,7 +97,10 @@ void Mur::changeState()
             }
             break;
         case (EtatMur::finLigne):
-            // Detection virage
+            if (!stayCurrentState)
+            {
+                _etat = EtatMur::virage;
+            }
             break;
         case (EtatMur::virage):
             if (suiveurLigneAllume())

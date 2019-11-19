@@ -21,8 +21,8 @@ public:
     Mur(uint8_t vitesse);
 
     void run();
-    void doAction();
-    void changeState();
+    bool doAction();
+    void changeState(bool statut);
 
     void fetchSonar();
 
