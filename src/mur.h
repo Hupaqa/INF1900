@@ -4,7 +4,7 @@
 #include "suiveurLigne.h"
 #include "sonar.h"
 
-enum EtatMur
+enum class EtatMur
 {
     debutLigne, 
     mur,
