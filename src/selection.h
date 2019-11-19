@@ -2,15 +2,17 @@
 #define SELECTION_H
 
 #include "display.h"
-
-#define ddr_lcd DDRA
-#define port_lcd PORTA
+#include "boucle.h"
+#include "couloir.h"
+#include "mur.h"
+#include "coupure.h"
 
 enum class EtatSelection{
     leCouloir,
     leMur,
     lesBoucles,
-    lesCoupures
+    lesCoupures,
+    Fin
 };
 
 class Selection {
@@ -22,9 +24,9 @@ class Selection {
         void doAction();
 
     private:
-    LCM _lcd;
-    EtatSelection _etat;
-    bool buttonEventBreadboard;
-    bool buttonEventCard;
-    uint8_t compteurEtat;
-}
+        EtatSelection _etat;
+        uint8_t compteurEtat;
+        LCM _lcd;
+};
+
+#endif //SELECTION_H
