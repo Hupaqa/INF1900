@@ -20,8 +20,13 @@ void actionCouloir(){
 }
 */
     Couloir::Couloir(uint8_t vitesse) :
+<<<<<<< HEAD
         _suiveurLigne(vitesse),
         _suiveurCouloir(vitesse)
+=======
+        _suiveurLigne(SuiveurLigne(vitesse)), 
+        _suiveurCouloir(SuiveurCouloir(vitesse)) 
+>>>>>>> dbc510c2f5222582b184ed01fe100d0af9e4802c
     {
         DDRC = 0x00; //DDRC en entree
     };

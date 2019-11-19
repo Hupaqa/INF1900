@@ -15,7 +15,7 @@ Sonar::~Sonar()
 void Sonar::fetch()
 {
     const uint8_t SONAR_DELAY = 10;
-
+    
     cli();
     PORTB |= (1 << PORTB4);
     _delay_us(SONAR_DELAY);
@@ -33,18 +33,26 @@ void Sonar::redressementDroit()
 {
     const uint8_t DELAY_DEMARAGE = 5;
 
+<<<<<<< HEAD
     _navigator.ajustementPWM(DEMARAGE, AVANT, OFF, AVANT);
+=======
+    _navigator.ajustementPWM(DEMARAGE, AVANT, DEMARAGE, AVANT);
+>>>>>>> dbc510c2f5222582b184ed01fe100d0af9e4802c
     _delay_ms(DELAY_DEMARAGE);
-    _navigator.ajustementPWM(HAUTE_INTENSITE, AVANT, OFF, AVANT);
+    _navigator.ajustementPWM(_vitesse, AVANT, BASSE_INTENSITE, AVANT);
 }
 
 void Sonar::redressementGauche()
 {
     const uint8_t DELAY_DEMARAGE = 5;
 
+<<<<<<< HEAD
     _navigator.ajustementPWM(OFF, AVANT, DEMARAGE, AVANT);
+=======
+    _navigator.ajustementPWM(DEMARAGE, AVANT, DEMARAGE, AVANT);
+>>>>>>> dbc510c2f5222582b184ed01fe100d0af9e4802c
     _delay_ms(DELAY_DEMARAGE);
-    _navigator.ajustementPWM(OFF, AVANT, HAUTE_INTENSITE, AVANT);
+    _navigator.ajustementPWM(BASSE_INTENSITE, AVANT, _vitesse, AVANT);
 }
 
 void Sonar::avancerDroit()

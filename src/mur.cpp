@@ -40,8 +40,8 @@ ISR(TIMER2_OVF_vect)
     }
 }
 
-Mur::Mur(uint8_t vitesse) :
-    _suiveurLigne(SuiveurLigne(vitesse)), 
+Mur::Mur(uint8_t vitesse) : 
+    SuiveurLigne(vitesse),
     _sonar(Sonar(vitesse)), 
     _etat(EtatMur::debutLigne)
 {
@@ -49,9 +49,60 @@ Mur::Mur(uint8_t vitesse) :
 
 void Mur::run()
 {
+<<<<<<< HEAD
     while (true)
     {
         suivreMur();
+=======
+    while(_etat != EtatMur::fin)
+    {
+        doAction();
+        changeState();
+    }
+}
+
+void Mur::doAction()
+{
+    switch(_etat)
+    {
+        case (EtatMur::debutLigne):
+        case (EtatMur::finLigne):
+            suivreLigne();
+            break;
+        case (EtatMur::mur):
+            suivreMur();
+            break;
+        case (EtatMur::virage):
+            // fonction virage
+            break;
+    }
+}
+
+void Mur::changeState()
+{
+    switch(_etat)
+    {
+        case (EtatMur::debutLigne):
+            if (!suiveurLigneAllume())
+            {
+                _etat = EtatMur::mur;
+            }
+            break;
+        case (EtatMur::mur):
+            if (suiveurLigneAllume())
+            {
+                _etat = EtatMur::finLigne;
+            }
+            break;
+        case (EtatMur::finLigne):
+            // Detection virage
+            break;
+        case (EtatMur::virage):
+            if (suiveurLigneAllume())
+            {
+                _etat = EtatMur::fin;
+            }
+>>>>>>> dbc510c2f5222582b184ed01fe100d0af9e4802c
     }
     // switch(_etat)
     // {
@@ -70,6 +121,8 @@ void Mur::run()
 
 void Mur::suivreMur()
 {
+    const uint8_t DELAY = 45;
+
     _sonar.fetch();
     while(!repondu); // Attendre la réponse du sonar
 
@@ -85,11 +138,13 @@ void Mur::suivreMur()
     }
     else
     {
+<<<<<<< HEAD
         turnGreen();
+=======
+        _sonar.avancerDroit();
+        // Led
+>>>>>>> dbc510c2f5222582b184ed01fe100d0af9e4802c
     }
-}
 
-void Mur::suivreLigne()
-{
-
+    _delay_ms(DELAY); // Pour respecter la frequence maximale du sonar
 }

@@ -7,7 +7,13 @@ U4 = PC6
 U5 = PC7
 
 */
+<<<<<<< HEAD
 /*
+=======
+
+/*
+
+>>>>>>> dbc510c2f5222582b184ed01fe100d0af9e4802c
 #define F_CPU 8000000UL
 
 #include "suiveurLigne.h"
@@ -250,6 +256,7 @@ void doAction(){
     }
 }
 
+<<<<<<< HEAD
 int main()
 {
     DDRC = 0x00;
@@ -265,3 +272,21 @@ int main()
 }
 
 */
+=======
+// int main()
+// {
+//     DDRC = 0x00;
+//     DDRD = 0xff;
+//     initPWM();
+// 
+//     while(true)
+//     {
+//         doAction();
+//         changeState();
+//     }
+//     return 0;
+// }
+
+*/
+
+>>>>>>> dbc510c2f5222582b184ed01fe100d0af9e4802c
