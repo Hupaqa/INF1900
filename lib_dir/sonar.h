@@ -23,12 +23,10 @@ public:
 
 private:
     const uint8_t DEMARAGE = 254;
-    const uint8_t DELAY_DEMARAGE = 5;
-    const uint8_t HAUTE_INTENSITE = 118;
+    const uint8_t BASSE_INTENSITE = 32;
     const uint8_t AVANT = 0;
     const uint8_t ARRIERE = 1;
     const uint8_t OFF = 0;
-    const uint8_t SONAR_DELAY = 10;
 };
 
 #endif
