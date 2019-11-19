@@ -14,7 +14,7 @@ class SuiveurLigne : public PathCorrector
         void tournerDroit();
         void tournerGauche();
 
-        bool suivreLigne();
+        virtual bool suivreLigne();
         bool suiveurLigneAllume();
     
     private:
