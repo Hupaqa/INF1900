@@ -59,9 +59,7 @@ bool SuiveurLigne::suivreLigne(){
     }
 };
 
-bool SuiveurLigne::suiveurLigneAllume()
-{
-    // Besoin d'un debounce ?
+bool SuiveurLigne::suiveurLigneAllume(){
     return (PINC & (1<< EXTREME_GAUCHE) ||
             PINC & (1<< GAUCHE) ||
             PINC & (1<< MILIEU) ||

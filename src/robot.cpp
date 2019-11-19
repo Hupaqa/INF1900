@@ -8,8 +8,6 @@ U5 = PC7
 
 */
 
-/*
-
 #define F_CPU 8000000UL
 #define ddr_lcd DDRA
 #define port_lcd PORTA
@@ -307,6 +305,8 @@ void doAction(){
     }
 }
 
+<<<<<<< HEAD
+=======
 int main()
 {
     DDRC = 0x00;
@@ -322,5 +322,18 @@ int main()
     return 0;
 }
 
+>>>>>>> master
 */
+
+int main()
+{
+    DDRB |= (1 << PORTB4); 
+    DDRB &= ~(1 << PORTB2);
+    DDRD = 0xff;
+    initialisationUART();
+
+    Mur mur = Mur(75);
+    mur.run();
+}
+
 
