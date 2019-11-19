@@ -8,7 +8,6 @@ U5 = PC7
 
 */
 
-/*
 #define F_CPU 8000000UL
 
 #include "suiveurLigne.h"
@@ -16,7 +15,10 @@ U5 = PC7
 #include "delay.h"
 #include "play_music.h"
 #include "uart.h"
+#include "mur.h"
+#include "navigator.h"
 
+/*
 uint8_t VITESSE = 88;
 
 enum ETAT {
@@ -255,19 +257,13 @@ void doAction(){
 
 int main()
 {
-    /*
-    DDRC = 0x00;
+    DDRB |= (1 << PORTB4); 
+    DDRB &= ~(1 << PORTB2);
     DDRD = 0xff;
-    initPWM();
+    initialisationUART();
 
-    while(true)
-    {
-        doAction();
-        changeState();
-    }
-    */
-   
-    return 0;
+    Mur mur = Mur(75);
+    mur.run();
 }
 
 
