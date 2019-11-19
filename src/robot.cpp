@@ -7,7 +7,7 @@ U4 = PC6
 U5 = PC7
 
 */
-
+/*
 #define F_CPU 8000000UL
 
 #include "suiveurLigne.h"
@@ -264,5 +264,4 @@ int main()
     return 0;
 }
 
-
-
+*/

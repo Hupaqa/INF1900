@@ -19,11 +19,10 @@ void actionCouloir(){
     suiveurLigne::tournerGauche(VITESSE);
 }
 */
-    Couloir::Couloir()
+    Couloir::Couloir(uint8_t vitesse) :
+        _suiveurLigne(vitesse),
+        _suiveurCouloir(vitesse)
     {
-        const uint8_t VITESSE = 88; 
-        _suiveurLigne = SuiveurLigne(VITESSE);
-        _suiveurCouloir = SuiveurCouloir(VITESSE);
         DDRC = 0x00; //DDRC en entree
     };
 

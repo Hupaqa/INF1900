@@ -6,7 +6,7 @@
 
 class Couloir {
     public:
-        Couloir();
+        Couloir(uint8_t vitesse);
         void run();
 
     private:

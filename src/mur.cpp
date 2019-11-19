@@ -49,17 +49,23 @@ Mur::Mur(uint8_t vitesse) :
 
 void Mur::run()
 {
-    switch(_etat)
+    while (true)
     {
-        case (EtatMur::debutLigne):
-        case (EtatMur::finLigne):
-            suivreLigne();
-            break;
-        case (EtatMur::mur):
-            suivreMur();
-        case (EtatMur::virage):
-            // fonction virage
+        suivreMur();
     }
+    // switch(_etat)
+    // {
+    //     case (EtatMur::debutLigne):
+    //     case (EtatMur::finLigne):
+    //         suivreLigne();
+    //         break;
+    //     case (EtatMur::mur):
+    //         suivreMur();
+    //         break;
+    //     case (EtatMur::virage):
+    //         // fonction virage
+    //         break;
+    // }
 }
 
 void Mur::suivreMur()
@@ -70,16 +76,16 @@ void Mur::suivreMur()
     if (distance < 14 && distance > 1)
     {
         _sonar.redressementDroit();
-        // Led
+        turnRed();
     }
     else if (distance > 16 && distance < 36)
     {
         _sonar.redressementGauche();
-        // Led
+        turnRed();
     }
     else
     {
-        // Led
+        turnGreen();
     }
 }
 

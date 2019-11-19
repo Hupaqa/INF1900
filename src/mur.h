@@ -3,6 +3,7 @@
 
 #include "suiveurLigne.h"
 #include "sonar.h"
+#include "led.h"
 
 enum EtatMur
 {
@@ -12,19 +13,16 @@ enum EtatMur
     virage
 };
 
-class Mur
+class Mur : public SuiveurLigne
 {
 public:
     Mur(uint8_t vitesse);
     void run();
     void suivreMur();
-    void suivreLigne();
-    void virageGauche();
 
 private:
-    SuiveurLigne _suiveurLigne;
     Sonar _sonar;
-    Etat _etat;
+    EtatMur _etat;
 };
 
 

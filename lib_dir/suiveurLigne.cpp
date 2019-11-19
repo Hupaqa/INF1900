@@ -31,10 +31,10 @@ void SuiveurLigne::tournerGauche(){
 bool SuiveurLigne::suivreLigne(){
     _delay_ms(50);    
 
-    if (!SuiveurLigneAllume())
+    if (!suiveurLigneAllume())
     {
         _delay_ms(30); //Delais de debounce
-        if (!SuiveurLigneAllume())
+        if (!suiveurLigneAllume())
         {
             _navigator.stopPWM();
             return false;
@@ -60,9 +60,9 @@ bool SuiveurLigne::suivreLigne(){
 };
 
 bool SuiveurLigne::suiveurLigneAllume(){
-    return PINC & (1<< EXTREME_GAUCHE) ||
-           PINC & (1<< GAUCHE) ||
-           PINC & (1<< MILIEU) ||
-           PINC & (1<< DROITE) ||
-           PINC & (1<< EXTREME_DROITE;
+    return (PINC & (1<< EXTREME_GAUCHE) ||
+            PINC & (1<< GAUCHE) ||
+            PINC & (1<< MILIEU) ||
+            PINC & (1<< DROITE) ||
+            PINC & (1<< EXTREME_DROITE));
 };
