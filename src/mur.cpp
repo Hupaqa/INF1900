@@ -1,4 +1,6 @@
+#ifndef F_CPU
 #define F_CPU 8000000UL
+#endif
 
 #include "mur.h"
 #include "uart.h"
@@ -57,37 +59,34 @@ Mur::Mur(uint8_t vitesse) :
 
 void Mur::run()
 {
-    bool stayCurrentState = true;
+    stayCurrentState = true;
     while(_etat != EtatMur::fin)
     {
-        stayCurrentState = doAction();
-        changeState(stayCurrentState);
+        doAction();
+        changeState();
     }
 }
 
-bool Mur::doAction()
+void Mur::doAction()
 {
     switch(_etat)
     {
         case (EtatMur::debutLigne):
         case (EtatMur::finLigne):
-        {
-            bool statut = suivreLigne();
-            return statut;
-        }
+            stayCurrentState = suivreLigne();
+            break;
         case (EtatMur::mur):
-        {
             followWall();
-            return true;
-        }
+            break;
         case (EtatMur::virage):
-        {
-            return true;
-        }
+            tournerGauche();
+            break;
+        case (EtatMur::fin):
+            break;
     }
 }
 
-void Mur::changeState(bool stayCurrentState)
+void Mur::changeState()
 {
     switch(_etat)
     {
@@ -95,18 +94,21 @@ void Mur::changeState(bool stayCurrentState)
             if (!stayCurrentState)
             {
                 _etat = EtatMur::mur;
+                stayCurrentState = true;
             }
             break;
         case (EtatMur::mur):
             if (suiveurLigneAllume())
             {
                 _etat = EtatMur::finLigne;
+                stayCurrentState = true;
             }
             break;
         case (EtatMur::finLigne):
             if (!stayCurrentState)
             {
                 _etat = EtatMur::virage;
+                stayCurrentState = true;
             }
             break;
         case (EtatMur::virage):
@@ -114,6 +116,9 @@ void Mur::changeState(bool stayCurrentState)
             {
                 _etat = EtatMur::fin;
             }
+            break;
+        case (EtatMur::fin):
+            break;
     }
 }
 
@@ -149,9 +154,10 @@ void Mur::goStraight()
 void Mur::followWall()
 {
     const uint8_t DELAY = 50;
+    
     fetchSonar();
-
     while(!repondu); // Attendre la réponse du sonar
+
     if (distance < 13 && distance > 1)
     {
         moveAgainstWall();
@@ -167,6 +173,6 @@ void Mur::followWall()
         goStraight();
         _led.turnGreen();
     }
-    transmissionUART(distance);
+
     _delay_ms(DELAY); // Pour respecter la frequence maximale du sonar
 }

@@ -1,3 +1,7 @@
+#ifndef F_CPU
+#define F_CPU 8000000UL
+#endif
+
 #include "suiveurLigne.h"
 #include "uart.h"
 
@@ -56,6 +60,7 @@ bool SuiveurLigne::suivreLigne(){
         ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
         return true;
     }
+    return true;
 };
 
 bool SuiveurLigne::suiveurLigneAllume(){

@@ -1,7 +1,7 @@
 #ifndef MUR_H
 #define MUR_H
 
-#include <avr/delay.h>
+#include <util/delay.h>
 #include <avr/interrupt.h>
 #include "suiveurLigne.h"
 #include "led.h"
@@ -21,8 +21,8 @@ public:
     Mur(uint8_t vitesse);
 
     void run();
-    bool doAction();
-    void changeState(bool statut);
+    void doAction();
+    void changeState();
 
     void fetchSonar();
 
@@ -38,6 +38,7 @@ private:
     const uint8_t AVANT = 0;
     const uint8_t ARRIERE = 1;
     const uint8_t OFF = 0;
+    bool stayCurrentState;
     EtatMur _etat;
     Led _led;
 };
