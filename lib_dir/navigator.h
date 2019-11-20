@@ -23,9 +23,6 @@ class Navigator {
         void ajustementPWM (uint8_t puissanceDroit, DIRECTION directionDroit, uint8_t puissanceGauche, DIRECTION directionGauche);
         void stopPWM();
 
-        virtual void redressementDroit(){};
-        virtual void redressementGauche(){};
-
         uint8_t getVitesse();
 
     protected:

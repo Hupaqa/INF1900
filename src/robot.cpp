@@ -318,7 +318,7 @@ int main()
     DDRD = 0xff;
     initialisationUART();
 
-    SuiveurLigne suivre = SuiveurLigne(96);
+    SuiveurLigne suivre = SuiveurLigne(70);
     suivre.initPWM();
     while(suivre.suivreLigne());
     /*
