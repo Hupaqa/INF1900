@@ -1,7 +1,7 @@
 #ifndef MUR_H
 #define MUR_H
 
-#include <avr/delay.h>
+#include <util/delay.h>
 #include <avr/interrupt.h>
 #include "suiveurLigne.h"
 #include "led.h"
@@ -33,11 +33,12 @@ public:
 
 private:
     const uint8_t DEMARAGE = 254;
-    const uint8_t HAUTE_INTENSITE = 95;
+    const uint8_t HAUTE_INTENSITE = 105;
     const uint8_t BASSE_INTENSITE = 38;
     const uint8_t AVANT = 0;
     const uint8_t ARRIERE = 1;
     const uint8_t OFF = 0;
+    bool stayCurrentState;
     EtatMur _etat;
     Led _led;
 };

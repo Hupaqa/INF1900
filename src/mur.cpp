@@ -1,4 +1,6 @@
+#ifndef F_CPU
 #define F_CPU 8000000UL
+#endif
 
 #include "mur.h"
 #include "uart.h"
@@ -49,26 +51,20 @@ Mur::Mur(uint8_t vitesse) :
 {
     // Initialisation du compteur
     TCCR2B |= (1 << CS22); // Prescaler de 64
-
     // Interruption 
     EICRA |= (1 << ISC20); // Any edge
-
-    initPWM();
+    // Initialisation PWM
+    initPWM(); 
 }
 
 void Mur::run()
 {
-    while (true)
-    {
-        followWall();
-    }
-    /*
+    stayCurrentState = true;
     while(_etat != EtatMur::fin)
     {
         doAction();
         changeState();
     }
-    */
 }
 
 void Mur::doAction()
@@ -77,13 +73,15 @@ void Mur::doAction()
     {
         case (EtatMur::debutLigne):
         case (EtatMur::finLigne):
-            suivreLigne();
+            stayCurrentState = suivreLigne();
             break;
         case (EtatMur::mur):
             followWall();
             break;
         case (EtatMur::virage):
-            // fonction virage
+            tournerGauche();
+            break;
+        case (EtatMur::fin):
             break;
     }
 }
@@ -93,25 +91,34 @@ void Mur::changeState()
     switch(_etat)
     {
         case (EtatMur::debutLigne):
-            if (!suiveurLigneAllume())
+            if (!stayCurrentState)
             {
                 _etat = EtatMur::mur;
+                stayCurrentState = true;
             }
             break;
         case (EtatMur::mur):
             if (suiveurLigneAllume())
             {
                 _etat = EtatMur::finLigne;
+                stayCurrentState = true;
             }
             break;
         case (EtatMur::finLigne):
-            // Detection virage
+            if (!stayCurrentState)
+            {
+                _etat = EtatMur::virage;
+                stayCurrentState = true;
+            }
             break;
         case (EtatMur::virage):
             if (suiveurLigneAllume())
             {
                 _etat = EtatMur::fin;
             }
+            break;
+        case (EtatMur::fin):
+            break;
     }
 }
 
@@ -147,15 +154,16 @@ void Mur::goStraight()
 void Mur::followWall()
 {
     const uint8_t DELAY = 50;
+    
     fetchSonar();
-
     while(!repondu); // Attendre la réponse du sonar
-    if (distance < 14 && distance > 1)
+
+    if (distance < 13 && distance > 1)
     {
         moveAgainstWall();
         _led.turnRed();
     }
-    else if (distance > 16 && distance < 36)
+    else if (distance > 17 && distance < 36)
     {
         moveToWall();
         _led.turnRed();
@@ -165,6 +173,6 @@ void Mur::followWall()
         goStraight();
         _led.turnGreen();
     }
-    transmissionUART(distance);
+
     _delay_ms(DELAY); // Pour respecter la frequence maximale du sonar
 }

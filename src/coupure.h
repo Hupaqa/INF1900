@@ -21,19 +21,19 @@ public:
      *
      * 
      */
-    virtual bool suivreLigne();
+    // bool suivreLigne();
 
     /*
      *
      * 
      */
-    virtual void redressementDroit();
+    //void redressementDroit();
 
     /*
      *
      * 
      */
-    virtual void redressementGauche();
+    //void redressementGauche();
     
     /*
      *  This funtion is the main loop of thi class, it calls doAction and

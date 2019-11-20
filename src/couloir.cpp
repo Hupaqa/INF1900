@@ -1,9 +1,13 @@
+#ifndef F_CPU
+#define F_CPU 8000000UL
+#endif
 
 #include "couloir.h"
 
 Couloir::Couloir(uint8_t vitesse):
     SuiveurLigne(vitesse)
 {
+    initPWM();
     DDRC = 0x00; //DDRC en entree
 };
 

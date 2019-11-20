@@ -1,17 +1,22 @@
+#ifndef F_CPU
+#define F_CPU 8000000UL
+#endif
+
 #include "suiveurLigne.h"
+#include "uart.h"
 
 SuiveurLigne::SuiveurLigne(uint8_t vitesse) :
     Navigator(vitesse)
-{};
-
-void SuiveurLigne::redressementDroit(){
-    uint8_t demi_vitesse = _vitesse;
-    ajustementPWM(demi_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+{
 };
 
-void SuiveurLigne::redressementGauche(){  
-    uint8_t demi_vitesse = _vitesse;  
-    ajustementPWM(_vitesse, DIRECTION::AVANT, demi_vitesse, DIRECTION::AVANT);
+void SuiveurLigne::redressementDroit(){
+    ajustementPWM(0, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+};
+
+void SuiveurLigne::redressementGauche()
+{  
+    ajustementPWM(_vitesse, DIRECTION::AVANT, 0, DIRECTION::AVANT);
 };
 
 void SuiveurLigne::tournerDroit(){
@@ -27,10 +32,10 @@ void SuiveurLigne::tournerGauche(){
 };
 
 bool SuiveurLigne::suivreLigne(){
-    _delay_ms(50);    
-
+    _delay_ms(75);
     if (!suiveurLigneAllume())
     {
+        //transmissionUART(90);
         _delay_ms(15); //Delais de debounce
         if (!suiveurLigneAllume())
         {
@@ -40,11 +45,11 @@ bool SuiveurLigne::suivreLigne(){
     }
     else if (!(PINC & (1 << MILIEU)))
     {
-        if(PINC & ((1 << EXTREME_GAUCHE) | (1 << GAUCHE)))
+        if(PINC & (1 << EXTREME_GAUCHE) || PINC & (1 << GAUCHE))
         {
             redressementDroit();
         }
-        else if (PINC & ((1 << EXTREME_DROITE) | (1 << DROITE))) 
+        else if (PINC & (1 << EXTREME_DROITE) || PINC & (1 << DROITE)) 
         {
             redressementGauche();
         }
@@ -55,6 +60,7 @@ bool SuiveurLigne::suivreLigne(){
         ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
         return true;
     }
+    return true;
 };
 
 bool SuiveurLigne::suiveurLigneAllume(){
