@@ -100,7 +100,7 @@ void Selection::runStep()
         }
         case(EtapesParcours::mur):
         {
-            Mur mur(75);
+            Mur mur(75, _lcd);
             mur.run();
             break;
         }
@@ -112,8 +112,8 @@ void Selection::runStep()
         }
         case(EtapesParcours::coupures):
         {
-            Coupure coupure(75);
-            coupure.run();
+            //Coupure coupure(75);
+            //coupure.run();
             break;
         }
     }
@@ -146,12 +146,15 @@ void Selection::doAction()
 
 void Selection::changeState()
 {
+    const uint16_t DELAY_SELECTION = 2000;
+
     switch(_etat)
     {
         case EtatSelection::selection:
             if (interruptDebounced())
             {
                 _etat = appeler;
+                _delay_ms(DELAY_SELECTION);
             }
             break;
         case EtatSelection::appeler:

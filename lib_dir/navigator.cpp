@@ -51,7 +51,8 @@ void Navigator::ajustementPWM(uint8_t puissanceDroit, DIRECTION directionDroit, 
     OCR1B = puissanceGauche;
 }
 
-void Navigator::stopPWM(){
+void Navigator::stopPWM()
+{
     OCR1A = 0;
     OCR1B = 0;
 }
