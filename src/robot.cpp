@@ -317,11 +317,17 @@ int main()
     DDRC = 0x00;
     DDRD = 0xff;
     initialisationUART();
+
+    SuiveurLigne suivre = SuiveurLigne(96);
+    suivre.initPWM();
+    while(suivre.suivreLigne());
+    /*
     SuiveurLigne suivre = SuiveurLigne(75);
     suivre.initPWM();
 
     while(suivre.suivreLigne());
     return 0;
+    */
 }
 
 

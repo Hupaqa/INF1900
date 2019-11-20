@@ -41,9 +41,9 @@ void Navigator::ajustementPWM(uint8_t puissanceDroit, DIRECTION directionDroit, 
     }
 
     //Vitesse maximal pour surpasser l'inertie
-    OCR1A = (puissanceDroit) ? 250 : 0;
-    OCR1B = (puissanceGauche) ? 250 : 0;
-    _delay_ms(5); //temps determine experimentalement
+    OCR1A = (puissanceDroit) ? 255 : 0;
+    OCR1B = (puissanceGauche) ? 255 : 0;
+    _delay_ms(15); //temps determine experimentalement
 
     OCR1A = puissanceDroit;
     OCR1B = puissanceGauche;
