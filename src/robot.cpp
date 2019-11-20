@@ -17,24 +17,24 @@ U5 = PC7
 
 uint8_t VITESSE = 100;
 
-int main()
-{
-    DDRB |= (1 << PORTB4); 
-    DDRB &= ~(1 << PORTB2);
-    DDRC = 0x00;
-    DDRD = 0xff;
-    initialisationUART();
-
-    SuiveurLigne suivre = SuiveurLigne(70);
-    suivre.initPWM();
-    while(suivre.suivreLigne());
-    /*
-    SuiveurLigne suivre = SuiveurLigne(75);
-    suivre.initPWM();
-
-    while(suivre.suivreLigne());
-    return 0;
-    */
-}
+//int main()
+//{
+//    DDRB |= (1 << PORTB4); 
+//    DDRB &= ~(1 << PORTB2);
+//    DDRC = 0x00;
+//    DDRD = 0xff;
+//    initialisationUART();
+//
+//    SuiveurLigne suivre = SuiveurLigne(70);
+//    suivre.initPWM();
+//    while(suivre.suivreLigne());
+//    /*
+//    SuiveurLigne suivre = SuiveurLigne(75);
+//    suivre.initPWM();
+//
+//    while(suivre.suivreLigne());
+//    return 0;
+//    */
+//}
 
 

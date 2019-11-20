@@ -1,32 +1,52 @@
 #ifndef SELECTION_H
 #define SELECTION_H
 
+#define BOUTON_BREADBOARD PIND2
+#define BOUTON_INTERRUPT PIND3
+
 #include "display.h"
 #include "boucle.h"
 #include "couloir.h"
 #include "mur.h"
 #include "coupure.h"
 
-enum class EtatSelection{
-    leCouloir,
-    leMur,
-    lesBoucles,
-    lesCoupures,
-    Fin
+enum EtatSelection
+{
+    selection,
+    appeler,
+    afficherFin,
+    fin
 };
 
-class Selection {
+enum EtapesParcours
+{
+    couloir,
+    mur,
+    boucles,
+    coupures
+};
+
+class Selection 
+{
     public:
-        Selection();
+        Selection(LCM* lcd);
 
         void run();
         void changeState();
         void doAction();
 
+        void runStep();
+        EtapesParcours nextStep();
+        void updateFirstStep();
+
+        bool breadboardDebounced();
+        bool interruptDebounced();
     private:
         EtatSelection _etat;
-        uint8_t compteurEtat;
-        LCM _lcd;
+        EtapesParcours _etapeCourrante;
+        LCM* _lcd;
+        
+        const uint8_t nombreEtapes = 4;
 };
 
 #endif //SELECTION_H

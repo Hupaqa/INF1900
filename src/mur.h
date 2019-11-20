@@ -19,11 +19,13 @@ class Mur : public SuiveurLigne
 {
 public:
     Mur(uint8_t vitesse);
+    ~Mur();
 
     void run();
     void doAction();
     void changeState();
 
+    void enableSonar();
     void fetchSonar();
 
     void moveToWall();
@@ -37,7 +39,6 @@ private:
     const uint8_t BASSE_INTENSITE = 38;
     const uint8_t AVANT = 0;
     const uint8_t ARRIERE = 1;
-    const uint8_t OFF = 0;
     bool stayCurrentState;
     EtatMur _etat;
     Led _led;

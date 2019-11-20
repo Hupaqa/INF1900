@@ -10,33 +10,45 @@ SuiveurLigne::SuiveurLigne(uint8_t vitesse) :
 {
 };
 
-void SuiveurLigne::redressementDroit(){
-    ajustementPWM(0, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+void SuiveurLigne::avancerDroit()
+{
+    ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+}
+
+void SuiveurLigne::redressementDroit()
+{
+    ajustementPWM(OFF, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 };
 
 void SuiveurLigne::redressementGauche()
 {  
-    ajustementPWM(_vitesse, DIRECTION::AVANT, 0, DIRECTION::AVANT);
+    ajustementPWM(_vitesse, DIRECTION::AVANT, OFF, DIRECTION::AVANT);
 };
 
-void SuiveurLigne::tournerDroit(){
+void SuiveurLigne::tournerDroit()
+{
     ajustementPWM(_vitesse, DIRECTION::ARRIERE, _vitesse, DIRECTION::AVANT);
-    while(!(PINC & (1 << EXTREME_DROITE)));
-    ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    while(!(PINC & (1 << EXTREME_DROITE))); // Attend de toucher la ligne
+    // ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT); necessaire ?
 };
 
-void SuiveurLigne::tournerGauche(){
+void SuiveurLigne::tournerGauche()
+{
     ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::ARRIERE);
-    while(!(PINC & (1 << EXTREME_GAUCHE)));
-    ajustementPWM(_vitesse,DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    while(!(PINC & (1 << EXTREME_GAUCHE))); // Attend de toucher la ligne
+    // ajustementPWM(_vitesse,DIRECTION::AVANT, _vitesse, DIRECTION::AVANT); necessaire ?
 };
 
-bool SuiveurLigne::suivreLigne(){
-    _delay_ms(75);
+bool SuiveurLigne::suivreLigne()
+{
+    const uint8_t FETCH_DELAY = 75;
+    const uint8_t DEBOUNCE_DELAY = 15;
+
+    _delay_ms(FETCH_DELAY);
+
     if (!suiveurLigneAllume())
     {
-        //transmissionUART(90);
-        _delay_ms(15); //Delais de debounce
+        _delay_ms(DEBOUNCE_DELAY);
         if (!suiveurLigneAllume())
         {
             stopPWM();
@@ -57,13 +69,14 @@ bool SuiveurLigne::suivreLigne(){
     }
     else
     {
-        ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+        avancerDroit();
         return true;
     }
-    return true;
+    return true; // Masque le warning
 };
 
-bool SuiveurLigne::suiveurLigneAllume(){
+bool SuiveurLigne::suiveurLigneAllume()
+{
     return (PINC & (1<< EXTREME_GAUCHE) ||
             PINC & (1<< GAUCHE) ||
             PINC & (1<< MILIEU) ||
