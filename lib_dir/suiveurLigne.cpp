@@ -7,11 +7,12 @@ SuiveurLigne::SuiveurLigne(uint8_t vitesse) :
 };
 
 void SuiveurLigne::redressementDroit(){
-    ajustementPWM(32, DIRECTION::AVANT, 96, DIRECTION::AVANT);
+    ajustementPWM(0, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 };
 
-void SuiveurLigne::redressementGauche(){  
-    ajustementPWM(96, DIRECTION::AVANT, 32, DIRECTION::AVANT);
+void SuiveurLigne::redressementGauche()
+{  
+    ajustementPWM(_vitesse, DIRECTION::AVANT, 0, DIRECTION::AVANT);
 };
 
 void SuiveurLigne::tournerDroit(){
@@ -27,10 +28,10 @@ void SuiveurLigne::tournerGauche(){
 };
 
 bool SuiveurLigne::suivreLigne(){
-    _delay_ms(60);
-    transmissionUART(1);
+    _delay_ms(75);
     if (!suiveurLigneAllume())
     {
+        //transmissionUART(90);
         _delay_ms(15); //Delais de debounce
         if (!suiveurLigneAllume())
         {

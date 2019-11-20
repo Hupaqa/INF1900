@@ -1,5 +1,6 @@
 #include "coupure.h"
 
+/*
 Coupure::Coupure(int vitesse) : 
     SuiveurLigne(vitesse),
     etatCourant(ETAT_COUPURE::COUPURE1), 
@@ -107,3 +108,4 @@ void Coupure::run(){
         etatCourant = etatFutur;
     }    
 }
+*/
