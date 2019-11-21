@@ -4,7 +4,7 @@
 
 int main()
 {
-    LCM lcd(&DDRA, &PORTA);
+    LCM lcd(&DDRA, &PORTA); // LCM est copy-protected
     Selection selection(&lcd);
     selection.run();
 }
@@ -102,7 +102,7 @@ void Selection::runStep()
         }
         case EtapesParcours::mur:
         {
-            Mur mur(110, _lcd);
+            Mur mur(105, _lcd);
             mur.run();
             break;
         }

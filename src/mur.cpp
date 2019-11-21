@@ -81,17 +81,22 @@ void Mur::doAction()
     {
         case EtatMur::debutLigne:
         case EtatMur::finLigne:
+            _lcd->write("suivreLigne", 0, true);
             stayCurrentState = suivreLigne();
             break;
         case EtatMur::suivreMur:
+            _lcd->write("suivreMur", 0, true);
             followWall();
             break;
         case EtatMur::virageDroit:
+            _lcd->write("virageDroit", 0, true);
             tournerDroit();
         case EtatMur::virageGauche:
+            _lcd->write("virageDroit", 0, true);
             tournerGauche();
             break;
         case EtatMur::fin:
+        _lcd->write("fin", 0, true);
             break;
     }
 }
@@ -110,7 +115,7 @@ void Mur::changeState()
         case EtatMur::suivreMur:
             if (suiveurLigneAllume())
             {
-                _etat = EtatMur::finLigne;
+                _etat = EtatMur::virageDroit;
                 stayCurrentState = true;
             }
             break;
@@ -157,35 +162,35 @@ void Mur::fetchSonar()
 
 void Mur::moveToWall()
 {
-    redressementGauche();
-    //ajustementPWM(HAUTE_INTENSITE, DIRECTION::AVANT, BASSE_INTENSITE, DIRECTION::AVANT);
+    //redressementGauche();
+    ajustementPWM(HAUTE_INTENSITE, DIRECTION::AVANT, BASSE_INTENSITE, DIRECTION::AVANT);
 }
 
 void Mur::moveAgainstWall()
 {
-    redressementDroit();
-    //ajustementPWM(BASSE_INTENSITE, DIRECTION::AVANT, HAUTE_INTENSITE, DIRECTION::AVANT);
+    //redressementDroit();
+    ajustementPWM(BASSE_INTENSITE, DIRECTION::AVANT, HAUTE_INTENSITE, DIRECTION::AVANT);
 }
 
 void Mur::goStraight()
 {
-    avancerDroit();
-    //ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    //avancerDroit();
+    ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 }
 
 void Mur::followWall()
 {
-    const uint8_t DELAY = 40;
+    const uint8_t DELAY = 50;
     
     fetchSonar();
     while(!repondu); // Attendre la réponse du sonar
 
-    if (distance < 14 && distance > 1)
+    if (distance < 16 && distance > 1)
     {
         moveAgainstWall();
         _led.turnRed();
     }
-    else if (distance > 16 && distance < 36)
+    else if (distance > 18 && distance < 36)
     {
         moveToWall();
         _led.turnRed();
@@ -197,4 +202,9 @@ void Mur::followWall()
     }
 
     _delay_ms(DELAY); // Pour respecter la frequence maximale du sonar
+}
+
+void Mur::goToLine()
+{
+    
 }

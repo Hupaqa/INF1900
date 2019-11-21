@@ -33,6 +33,7 @@ public:
     void moveAgainstWall();
     void goStraight();
     void followWall();
+    void goToLine();
 
 private:
     bool stayCurrentState;
@@ -41,7 +42,7 @@ private:
     LCM* _lcd;
 
     const uint8_t DEMARAGE = 254;
-    const uint8_t HAUTE_INTENSITE = 105;
+    const uint8_t HAUTE_INTENSITE = 108;
     const uint8_t BASSE_INTENSITE = 38;
     const uint8_t AVANT = 0;
     const uint8_t ARRIERE = 1;
