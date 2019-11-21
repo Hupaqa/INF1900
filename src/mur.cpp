@@ -12,6 +12,7 @@ volatile bool listening;
 // Interruption pour le output du sonar
 ISR(INT2_vect)
 {
+    // Reinitialise la valeur du compteur a 0 lors de la premiere interruption
     if (listening)
     {
         TCNT2 = 0; // Reinitialise la valeur du compteur
@@ -19,12 +20,13 @@ ISR(INT2_vect)
         listening = false;
 
     }
+    // Calcule la distance si la reponse precede l'overflow du compteur
     else if (!repondu)
     {   
         cli(); // Stop interrupts
-        TCCR2B = 0;
+        TCCR2B = 0; // Desactive le compteur 2
         TIMSK2 &= ~(1 << TOIE2); // Interrupt on overflow OFF
-        distance = (TCNT2 * 8) / 58;
+        distance = (TCNT2 * 8) / 58; // Source : documentation
         repondu = true;
         sei();
     }
@@ -33,28 +35,32 @@ ISR(INT2_vect)
 // Interruption lors de l'overflow du compteur
 ISR(TIMER2_OVF_vect)
 {
+    // Prevoit une distance maximale en l'absence d'une reponse du sonar
     if (!repondu)
     {
-        cli();
-        TCCR2B = 0;
+        cli(); // Desactive les interruptions
+        TCCR2B = 0; // Desactive le compteur 2
         TIMSK2 &= ~(1 << TOIE2); // Interrupt on overflow OFF
-        distance = 35;
+        distance = 35; // La distance equivalente a TCNT2 = UINT8_MAX
         repondu = true;
-        sei();
+        sei(); // Active les interruptions
     }
 }
 
+// Construit l'objet Mur 
 Mur::Mur(uint8_t vitesse) : 
     SuiveurLigne(vitesse), 
     _etat(EtatMur::debutLigne),
     _led(Led())
 {
-    // Initialisation du compteur
-    TCCR2B |= (1 << CS22); // Prescaler de 64
-    // Interruption 
-    EICRA |= (1 << ISC20); // Any edge
-    // Initialisation PWM
-    initPWM(); 
+    EICRA |= (1 << ISC20); // Active les interruptions sur any edge on INT2
+    initPWM(); // Initialisation PWM pour les registres des moteurs
+}
+
+// Detruit l'objet
+Mur::~Mur()
+{
+    EICRA &= ~(1 << ISC20); // Desactive les interruptions sur INT2
 }
 
 void Mur::run()
@@ -112,43 +118,52 @@ void Mur::changeState()
             }
             break;
         case (EtatMur::virage):
-            if (suiveurLigneAllume())
-            {
-                _etat = EtatMur::fin;
-            }
+            _etat = EtatMur::fin;
             break;
         case (EtatMur::fin):
             break;
     }
 }
 
+// Active le signal enable du sonar pour 10us
+void Mur::enableSonar()
+{
+    const uint8_t SONAR_DELAY = 10;
+
+    PORTB |= (1 << PORTB4);
+    _delay_us(SONAR_DELAY);
+    PORTB &= ~(1 << PORTB4);
+}
+
 void Mur::fetchSonar()
 {
-    PORTB |= (1 << PORTB4);
-    _delay_us(10);
-    PORTB &= ~(1 << PORTB4);
+    cli(); // Desactive temporairement les interruptions
+    enableSonar();
 
     listening = true;
     repondu = false;
 
-    TCCR2B |= (1 << CS22); 
+    TCCR2B |= (1 << CS22); // Initialise le compteur avec un prescaler de 64
     EIMSK |= (1 << INT2); // Active les interruptions sur INT2
     sei(); // Active les interruptions
 }
 
 void Mur::moveToWall()
 {
-    ajustementPWM(HAUTE_INTENSITE, DIRECTION::AVANT, BASSE_INTENSITE, DIRECTION::AVANT);
+    redressementGauche();
+    //ajustementPWM(HAUTE_INTENSITE, DIRECTION::AVANT, BASSE_INTENSITE, DIRECTION::AVANT);
 }
 
 void Mur::moveAgainstWall()
 {
-    ajustementPWM(BASSE_INTENSITE, DIRECTION::AVANT, HAUTE_INTENSITE, DIRECTION::AVANT);
+    redressementDroit();
+    //ajustementPWM(BASSE_INTENSITE, DIRECTION::AVANT, HAUTE_INTENSITE, DIRECTION::AVANT);
 }
 
 void Mur::goStraight()
 {
-    ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    avancerDroit();
+    //ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 }
 
 void Mur::followWall()

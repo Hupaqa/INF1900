@@ -2,104 +2,174 @@
 
 #include "selection.h"
 
-volatile bool buttonEventBreadboard;
-volatile bool buttonEventCard;
-
-Selection::Selection(): 
-    _etat(EtatSelection::leCouloir),
-    compteurEtat(0),
-    _lcd(LCM(&DDRA, &PORTA))
+int main()
 {
-    buttonEventBreadboard = false;
-    buttonEventCard = false;
-    cli ();
-    EIMSK |= (1 << INT0) | (1 << INT1) ;
-    EICRA |= (1<<ISC11) | (1 << ISC01);
-    sei ();
+    LCM lcd(&DDRA, &PORTA);
+    Selection selection(&lcd);
+    selection.run();
 }
 
-ISR(INT0_vect){
-    _delay_ms(10);
-
-    buttonEventCard = true;
-    _delay_ms(2000);
+Selection::Selection(LCM* lcd): 
+    _etat(EtatSelection::selection),
+    _etapeCourrante(EtapesParcours::couloir),
+    _lcd(lcd)
+{
 }
 
-ISR(INT1_vect){
-    _delay_ms (10);
+bool Selection::breadboardDebounced()
+{
+    const uint8_t DEBOUNCE_DELAY = 15;
 
-    buttonEventBreadboard = true;
-}
-
-void Selection::changeState(){
-    switch(_etat){
-        case(EtatSelection::leCouloir):
-            _etat = EtatSelection::leMur;
-            break;
-        case(EtatSelection::leMur):
-            _etat = EtatSelection::lesBoucles;
-            break;
-        case(EtatSelection::lesBoucles):
-            _etat = EtatSelection::lesCoupures;
-            break;
-        case(EtatSelection::lesCoupures):
-            _etat = EtatSelection::leCouloir;
-            break;
-        case(EtatSelection::Fin):               
-            break;
-    }
-    if(buttonEventCard){
-        ++compteurEtat;
-        if (compteurEtat>4)
+    if (!(PORTD & (1 << BOUTON_BREADBOARD)))
+    {
+        _delay_ms(DEBOUNCE_DELAY);
+        if (!(PORTD & (1 << BOUTON_BREADBOARD)))
         {
-            _etat = EtatSelection::Fin;
+            return true;
         }
-    }else{
-        buttonEventBreadboard = false;
+        return false;
     }
-
+    return false;
 }
 
-void Selection::doAction(){
-    switch(_etat){
-        case(EtatSelection::leCouloir):
-            _lcd.write("Le couloir", 0, true);
-            if(buttonEventCard){
-                Couloir couloir_obj(75);
-                couloir_obj.run();
-            }
+bool Selection::interruptDebounced()
+{
+    const uint8_t DEBOUNCE_DELAY = 15;
+
+    if (PORTD & (1 << BOUTON_INTERRUPT))
+    {
+        _delay_ms(DEBOUNCE_DELAY);
+        if (PORTD & (1 << BOUTON_INTERRUPT))
+        {
+            return true;
+        }
+        return false;
+    }
+    return false;
+}
+
+EtapesParcours Selection::nextStep()
+{
+    switch(_etapeCourrante)
+    {
+        case EtapesParcours::couloir:
+            return EtapesParcours::mur;
             break;
-        case(EtatSelection::leMur):
-            _lcd.write("Le mur", 0, true);
-            if(buttonEventCard){
-                Mur mur_obj(75);
-                mur_obj.run();
-            }
+        case EtapesParcours::mur:
+            return EtapesParcours::boucles;
             break;
-        case(EtatSelection::lesBoucles):
-            _lcd.write("Les deux boucles", 0, true);
-            if(buttonEventCard){
-                Boucle boucle_obj(75);
-                boucle_obj.run();
-            }
+        case EtapesParcours::boucles:
+            return EtapesParcours::coupures;
             break;
-        case(EtatSelection::lesCoupures):
-            _lcd.write("Les coupures", 0, true);
-            if(buttonEventCard){
-                Coupure coupure_obj(75);
-                coupure_obj.run();
-            }
-            break;
-        case(EtatSelection::Fin):
-            _lcd.write("Fin", 0, true);
+        case EtapesParcours::coupures:
+            return EtapesParcours::couloir;
             break;
     }
 }
 
-void Selection::run(){
-    while(_etat != EtatSelection::Fin){
-        while(!buttonEventBreadboard || buttonEventCard);
-        changeState();
+void Selection::updateFirstStep()
+{
+    _etapeCourrante = nextStep();
+
+    switch(_etapeCourrante){
+        case(EtapesParcours::couloir):
+            _lcd->write("Le couloir", 0, true);
+            break;
+        case(EtapesParcours::mur):
+            _lcd->write("Le mur", 0, true);
+            break;
+        case(EtapesParcours::boucles):
+            _lcd->write("Les deux boucles", 0, true);
+            break;
+        case(EtapesParcours::coupures):
+            _lcd->write("Les coupures", 0, true);
+            break;
+    }
+}
+
+
+void Selection::runStep()
+{
+    switch(_etapeCourrante)
+    {
+        case(EtapesParcours::couloir):
+        {
+            Couloir couloir(75);
+            couloir.run();
+            break;
+        }
+        case(EtapesParcours::mur):
+        {
+            Mur mur(75);
+            mur.run();
+            break;
+        }
+        case(EtapesParcours::boucles):
+        {
+            Boucle boucle(75);
+            boucle.run();
+            break;
+        }
+        case(EtapesParcours::coupures):
+        {
+            Coupure coupure(75);
+            coupure.run();
+            break;
+        }
+    }
+}
+
+void Selection::doAction()
+{
+    switch(_etat)
+    {
+        case EtatSelection::selection:
+            if (breadboardDebounced())
+            {
+                updateFirstStep();
+            }
+            break;
+        case EtatSelection::appeler:
+            for (uint8_t i = 0; i < nombreEtapes; ++i)
+            {
+                runStep();
+                _etapeCourrante = nextStep();
+            }
+            break;
+        case EtatSelection::afficherFin:
+            _lcd->write("FIN", 0, true);
+            break;
+        case EtatSelection::fin:
+            break;
+    }
+}
+
+void Selection::changeState()
+{
+    switch(_etat)
+    {
+        case EtatSelection::selection:
+            if (interruptDebounced())
+            {
+                _etat = appeler;
+            }
+            break;
+        case EtatSelection::appeler:
+            _etat = EtatSelection::afficherFin;
+            break;
+        case EtatSelection::afficherFin:
+            _etat = EtatSelection::fin;
+            break;
+        case EtatSelection::fin:
+            break;
+    }
+}
+
+void Selection::run()
+{
+    while(_etat != EtatSelection::fin)
+    {
         doAction();
+        changeState();
     }
 }

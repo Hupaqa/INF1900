@@ -10,7 +10,9 @@
 
 Navigator::Navigator(uint8_t vitesse) : 
     _vitesse(vitesse)
-{};
+{
+    initPWM();
+};
 
 void Navigator::initPWM()
 {
@@ -41,8 +43,8 @@ void Navigator::ajustementPWM(uint8_t puissanceDroit, DIRECTION directionDroit, 
     }
 
     //Vitesse maximal pour surpasser l'inertie
-    OCR1A = (puissanceDroit) ? 255 : 0;
-    OCR1B = (puissanceGauche) ? 255 : 0;
+    OCR1A = (puissanceDroit) ? UINT8_MAX : 0;
+    OCR1B = (puissanceGauche) ? UINT8_MAX : 0;
     _delay_ms(5); //temps determine experimentalement
 
     OCR1A = puissanceDroit;

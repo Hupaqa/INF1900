@@ -13,10 +13,9 @@ class SuiveurLigne : public Navigator
     public:
         SuiveurLigne(uint8_t vitesse);
 
+        void avancerDroit();
         void redressementDroit();
         void redressementGauche();
-        void grosRedressementDroit();
-        void grosRedressementGauche();
 
         void tournerDroit();
         void tournerGauche();
@@ -24,7 +23,7 @@ class SuiveurLigne : public Navigator
         bool suivreLigne();
         bool suiveurLigneAllume();
     private:
-
+        const uint8_t OFF = 0;
 };
 
 #endif
