@@ -1,7 +1,7 @@
 #include "suiveurLigne.h"
 
 enum class ETAT_COUPURE {
-    COUPURE1, COUPURE2, COUPURE3, COUPURE4, FIN, REDRESSEMENT_GAUCHE, REDRESSEMENT_DROIT
+    COUPURE1, COUPURE2, COUPURE3, COUPURE4, FIN
 };
 
 class Coupure : public SuiveurLigne {
@@ -56,6 +56,5 @@ public:
 private:
     ETAT_COUPURE etatCourant;
     ETAT_COUPURE etatFutur;
-    ETAT_COUPURE etatMemoire;
     bool isDone;
 };
