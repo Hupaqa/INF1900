@@ -15,7 +15,7 @@ public:
      *  with the vitesse parameter.  It then sets the variable etatCourant
      *  and etatFutur to ETAT_COUPURE::DEBUT.
      */ 
-    Coupure(int vitesse);
+    Coupure(int vitesse, LCM* ecran);
 
     /*
      *
@@ -57,4 +57,5 @@ private:
     ETAT_COUPURE etatCourant;
     ETAT_COUPURE etatFutur;
     bool isDone;
+    LCM*  afficheur;
 };
