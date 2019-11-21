@@ -58,4 +58,5 @@ private:
     ETAT_COUPURE etatFutur;
     ETAT_COUPURE etatMemoire;
     bool isDone;
+    LCM* _lcd;
 };

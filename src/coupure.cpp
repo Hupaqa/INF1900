@@ -3,9 +3,8 @@
 #endif
 
 #include "coupure.h"
-
 /*
-Coupure::Coupure(int vitesse) : 
+Coupure::Coupure(int vitesse, LCM* lcd) : 
     SuiveurLigne(vitesse),
     etatCourant(ETAT_COUPURE::COUPURE1), 
     etatFutur(ETAT_COUPURE::COUPURE1), 
@@ -14,7 +13,7 @@ Coupure::Coupure(int vitesse) :
 {
     DDRC = 0x00;
     DDRD = 0xff;
-    initPWM();
+    
 }
 
 bool Coupure::suivreLigne(){

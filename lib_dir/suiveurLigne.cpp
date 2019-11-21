@@ -38,7 +38,6 @@ void SuiveurLigne::tournerGauche()
     _delay_ms(2000);
     ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::ARRIERE);
     while(!(PINC & (1 << EXTREME_GAUCHE))); // Attend de toucher la ligne
-    // ajustementPWM(_vitesse,DIRECTION::AVANT, _vitesse, DIRECTION::AVANT); necessaire ?
 };
 
 bool SuiveurLigne::suivreLigne()

@@ -5,10 +5,10 @@
 #include <util/delay.h>
 
 #define MILIEU PINC4
-#define GAUCHE PINC3
-#define EXTREME_GAUCHE PINC2
-#define DROITE PINC5
-#define EXTREME_DROITE PINC6
+#define GAUCHE PINC5
+#define EXTREME_GAUCHE PINC6
+#define DROITE PINC3
+#define EXTREME_DROITE PINC2
 
 enum class DIRECTION{
     AVANT = 0,

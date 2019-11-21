@@ -12,8 +12,7 @@ enum EtatMur
     suivreMur,
     virageDroit,
     finLigne, 
-    virageGauche,
-    fin
+    virageGauche
 };
 
 class Mur : public SuiveurLigne
@@ -36,10 +35,10 @@ public:
     void goToLine();
 
 private:
-    bool stayCurrentState;
     EtatMur _etat;
     Led _led;
     LCM* _lcd;
+    bool _isDone;
 
     const uint8_t DEMARAGE = 254;
     const uint8_t HAUTE_INTENSITE = 108;

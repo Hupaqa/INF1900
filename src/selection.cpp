@@ -108,7 +108,7 @@ void Selection::runStep()
         }
         case EtapesParcours::boucles:
         {
-            Boucle boucle(75);
+            Boucle boucle(100, _lcd);
             boucle.run();
             break;
         }
