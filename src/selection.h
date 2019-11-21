@@ -9,6 +9,7 @@
 #include "couloir.h"
 #include "mur.h"
 #include "coupure.h"
+#include "uart.h"
 
 enum EtatSelection
 {

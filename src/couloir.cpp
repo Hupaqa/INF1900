@@ -6,17 +6,15 @@
 
 Couloir::Couloir(uint8_t vitesse, LCM* ecran):
     SuiveurLigne(vitesse),
-    afficheur(ecran)
+    _lcd(ecran)
 {
-    initPWM();
     DDRC = 0x00; //DDRC en entree
-    afficheur->write("Couloir", 0, true);
+    _lcd->write("Couloir", 0, true);
 };
 
 void Couloir::run(){
     while (suivreLigne());
-    afficheur->write("Dedans", 0, true);
-    while (!(PINC & ((1<<GAUCHE) | (1<<MILIEU) | (1<<DROITE))))
+    while (!((PINC & (1 << MILIEU)) || (PINC & (1 << GAUCHE)) || (PINC & (1 << DROITE))))
     {
         suivreCouloir();
     }
@@ -29,11 +27,24 @@ void Couloir::suivreCouloir(){
     _delay_ms(50);
     
     if (PINC & (1<<EXTREME_GAUCHE)) {
-        redressementDroit();
+        correctionDroite();
     }   
     else if (PINC & (1<<EXTREME_DROITE)){
-        redressementGauche();
+        correctionGauche();
     }else {
-        ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+        avancerDroit();
     }
 }
+
+void Couloir::correctionDroite()
+{
+    redressementDroit();
+    _delay_ms(250);
+}
+
+void Couloir::correctionGauche()
+{
+    redressementGauche();
+    _delay_ms(250);
+}
+

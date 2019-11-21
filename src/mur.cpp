@@ -90,6 +90,8 @@ void Mur::doAction()
             goToLine();
             break;
         case EtatMur::virageGauche:
+            avancerDroit();
+            _delay_ms(1000);
             tournerGauche();
             break;
     }
@@ -166,11 +168,10 @@ void Mur::goStraight()
 
 void Mur::followWall()
 {
-    const uint8_t DELAY = 50;
+    const uint8_t DELAY = 75;
     
     fetchSonar();
     while(!repondu); // Attendre la réponse du sonar
-
     if (distance < 14 && distance > 1)
     {
         moveAgainstWall();
@@ -193,7 +194,7 @@ void Mur::followWall()
 void Mur::goToLine()
 {
     avancerDroit();
-    _delay_ms(3000);
+    _delay_ms(2000);
     ajustementPWM(HAUTE_INTENSITE, DIRECTION::ARRIERE, HAUTE_INTENSITE, DIRECTION::AVANT);
     while (!(PINC & (1 << MILIEU)));
     ajustementPWM(HAUTE_INTENSITE, DIRECTION::AVANT, HAUTE_INTENSITE, DIRECTION::AVANT);

@@ -108,13 +108,13 @@ void Selection::runStep()
         }
         case EtapesParcours::boucles:
         {
-            Boucle boucle(100, _lcd);
+            Boucle boucle(105, _lcd);
             boucle.run();
             break;
         }
         case EtapesParcours::coupures:
         {
-            Coupure coupure(110, _lcd);
+            Coupure coupure(105, _lcd);
             coupure.run();
             break;
         }

@@ -17,25 +17,24 @@ void SuiveurLigne::avancerDroit()
 
 void SuiveurLigne::redressementDroit()
 {
-    ajustementPWM(OFF, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    ajustementPWM(32, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+
 };
 
 void SuiveurLigne::redressementGauche()
-{  
-    ajustementPWM(_vitesse, DIRECTION::AVANT, OFF, DIRECTION::AVANT);
+{ 
+    ajustementPWM(_vitesse, DIRECTION::AVANT, 32, DIRECTION::AVANT);
 };
 
 void SuiveurLigne::tournerDroit()
 {
     ajustementPWM(_vitesse, DIRECTION::ARRIERE, _vitesse, DIRECTION::AVANT);
-    while(!(PINC & (1 << DROITE)));
+    while(!(PINC & (1 << EXTREME_DROITE)));
     // ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT); necessaire ?
 };
 
 void SuiveurLigne::tournerGauche()
 {
-    avancerDroit();
-    _delay_ms(2000);
     ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::ARRIERE);
     while(!(PINC & (1 << EXTREME_GAUCHE))); // Attend de toucher la ligne
 };
@@ -60,11 +59,11 @@ bool SuiveurLigne::suivreLigne()
     {
         if(PINC & (1 << EXTREME_GAUCHE) || PINC & (1 << GAUCHE))
         {
-            redressementDroit();
+            redressementGauche();
         }
         else if (PINC & (1 << EXTREME_DROITE) || PINC & (1 << DROITE)) 
         {
-            redressementGauche();
+           redressementDroit();
         }
         return true;
     }
