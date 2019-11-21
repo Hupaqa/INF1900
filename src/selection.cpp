@@ -14,17 +14,20 @@ Selection::Selection(LCM* lcd):
     _etapeCourrante(EtapesParcours::couloir),
     _lcd(lcd)
 {
+    _lcd->write("Le couloir", 0, true);
+    DDRD &= ~((1 << BOUTON_BREADBOARD) | (1 << BOUTON_INTERRUPT)); // Boutons en entree
 }
 
 bool Selection::breadboardDebounced()
 {
     const uint8_t DEBOUNCE_DELAY = 15;
 
-    if (!(PORTD & (1 << BOUTON_BREADBOARD)))
+    if (!(PIND & (1 << BOUTON_BREADBOARD)))
     {
         _delay_ms(DEBOUNCE_DELAY);
-        if (!(PORTD & (1 << BOUTON_BREADBOARD)))
+        if (!(PIND & (1 << BOUTON_BREADBOARD)))
         {
+            while (!(PIND & (1 << BOUTON_BREADBOARD)));
             return true;
         }
         return false;
@@ -36,11 +39,12 @@ bool Selection::interruptDebounced()
 {
     const uint8_t DEBOUNCE_DELAY = 15;
 
-    if (PORTD & (1 << BOUTON_INTERRUPT))
+    if (PIND & (1 << BOUTON_INTERRUPT))
     {
         _delay_ms(DEBOUNCE_DELAY);
-        if (PORTD & (1 << BOUTON_INTERRUPT))
+        if (PIND & (1 << BOUTON_INTERRUPT))
         {
+            while (PIND & (1 << BOUTON_INTERRUPT));
             return true;
         }
         return false;
@@ -100,7 +104,7 @@ void Selection::runStep()
         }
         case(EtapesParcours::mur):
         {
-            Mur mur(75);
+            Mur mur(75, _lcd);
             mur.run();
             break;
         }
@@ -112,8 +116,8 @@ void Selection::runStep()
         }
         case(EtapesParcours::coupures):
         {
-            Coupure coupure(75);
-            coupure.run();
+            //Coupure coupure(75);
+            //coupure.run();
             break;
         }
     }
@@ -146,12 +150,15 @@ void Selection::doAction()
 
 void Selection::changeState()
 {
+    const uint16_t DELAY_SELECTION = 2000;
+
     switch(_etat)
     {
         case EtatSelection::selection:
             if (interruptDebounced())
             {
                 _etat = appeler;
+                _delay_ms(DELAY_SELECTION);
             }
             break;
         case EtatSelection::appeler:

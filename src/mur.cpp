@@ -48,13 +48,14 @@ ISR(TIMER2_OVF_vect)
 }
 
 // Construit l'objet Mur 
-Mur::Mur(uint8_t vitesse) : 
+Mur::Mur(uint8_t vitesse, LCM* lcd) : 
     SuiveurLigne(vitesse), 
     _etat(EtatMur::debutLigne),
-    _led(Led())
+    _led(Led()),
+    _lcd(lcd)
 {
+    _lcd->write("Le mur", 0, true); // true = Clear screen
     EICRA |= (1 << ISC20); // Active les interruptions sur any edge on INT2
-    initPWM(); // Initialisation PWM pour les registres des moteurs
 }
 
 // Detruit l'objet
@@ -77,17 +78,17 @@ void Mur::doAction()
 {
     switch(_etat)
     {
-        case (EtatMur::debutLigne):
-        case (EtatMur::finLigne):
+        case EtatMur::debutLigne:
+        case EtatMur::finLigne:
             stayCurrentState = suivreLigne();
             break;
-        case (EtatMur::mur):
+        case EtatMur::mur:
             followWall();
             break;
-        case (EtatMur::virage):
+        case EtatMur::virage:
             tournerGauche();
             break;
-        case (EtatMur::fin):
+        case EtatMur::fin:
             break;
     }
 }
@@ -96,31 +97,31 @@ void Mur::changeState()
 {
     switch(_etat)
     {
-        case (EtatMur::debutLigne):
+        case EtatMur::debutLigne:
             if (!stayCurrentState)
             {
                 _etat = EtatMur::mur;
                 stayCurrentState = true;
             }
             break;
-        case (EtatMur::mur):
+        case EtatMur::mur:
             if (suiveurLigneAllume())
             {
                 _etat = EtatMur::finLigne;
                 stayCurrentState = true;
             }
             break;
-        case (EtatMur::finLigne):
+        case EtatMur::finLigne:
             if (!stayCurrentState)
             {
                 _etat = EtatMur::virage;
                 stayCurrentState = true;
             }
             break;
-        case (EtatMur::virage):
+        case EtatMur::virage:
             _etat = EtatMur::fin;
             break;
-        case (EtatMur::fin):
+        case EtatMur::fin:
             break;
     }
 }
@@ -150,20 +151,20 @@ void Mur::fetchSonar()
 
 void Mur::moveToWall()
 {
-    redressementGauche();
-    //ajustementPWM(HAUTE_INTENSITE, DIRECTION::AVANT, BASSE_INTENSITE, DIRECTION::AVANT);
+    //redressementGauche();
+    ajustementPWM(HAUTE_INTENSITE, DIRECTION::AVANT, BASSE_INTENSITE, DIRECTION::AVANT);
 }
 
 void Mur::moveAgainstWall()
 {
-    redressementDroit();
-    //ajustementPWM(BASSE_INTENSITE, DIRECTION::AVANT, HAUTE_INTENSITE, DIRECTION::AVANT);
+    //redressementDroit();
+    ajustementPWM(BASSE_INTENSITE, DIRECTION::AVANT, HAUTE_INTENSITE, DIRECTION::AVANT);
 }
 
 void Mur::goStraight()
 {
-    avancerDroit();
-    //ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    //avancerDroit();
+    ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 }
 
 void Mur::followWall()
@@ -173,12 +174,12 @@ void Mur::followWall()
     fetchSonar();
     while(!repondu); // Attendre la réponse du sonar
 
-    if (distance < 13 && distance > 1)
+    if (distance < 14 && distance > 1)
     {
         moveAgainstWall();
         _led.turnRed();
     }
-    else if (distance > 17 && distance < 36)
+    else if (distance > 16 && distance < 36)
     {
         moveToWall();
         _led.turnRed();

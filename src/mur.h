@@ -18,7 +18,7 @@ enum class EtatMur
 class Mur : public SuiveurLigne
 {
 public:
-    Mur(uint8_t vitesse);
+    Mur(uint8_t vitesse, LCM* lcd);
     ~Mur();
 
     void run();
@@ -34,14 +34,16 @@ public:
     void followWall();
 
 private:
+    bool stayCurrentState;
+    EtatMur _etat;
+    Led _led;
+    LCM* _lcd;
+
     const uint8_t DEMARAGE = 254;
     const uint8_t HAUTE_INTENSITE = 105;
     const uint8_t BASSE_INTENSITE = 38;
     const uint8_t AVANT = 0;
     const uint8_t ARRIERE = 1;
-    bool stayCurrentState;
-    EtatMur _etat;
-    Led _led;
 };
 
 #endif // MUR_H
