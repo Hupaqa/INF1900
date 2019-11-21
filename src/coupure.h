@@ -16,24 +16,6 @@ public:
      *  and etatFutur to ETAT_COUPURE::DEBUT.
      */ 
     Coupure(int vitesse, LCM* ecran);
-
-    /*
-     *
-     * 
-     */
-    // bool suivreLigne();
-
-    /*
-     *
-     * 
-     */
-    //void redressementDroit();
-
-    /*
-     *
-     * 
-     */
-    //void redressementGauche();
     
     /*
      *  This funtion is the main loop of thi class, it calls doAction and

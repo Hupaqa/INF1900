@@ -12,7 +12,7 @@ enum class ETAT_BOUCLE {
 
 class Boucle {
 public:
-    Boucle(uint8_t vitesse);
+    Boucle(uint8_t vitesse, LCM* lcd);
 
     void run();
     void doAction();
@@ -21,6 +21,7 @@ public:
 private:
     SuiveurLigne _suiveurLigne;
     ETAT_BOUCLE _etat = ETAT_BOUCLE::ALLER_GROSSE_BOUCLE;
+    LCM* _lcd;
 };
 
 #endif //BOUCLE_H
