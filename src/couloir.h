@@ -10,11 +10,12 @@ class Couloir : public SuiveurLigne {
          * 
          * 
          **/
-        Couloir(uint8_t vitesse);
+        Couloir(uint8_t vitesse, LCM* ecran);
         void run();
         void suivreCouloir();
 
     private:
+        LCM* afficheur;
 };
 
 #endif

@@ -3,17 +3,17 @@
 #endif
 
 #include "coupure.h"
-/*
-Coupure::Coupure(int vitesse, LCM* lcd) : 
+
+Coupure::Coupure(int vitesse, LCM* ecran) : 
     SuiveurLigne(vitesse),
     etatCourant(ETAT_COUPURE::COUPURE1), 
     etatFutur(ETAT_COUPURE::COUPURE1), 
-    etatMemoire(ETAT_COUPURE::COUPURE1), 
-    isDone(false)
+    isDone(false),
+    afficheur(ecran)
 {
     DDRC = 0x00;
     DDRD = 0xff;
-    
+    afficheur->write("Coupure", 0, true);
 }
 
 bool Coupure::suivreLigne(){
@@ -44,39 +44,30 @@ bool Coupure::suivreLigne(){
     return true;
 }
 
-void Coupure::redressementDroit()
-{
-    ajustementPWM(45, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
-}
-
-void Coupure::redressementGauche(){
-    ajustementPWM(_vitesse, DIRECTION::AVANT, 45, DIRECTION::ARRIERE);
-}
-
 void Coupure::doAction(){
     switch (etatCourant)
     {
         case ETAT_COUPURE::COUPURE1:
             if(!suivreLigne()){
-                etatFutur = ETAT_COUPURE::COUPURE1;
+                etatFutur = ETAT_COUPURE::COUPURE2;
                 tournerDroit();
             }
             break;
         case ETAT_COUPURE::COUPURE2:
             if(!suivreLigne()){
-                etatFutur = ETAT_COUPURE::COUPURE2;
+                etatFutur = ETAT_COUPURE::COUPURE3;
                 tournerGauche();
             }
             break;
         case ETAT_COUPURE::COUPURE3:
             if(!suivreLigne()){
-                etatFutur = ETAT_COUPURE::COUPURE3;
+                etatFutur = ETAT_COUPURE::COUPURE4;
                 tournerDroit();
             }
             break;
         case ETAT_COUPURE::COUPURE4:
             if(!suivreLigne()){
-                etatFutur = ETAT_COUPURE::COUPURE4;
+                etatFutur = ETAT_COUPURE::FIN;
                 tournerGauche();
             }
             break;
@@ -85,30 +76,14 @@ void Coupure::doAction(){
                 tournerGauche();
                 isDone = true;
             }
-            break;
-        case ETAT_COUPURE::REDRESSEMENT_DROIT:
-            redressementDroit();
-            if(PINC & (1 << MILIEU))
-            {
-                etatFutur = etatMemoire; 
-            }
-            break;   
-        case ETAT_COUPURE::REDRESSEMENT_GAUCHE:
-            redressementGauche();
-            if(PINC & (1 << MILIEU))
-            {
-                etatFutur = etatMemoire;
-            }              
-            break;                                                          
+            break;                                                      
     }          
 
 }
 
 void Coupure::run(){
     while(!isDone){
-        _delay_ms(50);
         doAction();
         etatCourant = etatFutur;
     }    
 }
-*/

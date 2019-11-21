@@ -1,7 +1,7 @@
 #include "suiveurLigne.h"
 
 enum class ETAT_COUPURE {
-    COUPURE1, COUPURE2, COUPURE3, COUPURE4, FIN, REDRESSEMENT_GAUCHE, REDRESSEMENT_DROIT
+    COUPURE1, COUPURE2, COUPURE3, COUPURE4, FIN
 };
 
 class Coupure : public SuiveurLigne {
@@ -15,25 +15,7 @@ public:
      *  with the vitesse parameter.  It then sets the variable etatCourant
      *  and etatFutur to ETAT_COUPURE::DEBUT.
      */ 
-    Coupure(int vitesse);
-
-    /*
-     *
-     * 
-     */
-    // bool suivreLigne();
-
-    /*
-     *
-     * 
-     */
-    //void redressementDroit();
-
-    /*
-     *
-     * 
-     */
-    //void redressementGauche();
+    Coupure(int vitesse, LCM* ecran);
     
     /*
      *  This funtion is the main loop of thi class, it calls doAction and
@@ -56,7 +38,6 @@ public:
 private:
     ETAT_COUPURE etatCourant;
     ETAT_COUPURE etatFutur;
-    ETAT_COUPURE etatMemoire;
     bool isDone;
-    LCM* _lcd;
+    LCM*  afficheur;
 };

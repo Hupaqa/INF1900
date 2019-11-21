@@ -4,16 +4,18 @@
 
 #include "couloir.h"
 
-Couloir::Couloir(uint8_t vitesse):
-    SuiveurLigne(vitesse)
+Couloir::Couloir(uint8_t vitesse, LCM* ecran):
+    SuiveurLigne(vitesse),
+    afficheur(ecran)
 {
     initPWM();
     DDRC = 0x00; //DDRC en entree
+    afficheur->write("Couloir", 0, true);
 };
 
 void Couloir::run(){
     while (suivreLigne());
-
+    afficheur->write("Dedans", 0, true);
     while (!(PINC & ((1<<GAUCHE) | (1<<MILIEU) | (1<<DROITE))))
     {
         suivreCouloir();
