@@ -54,6 +54,7 @@ Mur::Mur(uint8_t vitesse, LCM* lcd) :
     _led(Led()),
     _lcd(lcd)
 {
+    DDRB |= ((1 << PORTB0) | (1 << PORTB1));
     _lcd->write("Le mur", 0, true); // true = Clear screen
     EICRA |= (1 << ISC20); // Active les interruptions sur any edge on INT2
 }
@@ -151,20 +152,20 @@ void Mur::fetchSonar()
 
 void Mur::moveToWall()
 {
-    //redressementGauche();
-    ajustementPWM(HAUTE_INTENSITE, DIRECTION::AVANT, BASSE_INTENSITE, DIRECTION::AVANT);
+    redressementGauche();
+    //ajustementPWM(HAUTE_INTENSITE, DIRECTION::AVANT, BASSE_INTENSITE, DIRECTION::AVANT);
 }
 
 void Mur::moveAgainstWall()
 {
-    //redressementDroit();
-    ajustementPWM(BASSE_INTENSITE, DIRECTION::AVANT, HAUTE_INTENSITE, DIRECTION::AVANT);
+    redressementDroit();
+    //ajustementPWM(BASSE_INTENSITE, DIRECTION::AVANT, HAUTE_INTENSITE, DIRECTION::AVANT);
 }
 
 void Mur::goStraight()
 {
-    //avancerDroit();
-    ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    avancerDroit();
+    //ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 }
 
 void Mur::followWall()

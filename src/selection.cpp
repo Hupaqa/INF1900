@@ -7,6 +7,9 @@ int main()
     LCM lcd(&DDRA, &PORTA);
     Selection selection(&lcd);
     selection.run();
+    
+    //Mur mur(75, &lcd);
+    //mur.run();
 }
 
 Selection::Selection(LCM* lcd): 
@@ -14,7 +17,6 @@ Selection::Selection(LCM* lcd):
     _etapeCourrante(EtapesParcours::couloir),
     _lcd(lcd)
 {
-    _lcd->write("Le couloir", 0, true);
     DDRD &= ~((1 << BOUTON_BREADBOARD) | (1 << BOUTON_INTERRUPT)); // Boutons en entree
 }
 
@@ -104,7 +106,7 @@ void Selection::runStep()
         }
         case(EtapesParcours::mur):
         {
-            Mur mur(75, _lcd);
+            Mur mur(110, _lcd);
             mur.run();
             break;
         }
@@ -174,6 +176,8 @@ void Selection::changeState()
 
 void Selection::run()
 {
+    _lcd->write("Le couloir", 0, true);
+
     while(_etat != EtatSelection::fin)
     {
         doAction();

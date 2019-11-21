@@ -11,6 +11,7 @@
 Navigator::Navigator(uint8_t vitesse) : 
     _vitesse(vitesse)
 {
+    DDRD |= ((1 << PORTD4) | (1 << PORTD5) | (1 << PORTD6) | (1 << PORTD7));
     initPWM();
 };
 
