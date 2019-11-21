@@ -1,8 +1,8 @@
 #ifndef SELECTION_H
 #define SELECTION_H
 
-#define BOUTON_BREADBOARD PIND2
-#define BOUTON_INTERRUPT PIND3
+#define BOUTON_BREADBOARD PIND3
+#define BOUTON_INTERRUPT PIND2
 
 #include "display.h"
 #include "boucle.h"

@@ -14,17 +14,20 @@ Selection::Selection(LCM* lcd):
     _etapeCourrante(EtapesParcours::couloir),
     _lcd(lcd)
 {
+    _lcd->write("Le couloir", 0, true);
+    DDRD &= ~((1 << BOUTON_BREADBOARD) | (1 << BOUTON_INTERRUPT)); // Boutons en entree
 }
 
 bool Selection::breadboardDebounced()
 {
     const uint8_t DEBOUNCE_DELAY = 15;
 
-    if (!(PORTD & (1 << BOUTON_BREADBOARD)))
+    if (!(PIND & (1 << BOUTON_BREADBOARD)))
     {
         _delay_ms(DEBOUNCE_DELAY);
-        if (!(PORTD & (1 << BOUTON_BREADBOARD)))
+        if (!(PIND & (1 << BOUTON_BREADBOARD)))
         {
+            while (!(PIND & (1 << BOUTON_BREADBOARD)));
             return true;
         }
         return false;
@@ -36,11 +39,12 @@ bool Selection::interruptDebounced()
 {
     const uint8_t DEBOUNCE_DELAY = 15;
 
-    if (PORTD & (1 << BOUTON_INTERRUPT))
+    if (PIND & (1 << BOUTON_INTERRUPT))
     {
         _delay_ms(DEBOUNCE_DELAY);
-        if (PORTD & (1 << BOUTON_INTERRUPT))
+        if (PIND & (1 << BOUTON_INTERRUPT))
         {
+            while (PIND & (1 << BOUTON_INTERRUPT));
             return true;
         }
         return false;
