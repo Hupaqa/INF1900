@@ -28,7 +28,7 @@ void SuiveurLigne::redressementGauche()
 void SuiveurLigne::tournerDroit()
 {
     ajustementPWM(_vitesse, DIRECTION::ARRIERE, _vitesse, DIRECTION::AVANT);
-    while(!(PINC & (1 << EXTREME_DROITE))); // Attend de toucher la ligne
+    while(!(PINC & (1 << GAUCHE))); // Attend de toucher la ligne(test William pour Sonar)
     // ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT); necessaire ?
 };
 

@@ -6,12 +6,13 @@
 #include "suiveurLigne.h"
 #include "led.h"
 
-enum class EtatMur
+enum EtatMur
 {
     debutLigne, 
-    mur,
+    suivreMur,
+    virageDroit,
     finLigne, 
-    virage,
+    virageGauche,
     fin
 };
 

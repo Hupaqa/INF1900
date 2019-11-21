@@ -7,9 +7,6 @@ int main()
     LCM lcd(&DDRA, &PORTA);
     Selection selection(&lcd);
     selection.run();
-    
-    //Mur mur(75, &lcd);
-    //mur.run();
 }
 
 Selection::Selection(LCM* lcd): 
@@ -17,7 +14,7 @@ Selection::Selection(LCM* lcd):
     _etapeCourrante(EtapesParcours::couloir),
     _lcd(lcd)
 {
-    DDRD &= ~((1 << BOUTON_BREADBOARD) | (1 << BOUTON_INTERRUPT)); // Boutons en entree
+    DDRD &= ~((1 << BOUTON_BREADBOARD) | (1 << BOUTON_INTERRUPT)); // Pin des boutons en lecture
 }
 
 bool Selection::breadboardDebounced()
@@ -93,30 +90,29 @@ void Selection::updateFirstStep()
     }
 }
 
-
 void Selection::runStep()
 {
     switch(_etapeCourrante)
     {
-        case(EtapesParcours::couloir):
+        case EtapesParcours::couloir:
         {
             Couloir couloir(75);
             couloir.run();
             break;
         }
-        case(EtapesParcours::mur):
+        case EtapesParcours::mur:
         {
             Mur mur(110, _lcd);
             mur.run();
             break;
         }
-        case(EtapesParcours::boucles):
+        case EtapesParcours::boucles:
         {
             Boucle boucle(75);
             boucle.run();
             break;
         }
-        case(EtapesParcours::coupures):
+        case EtapesParcours::coupures:
         {
             //Coupure coupure(75);
             //coupure.run();
@@ -145,7 +141,7 @@ void Selection::doAction()
         case EtatSelection::afficherFin:
             _lcd->write("FIN", 0, true);
             break;
-        case EtatSelection::fin:
+        case EtatSelection::finParcours:
             break;
     }
 }
@@ -167,9 +163,9 @@ void Selection::changeState()
             _etat = EtatSelection::afficherFin;
             break;
         case EtatSelection::afficherFin:
-            _etat = EtatSelection::fin;
+            _etat = EtatSelection::finParcours;
             break;
-        case EtatSelection::fin:
+        case EtatSelection::finParcours:
             break;
     }
 }
@@ -178,7 +174,7 @@ void Selection::run()
 {
     _lcd->write("Le couloir", 0, true);
 
-    while(_etat != EtatSelection::fin)
+    while(_etat != EtatSelection::finParcours)
     {
         doAction();
         changeState();
