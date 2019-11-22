@@ -11,7 +11,7 @@ Couloir::Couloir(uint8_t vitesse, LCM* lcd):
     _isDone(false)
 {
     DDRC = 0x00; //DDRC en entree
-    _lcd->write("Couloir", 0, true);
+    _lcd->write("Couloir", 0, true); 
 }
 
 void Couloir::run()
@@ -25,7 +25,7 @@ void Couloir::run()
 
 void Couloir::doAction()
 {
-    const uint8_t REDRESSEMENT = 100;
+    const uint16_t REDRESSEMENT = 500;
 
     switch (_etat)
     {
@@ -35,19 +35,31 @@ void Couloir::doAction()
             break;
         case EtatCouloir::limite_gauche:
             devierDroite();
-            _delay_ms(REDRESSEMENT);
+            while(PINC & (1<< EXTREME_GAUCHE) || PINC & (1<< GAUCHE))
+            {
+                if(PINC & (1<< EXTREME_DROITE))
+                {
+                    _etat = ligneFin;
+                }
+            }
             break;
         case EtatCouloir::avancer_gauche:
             avancerGauche();
-            _delay_ms(REDRESSEMENT >> 1);
+            _delay_ms(REDRESSEMENT);
             break;
         case EtatCouloir::limite_droite:
             devierGauche();
-            _delay_ms(REDRESSEMENT);
+            while(PINC & (1<< EXTREME_DROITE) || PINC & (1<<DROITE))
+            {
+                if(PINC & (1<< EXTREME_GAUCHE))
+                {
+                    _etat = ligneFin;
+                }
+            }
             break;
         case EtatCouloir::avancer_droite:
             avancerDroite();
-            _delay_ms(REDRESSEMENT >> 1);
+            _delay_ms(REDRESSEMENT);
             break;
         case EtatCouloir::virageFin:
             virageGaucheCaree();
@@ -58,8 +70,6 @@ void Couloir::doAction()
 
 void Couloir::changeState()
 {
-    const uint8_t DEBOUNCE = 25;
-
     switch (_etat)
     {
         case EtatCouloir::ligneDebut:
@@ -87,23 +97,23 @@ void Couloir::changeState()
             }
             */
         case EtatCouloir::avancer_gauche:
-            if (finCouloir())
-            {
-                _etat = EtatCouloir::ligneFin;
-            }
             if (PINC & (1 << EXTREME_GAUCHE))
             {
                 _etat = EtatCouloir::limite_gauche;
             }
-            break;
-        case EtatCouloir::avancer_droite:
-            if (finCouloir())
+            else if (finCouloir())
             {
                 _etat = EtatCouloir::ligneFin;
             }
+            break;
+        case EtatCouloir::avancer_droite:
             if (PINC & (1 << EXTREME_DROITE))
             {
-                _etat = EtatCouloir::limite_gauche;
+                _etat = EtatCouloir::limite_droite;
+            }
+            else if (finCouloir())
+            {
+                _etat = EtatCouloir::ligneFin;
             }
             break;
         /*
@@ -136,23 +146,27 @@ void Couloir::changeState()
 
 bool Couloir::finCouloir()
 {
-    return !((PINC & (1 << MILIEU)) || (PINC & (1 << GAUCHE)) || (PINC & (1 << DROITE)));
+    return ((PINC & (1 << MILIEU)) || (PINC & (1 << GAUCHE)) || (PINC & (1 << DROITE)));
 }
 
 void Couloir::devierGauche()
 {
-    ajustementPWM(125, DIRECTION::AVANT, 0, DIRECTION::AVANT);
+    ajustementPWM(_vitesse, DIRECTION::AVANT, 60, DIRECTION::AVANT);
 };
 
 void Couloir::devierDroite()
 {
-    ajustementPWM(0, DIRECTION::AVANT, 125, DIRECTION::AVANT);
+    ajustementPWM(60, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 };
 
-void Couloir::avancerGauche(){
-    redressementGauche();
+void Couloir::avancerGauche()
+{
+    ajustementPWM(_vitesse, DIRECTION::AVANT, 80, DIRECTION::AVANT);
 };
         
-void Couloir::avancerDroite(){
-    redressementDroit();
+void Couloir::avancerDroite()
+{
+    ajustementPWM(80, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 };
+
+
