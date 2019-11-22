@@ -6,8 +6,10 @@
 enum EtatCouloir
 {
     ligneDebut,
-    gauche, 
-    droite, 
+    limite_gauche,
+    avancer_gauche,
+    avancer_droite,
+    limite_droite, 
     ligneFin,
     virageFin
 };
@@ -27,10 +29,17 @@ class Couloir : public SuiveurLigne
         void doAction();
         void changeState();
 
+        void devierGauche();
+        void devierDroite();
+
+        void avancerGauche();
+        void avancerDroite();
+        
     private:
         EtatCouloir _etat;
         LCM* _lcd;
         bool _isDone;
+
 };
 
 #endif
