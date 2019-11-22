@@ -3,22 +3,20 @@
 #endif
 
 #include "mur.h"
-#include "uart.h"
 
 volatile uint8_t distance = 0;
+volatile bool partirCompteur;
 volatile bool repondu;
-volatile bool listening;
 
 // Interruption pour le output du sonar
 ISR(INT2_vect)
 {
     // Reinitialise la valeur du compteur a 0 lors de la premiere interruption
-    if (listening)
+    if (partirCompteur)
     {
         TCNT2 = 0; // Reinitialise la valeur du compteur
         TIMSK2 |= (1 << TOIE2); // Interrupt on overflow
-        listening = false;
-
+        partirCompteur = false;
     }
     // Calcule la distance si la reponse precede l'overflow du compteur
     else if (!repondu)
@@ -141,7 +139,7 @@ void Mur::fetchSonar()
     cli(); // Desactive temporairement les interruptions
     enableSonar();
 
-    listening = true;
+    partirCompteur = true;
     repondu = false;
 
     TCCR2B |= (1 << CS22); // Initialise le compteur avec un prescaler de 64
