@@ -3,7 +3,17 @@
 
 #include "suiveurLigne.h"
 
-class Couloir : public SuiveurLigne {
+enum EtatCouloir
+{
+    ligneDebut,
+    gauche, 
+    droite, 
+    ligneFin,
+    virageFin
+};
+
+class Couloir : public SuiveurLigne 
+{
     public:
 
         /**
@@ -12,10 +22,15 @@ class Couloir : public SuiveurLigne {
          **/
         Couloir(uint8_t vitesse, LCM* ecran);
         void run();
-        void suivreCouloir();
+        bool finCouloir();
+
+        void doAction();
+        void changeState();
 
     private:
-        LCM* afficheur;
+        EtatCouloir _etat;
+        LCM* _lcd;
+        bool _isDone;
 };
 
 #endif

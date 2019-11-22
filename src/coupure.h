@@ -7,7 +7,6 @@ enum class ETAT_COUPURE {
 class Coupure : public SuiveurLigne {
 
 public:
-
     /*  
      *  Parameter constructor
      *  @param vitesse : Represent speed of the robot.

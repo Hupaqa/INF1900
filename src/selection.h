@@ -9,6 +9,7 @@
 #include "couloir.h"
 #include "mur.h"
 #include "coupure.h"
+#include "uart.h"
 
 enum EtatSelection
 {
@@ -46,7 +47,7 @@ class Selection
         EtapesParcours _etapeCourrante;
         LCM* _lcd;
         
-        const uint8_t nombreEtapes = 4;
+        const uint8_t NOMBRE_ETAPES = 4;
 };
 
 #endif //SELECTION_H

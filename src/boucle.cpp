@@ -4,11 +4,12 @@
 
 #include "boucle.h"
 
-Boucle::Boucle(uint8_t vitesse, LCM* lcd) : 
-    _suiveurLigne(SuiveurLigne(vitesse)), 
+Boucle::Boucle(uint8_t vitesse, LCM* lcd) :
+    SuiveurLigne(vitesse), 
+    _etat(ETAT_BOUCLE::ALLER_GROSSE_BOUCLE),
     _lcd(lcd)
 {
-    DDRC = 0x00; //DDRC en entree
+    DDRC = 0x00; // Suiveur de lignes
     _lcd->write("Les deux boucles", 0, true);
 };
 
@@ -20,56 +21,86 @@ void Boucle::run(){
     }
 };
 
-void Boucle::doAction(){
-    switch(_etat){
-        case ETAT_BOUCLE::ALLER_GROSSE_BOUCLE : 
+bool Boucle::boucleDetectee()
+{
+    if ((PINC & EXTREME_GAUCHE) && (PINC & GAUCHE) && (PINC & MILIEU))
+    {
+        do
         {
-            uint8_t nIntersections = 0;
-            while(nIntersections != 2){
-                if((PINC & EXTREME_GAUCHE)&&(PINC & GAUCHE)&&(PINC & MILIEU)) {
-                    nIntersections++;
-                }
-                _suiveurLigne.suivreLigne();
-            }
-            break;
+            suivreLigne();
+        } 
+        while (!((PINC & EXTREME_GAUCHE) && (PINC & GAUCHE && (PINC & MILIEU))));
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+    
+}
+
+void Boucle::allerGrosseBoucle()
+{
+    uint8_t intersectionCourrante = 0;
+    while (intersectionCourrante != intersectionGrosseBoucle)
+    {
+        if (boucleDetectee()) 
+        {
+            intersectionCourrante++;
         }
+        suivreLigne();
+    }
+}
+
+void Boucle::suivreBoucles()
+{
+    for(uint8_t boucleCourante = 0; boucleCourante < nBoucles; ++boucleCourante)
+    {
+        while(boucleDetectee())
+        {
+            suivreLigne();
+        }
+        tournerGauche();
+        for (uint8_t segmentEnCours = 0; segmentEnCours < nSegments; ++segmentEnCours)
+        {
+            while(suivreLigne());
+            tournerGauche();
+        }
+    }
+}
+
+void Boucle::doAction()
+{
+    switch (_etat)
+    {
+        case ETAT_BOUCLE::ALLER_GROSSE_BOUCLE : 
+            allerGrosseBoucle();
+            break;
         case ETAT_BOUCLE::FAIRE_BOUCLE: 
-            for(uint8_t j = 0; j <2; j++){
-                while((PINC & EXTREME_GAUCHE)&&(PINC & GAUCHE)&&(PINC & MILIEU)){
-                    _suiveurLigne.suivreLigne();
-                }
-                _suiveurLigne.tournerGauche();
-
-                for (uint8_t i=0; i != 3; i++){
-                    while(_suiveurLigne.suivreLigne());
-                    _suiveurLigne.tournerGauche();
-                }
-            }
+            suivreBoucles();
             break;
-
         case ETAT_BOUCLE::FIN_BOUCLE: 
-            while(_suiveurLigne.suivreLigne());
-            _suiveurLigne.tournerGauche();            
+            while(suivreLigne());
+            virageGaucheCaree();           
             break;
-        
-        case ETAT_BOUCLE::QUIT: break;
+        case ETAT_BOUCLE::QUIT: 
+            break;
     }
 };
 
 void Boucle::changeState(){
-    switch(_etat){
+    switch(_etat)
+    {
         case ETAT_BOUCLE::ALLER_GROSSE_BOUCLE : 
             _etat = ETAT_BOUCLE::FAIRE_BOUCLE;
             break;
-        
         case ETAT_BOUCLE::FAIRE_BOUCLE:
             _etat = ETAT_BOUCLE::FIN_BOUCLE;
             break;
-
         case ETAT_BOUCLE::FIN_BOUCLE: 
             _etat = ETAT_BOUCLE::QUIT;            
             break;
-
-        case ETAT_BOUCLE::QUIT: break;
+        case ETAT_BOUCLE::QUIT: 
+            break;
     }
 };

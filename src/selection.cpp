@@ -108,13 +108,13 @@ void Selection::runStep()
         }
         case EtapesParcours::boucles:
         {
-            Boucle boucle(100, _lcd);
+            Boucle boucle(105, _lcd);
             boucle.run();
             break;
         }
         case EtapesParcours::coupures:
         {
-            Coupure coupure(110, _lcd);
+            Coupure coupure(105, _lcd);
             coupure.run();
             break;
         }
@@ -132,7 +132,7 @@ void Selection::doAction()
             }
             break;
         case EtatSelection::appeler:
-            for (uint8_t i = 0; i < nombreEtapes; ++i)
+            for (uint8_t i = 0; i < NOMBRE_ETAPES; ++i)
             {
                 runStep();
                 _etapeCourrante = nextStep();
