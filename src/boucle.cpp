@@ -4,10 +4,12 @@
 
 #include "boucle.h"
 
-Boucle::Boucle(uint8_t vitesse) : 
-    _suiveurLigne(SuiveurLigne(vitesse))
+Boucle::Boucle(uint8_t vitesse, LCM* lcd) : 
+    _suiveurLigne(SuiveurLigne(vitesse)), 
+    _lcd(lcd)
 {
     DDRC = 0x00; //DDRC en entree
+    _lcd->write("Les deux boucles", 0, true);
 };
 
 void Boucle::run(){

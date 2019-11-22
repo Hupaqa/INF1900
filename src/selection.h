@@ -1,21 +1,22 @@
 #ifndef SELECTION_H
 #define SELECTION_H
 
-#define BOUTON_BREADBOARD PIND2
-#define BOUTON_INTERRUPT PIND3
+#define BOUTON_INTERRUPT PIND2
+#define BOUTON_BREADBOARD PIND3
 
 #include "display.h"
 #include "boucle.h"
 #include "couloir.h"
 #include "mur.h"
 #include "coupure.h"
+#include "uart.h"
 
 enum EtatSelection
 {
     selection,
     appeler,
     afficherFin,
-    fin
+    finParcours
 };
 
 enum EtapesParcours

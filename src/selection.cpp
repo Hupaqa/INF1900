@@ -4,7 +4,7 @@
 
 int main()
 {
-    LCM lcd(&DDRA, &PORTA);
+    LCM lcd(&DDRA, &PORTA); // LCM est copy-protected
     Selection selection(&lcd);
     selection.run();
 }
@@ -14,17 +14,19 @@ Selection::Selection(LCM* lcd):
     _etapeCourrante(EtapesParcours::couloir),
     _lcd(lcd)
 {
+    DDRD &= ~((1 << BOUTON_BREADBOARD) | (1 << BOUTON_INTERRUPT)); // Pin des boutons en lecture
 }
 
 bool Selection::breadboardDebounced()
 {
     const uint8_t DEBOUNCE_DELAY = 15;
 
-    if (!(PORTD & (1 << BOUTON_BREADBOARD)))
+    if (!(PIND & (1 << BOUTON_BREADBOARD)))
     {
         _delay_ms(DEBOUNCE_DELAY);
-        if (!(PORTD & (1 << BOUTON_BREADBOARD)))
+        if (!(PIND & (1 << BOUTON_BREADBOARD)))
         {
+            while (!(PIND & (1 << BOUTON_BREADBOARD)));
             return true;
         }
         return false;
@@ -36,11 +38,12 @@ bool Selection::interruptDebounced()
 {
     const uint8_t DEBOUNCE_DELAY = 15;
 
-    if (PORTD & (1 << BOUTON_INTERRUPT))
+    if (PIND & (1 << BOUTON_INTERRUPT))
     {
         _delay_ms(DEBOUNCE_DELAY);
-        if (PORTD & (1 << BOUTON_INTERRUPT))
+        if (PIND & (1 << BOUTON_INTERRUPT))
         {
+            while (PIND & (1 << BOUTON_INTERRUPT));
             return true;
         }
         return false;
@@ -87,33 +90,32 @@ void Selection::updateFirstStep()
     }
 }
 
-
 void Selection::runStep()
 {
     switch(_etapeCourrante)
     {
-        case(EtapesParcours::couloir):
+        case EtapesParcours::couloir:
         {
-            Couloir couloir(75);
+            Couloir couloir(110, _lcd);
             couloir.run();
             break;
         }
-        case(EtapesParcours::mur):
+        case EtapesParcours::mur:
         {
-            Mur mur(75, _lcd);
+            Mur mur(105, _lcd);
             mur.run();
             break;
         }
-        case(EtapesParcours::boucles):
+        case EtapesParcours::boucles:
         {
-            Boucle boucle(75);
+            Boucle boucle(105, _lcd);
             boucle.run();
             break;
         }
-        case(EtapesParcours::coupures):
+        case EtapesParcours::coupures:
         {
-            //Coupure coupure(75);
-            //coupure.run();
+            Coupure coupure(105, _lcd);
+            coupure.run();
             break;
         }
     }
@@ -139,7 +141,7 @@ void Selection::doAction()
         case EtatSelection::afficherFin:
             _lcd->write("FIN", 0, true);
             break;
-        case EtatSelection::fin:
+        case EtatSelection::finParcours:
             break;
     }
 }
@@ -161,16 +163,18 @@ void Selection::changeState()
             _etat = EtatSelection::afficherFin;
             break;
         case EtatSelection::afficherFin:
-            _etat = EtatSelection::fin;
+            _etat = EtatSelection::finParcours;
             break;
-        case EtatSelection::fin:
+        case EtatSelection::finParcours:
             break;
     }
 }
 
 void Selection::run()
 {
-    while(_etat != EtatSelection::fin)
+    _lcd->write("Le couloir", 0, true);
+
+    while(_etat != EtatSelection::finParcours)
     {
         doAction();
         changeState();
