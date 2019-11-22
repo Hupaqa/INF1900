@@ -10,7 +10,8 @@ enum class ETAT_BOUCLE {
     QUIT
 };
 
-class Boucle {
+class Boucle : public SuiveurLigne 
+{
 public:
     Boucle(uint8_t vitesse, LCM* lcd);
 
@@ -18,10 +19,17 @@ public:
     void doAction();
     void changeState();
 
+    bool boucleDetectee();
+    void allerGrosseBoucle();
+    void suivreBoucles();
+
 private:
-    SuiveurLigne _suiveurLigne;
-    ETAT_BOUCLE _etat = ETAT_BOUCLE::ALLER_GROSSE_BOUCLE;
+    ETAT_BOUCLE _etat;
     LCM* _lcd;
+
+    const uint8_t intersectionGrosseBoucle = 2;
+    const uint8_t nBoucles = 2;
+    const uint8_t nSegments = 3;
 };
 
 #endif //BOUCLE_H

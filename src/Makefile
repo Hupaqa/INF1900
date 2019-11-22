@@ -82,10 +82,10 @@ HEXFORMAT=ihex
 ####### Options de compilation #######
 
 # Flags pour le compilateur en C
-CFLAGS=-I. -MMD $(INC) -g -mmcu=$(MCU) -O$(OPTLEVEL) \
+CFLAGS=-I. -MMD $(INC) -mmcu=$(MCU) -O$(OPTLEVEL) \
 	-fpack-struct -fshort-enums             \
 	-funsigned-bitfields -funsigned-char    \
-	-Wall                                        
+	-Wall #-g                                        
 # Flags pour le compilateur en C++
 CXXFLAGS=-fno-exceptions -std=c++14 
 

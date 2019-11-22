@@ -132,7 +132,7 @@ void Selection::doAction()
             }
             break;
         case EtatSelection::appeler:
-            for (uint8_t i = 0; i < nombreEtapes; ++i)
+            for (uint8_t i = 0; i < NOMBRE_ETAPES; ++i)
             {
                 runStep();
                 _etapeCourrante = nextStep();

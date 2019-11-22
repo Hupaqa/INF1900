@@ -16,9 +16,9 @@ class SuiveurLigne : public Navigator
         void avancerDroit();
         void redressementDroit();
         void redressementGauche();
-
         void tournerDroit();
         void tournerGauche();
+        void virageGaucheCaree();
 
         bool suivreLigne();
         bool suiveurLigneAllume();

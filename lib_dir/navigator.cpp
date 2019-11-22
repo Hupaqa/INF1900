@@ -25,6 +25,8 @@ void Navigator::initPWM()
 
 void Navigator::ajustementPWM(uint8_t puissanceDroit, DIRECTION directionDroit, uint8_t puissanceGauche, DIRECTION directionGauche)
 {
+    const uint8_t BOOST_DELAY = 5;
+
     if (directionDroit == DIRECTION::AVANT)
     {   
         PORTD &= ~(1 << PORTD7);
@@ -43,10 +45,9 @@ void Navigator::ajustementPWM(uint8_t puissanceDroit, DIRECTION directionDroit, 
         PORTD |= (1 << PORTD6);
     }
 
-    //Vitesse maximal pour surpasser l'inertie
     OCR1A = (puissanceDroit) ? UINT8_MAX : 0;
     OCR1B = (puissanceGauche) ? UINT8_MAX : 0;
-    _delay_ms(5); //temps determine experimentalement
+    _delay_ms(BOOST_DELAY);
 
     OCR1A = puissanceDroit;
     OCR1B = puissanceGauche;

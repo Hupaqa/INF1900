@@ -30,21 +30,14 @@ public:
 
     void moveToWall();
     void moveAgainstWall();
-    void goStraight();
     void followWall();
-    void goToLine();
+    void repositionnerSurLigne();
 
 private:
     EtatMur _etat;
     Led _led;
     LCM* _lcd;
     bool _isDone;
-
-    const uint8_t DEMARAGE = 254;
-    const uint8_t HAUTE_INTENSITE = 90;
-    const uint8_t BASSE_INTENSITE = 38;
-    const uint8_t AVANT = 0;
-    const uint8_t ARRIERE = 1;
 };
 
 #endif // MUR_H

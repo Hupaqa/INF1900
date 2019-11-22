@@ -10,7 +10,7 @@
 #define DROITE PINC5
 #define EXTREME_DROITE PINC6
 
-enum class DIRECTION{
+enum DIRECTION{
     AVANT = 0,
     ARRIERE = 1
 };
@@ -27,6 +27,9 @@ class Navigator {
 
     protected:
         uint8_t _vitesse;
+
+        const uint8_t HAUTE_INTENSITE = 90;
+        const uint8_t BASSE_INTENSITE = 32;
 };
 
 #endif // NAVIGATOR_H

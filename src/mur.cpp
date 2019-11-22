@@ -85,12 +85,10 @@ void Mur::doAction()
             followWall();
             break;
         case EtatMur::virageDroit:
-            goToLine();
+            repositionnerSurLigne();
             break;
         case EtatMur::virageGauche:
-            avancerDroit();
-            _delay_ms(1000);
-            tournerGauche();
+            virageGaucheCaree();
             break;
     }
 }
@@ -101,22 +99,18 @@ void Mur::changeState()
     {
         case EtatMur::debutLigne:
             _etat = EtatMur::suivreMur;
-            _lcd->write("suivreMur", 0, true);
             break;
         case EtatMur::suivreMur:
             if (suiveurLigneAllume())
             {
                 _etat = EtatMur::virageDroit;
-                _lcd->write("virageDroit", 0, true);
             }
             break;
         case EtatMur::virageDroit:
             _etat = EtatMur::finLigne;
-            _lcd->write("finLigne", 0, true);
             break;
         case EtatMur::finLigne:
             _etat = EtatMur::virageGauche;
-            _lcd->write("virageGauche", 0, true);
             break;
         case EtatMur::virageGauche:
             stopPWM();
@@ -159,14 +153,22 @@ void Mur::moveAgainstWall()
     ajustementPWM(BASSE_INTENSITE, DIRECTION::AVANT, HAUTE_INTENSITE, DIRECTION::AVANT);
 }
 
-void Mur::goStraight()
+void Mur::repositionnerSurLigne()
 {
-    ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    const uint16_t DEPASSER_LIGNE = 2500;
+    const uint8_t POSITIONNER_SUR_LIGNE = 100;
+
+    avancerDroit();
+    _delay_ms(DEPASSER_LIGNE);
+    ajustementPWM(_vitesse, DIRECTION::ARRIERE, _vitesse, DIRECTION::AVANT);
+    while (!(PINC & (1 << MILIEU)));
+    avancerDroit();
+    _delay_ms(POSITIONNER_SUR_LIGNE);
 }
 
 void Mur::followWall()
 {
-    const uint8_t DELAY = 75;
+    const uint8_t FETCH_DELAY = 75;
     
     fetchSonar();
     while(!repondu); // Attendre la réponse du sonar
@@ -182,19 +184,9 @@ void Mur::followWall()
     }
     else
     {
-        goStraight();
+        avancerDroit();
         _led.turnGreen();
     }
 
-    _delay_ms(DELAY); // Pour respecter la frequence maximale du sonar
-}
-
-void Mur::goToLine()
-{
-    avancerDroit();
-    _delay_ms(2000);
-    ajustementPWM(HAUTE_INTENSITE, DIRECTION::ARRIERE, HAUTE_INTENSITE, DIRECTION::AVANT);
-    while (!(PINC & (1 << MILIEU)));
-    ajustementPWM(HAUTE_INTENSITE, DIRECTION::AVANT, HAUTE_INTENSITE, DIRECTION::AVANT);
-    _delay_ms(100);
+    _delay_ms(FETCH_DELAY);
 }
