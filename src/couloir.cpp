@@ -6,7 +6,7 @@
 
 volatile uint16_t compteur = Couloir::BOUNCE_RAPIDE;
 
-// Interruption a chaque 0.032 sec
+// Interruption a chaque 0.032 sec qui incremente le compteur
 ISR(TIMER2_COMPA_vect)
 {
     ++compteur;
@@ -56,8 +56,6 @@ void Couloir::reinitialiserCompteur()
 
 void Couloir::doAction()
 {
-    //const uint8_t PWM_REFRESH = 50;
-
     switch (_etat)
     {
         case EtatCouloir::ligneDebut:
