@@ -4,6 +4,14 @@
 
 #include "couloir.h"
 
+volatile uint16_t compteur = Couloir::BOUNCE_RAPIDE;
+
+// Interruption a chaque 0.032 sec
+ISR(TIMER2_COMPA_vect)
+{
+    ++compteur;
+}
+
 Couloir::Couloir(uint8_t vitesse, LCM* lcd):
     SuiveurLigne(vitesse),
     _etat(EtatCouloir::ligneDebut),
@@ -11,7 +19,23 @@ Couloir::Couloir(uint8_t vitesse, LCM* lcd):
     _isDone(false)
 {
     DDRC = 0x00; //DDRC en entree
-    _lcd->write("Couloir", 0, true); 
+    _lcd->write("Couloir", 0, true);
+    cli();
+    TCCR2A |= (1 << WGM21); // Activer le mode CTC
+    TCCR2B |= ((1 << CS22) | (1 << CS21) | (1 << CS20)); // Activer compteur prescaler 1024
+    OCR2A = 249; // Equivaut a 0.032 sec
+    TIMSK2 |= (1 << OCIE2A); // Interrupt on compare match
+    sei();
+}
+
+Couloir::~Couloir()
+{
+    cli();
+    TCCR2A &= ~(1 << WGM21);
+    TCCR2B &= ~((1 << CS22) | (1 << CS21) | (1 << CS20));
+    OCR2A = 0;
+    TIMSK2 &= ~(1 << OCIE2A);
+    sei();
 }
 
 void Couloir::run()
@@ -23,9 +47,16 @@ void Couloir::run()
     }
 }
 
+void Couloir::reinitialiserCompteur()
+{
+    cli();
+    compteur = 0;
+    sei();
+}
+
 void Couloir::doAction()
 {
-    const uint16_t REDRESSEMENT = 500;
+    //const uint8_t PWM_REFRESH = 50;
 
     switch (_etat)
     {
@@ -35,31 +66,21 @@ void Couloir::doAction()
             break;
         case EtatCouloir::limite_gauche:
             devierDroite();
-            while(PINC & (1<< EXTREME_GAUCHE) || PINC & (1<< GAUCHE))
-            {
-                if(PINC & (1<< EXTREME_DROITE))
-                {
-                    _etat = ligneFin;
-                }
-            }
+            reinitialiserCompteur();
+            while(PINC & (1<< EXTREME_GAUCHE) || PINC & (1<< GAUCHE));
             break;
         case EtatCouloir::avancer_gauche:
             avancerGauche();
-            _delay_ms(REDRESSEMENT);
+            _delay_ms(PWM_REFRESH);
             break;
         case EtatCouloir::limite_droite:
             devierGauche();
-            while(PINC & (1<< EXTREME_DROITE) || PINC & (1<<DROITE))
-            {
-                if(PINC & (1<< EXTREME_GAUCHE))
-                {
-                    _etat = ligneFin;
-                }
-            }
+            reinitialiserCompteur();
+            while(PINC & (1<< EXTREME_DROITE) || PINC & (1<<DROITE));
             break;
         case EtatCouloir::avancer_droite:
             avancerDroite();
-            _delay_ms(REDRESSEMENT);
+            _delay_ms(PWM_REFRESH);
             break;
         case EtatCouloir::virageFin:
             virageGaucheCaree();
@@ -81,25 +102,17 @@ void Couloir::changeState()
         case EtatCouloir::limite_droite:
             _etat = EtatCouloir::avancer_gauche;
             break;
-            /*
-            if (finCouloir())
-            {
-                _delay_ms(DEBOUNCE);
-                if(finCouloir()) {
-                    _etat = EtatCouloir::ligneFin;
-                    break;
-                }
-            }
-            
-            if (PINC & (1 << EXTREME_GAUCHE))
-            {
-                _etat = EtatCouloir::droite;
-            }
-            */
         case EtatCouloir::avancer_gauche:
             if (PINC & (1 << EXTREME_GAUCHE))
             {
-                _etat = EtatCouloir::limite_gauche;
+                if (compteur < BOUNCE_RAPIDE)
+                {
+                    _etat = EtatCouloir::ligneFin;
+                }
+                else
+                {
+                    _etat = EtatCouloir::limite_gauche;
+                }
             }
             else if (finCouloir())
             {
@@ -109,33 +122,20 @@ void Couloir::changeState()
         case EtatCouloir::avancer_droite:
             if (PINC & (1 << EXTREME_DROITE))
             {
-                _etat = EtatCouloir::limite_droite;
+                if (compteur < BOUNCE_RAPIDE)
+                {
+                    _etat = EtatCouloir::ligneFin;
+                }
+                else
+                {
+                    _etat = EtatCouloir::limite_droite;
+                }
             }
             else if (finCouloir())
             {
                 _etat = EtatCouloir::ligneFin;
             }
             break;
-        /*
-        case EtatCouloir::droite:
-            _etat = EtatCouloir::avancer;
-            
-            if (finCouloir())
-            {
-                _delay_ms(DEBOUNCE);
-                if(finCouloir()) {
-                    _etat = EtatCouloir::ligneFin;
-                    break;
-                }
-            }
-            
-            if (PINC & (1 << EXTREME_DROITE))
-            {
-                _etat = EtatCouloir::gauche;
-            }
-            
-            break;
-            */
         case EtatCouloir::ligneFin:
             _etat = EtatCouloir::virageFin;
             break;
@@ -151,22 +151,22 @@ bool Couloir::finCouloir()
 
 void Couloir::devierGauche()
 {
-    ajustementPWM(_vitesse, DIRECTION::AVANT, 60, DIRECTION::AVANT);
+    ajustementPWM(_vitesse, DIRECTION::AVANT, 32, DIRECTION::AVANT);
 };
 
 void Couloir::devierDroite()
 {
-    ajustementPWM(60, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    ajustementPWM(32, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 };
 
 void Couloir::avancerGauche()
 {
-    ajustementPWM(_vitesse, DIRECTION::AVANT, 80, DIRECTION::AVANT);
+    ajustementPWM(_vitesse, DIRECTION::AVANT, 60, DIRECTION::AVANT);
 };
         
 void Couloir::avancerDroite()
 {
-    ajustementPWM(80, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    ajustementPWM(60, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 };
 
 
