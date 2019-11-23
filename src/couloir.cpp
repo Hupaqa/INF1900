@@ -93,7 +93,6 @@ void Couloir::changeState()
     {
         case EtatCouloir::ligneDebut:
             _etat = EtatCouloir::avancer_droite;
-            partirTimer();
             break;
         case EtatCouloir::limite_gauche:
             _etat = EtatCouloir::avancer_droite;
