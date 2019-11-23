@@ -96,7 +96,7 @@ void Selection::runStep()
     {
         case EtapesParcours::couloir:
         {
-            Couloir couloir(100, _lcd);
+            Couloir couloir(110, _lcd);
             couloir.run();
             break;
         }

@@ -1,6 +1,7 @@
 #ifndef COULOIR_H
 #define COULOIR_H
 
+#include <avr/interrupt.h>
 #include "suiveurLigne.h"
 
 enum EtatCouloir
@@ -23,24 +24,25 @@ class Couloir : public SuiveurLigne
          * 
          **/
         Couloir(uint8_t vitesse, LCM* ecran);
+        ~Couloir();
         void run();
         bool finCouloir();
-
         void doAction();
         void changeState();
-
         void devierGauche();
         void devierDroite();
-
         void avancerGauche();
         void avancerDroite();
+        void reinitialiserCompteur();
 
-        void partirTimer();
-        
+        static const uint8_t BOUNCE_RAPIDE = 55;
+        static const uint8_t PWM_REFRESH = 50;
     private:
         EtatCouloir _etat;
         LCM* _lcd;
         bool _isDone;
+        
+        
 
 };
 
