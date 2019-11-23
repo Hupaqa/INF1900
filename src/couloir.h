@@ -34,6 +34,8 @@ class Couloir : public SuiveurLigne
 
         void avancerGauche();
         void avancerDroite();
+
+        void partirTimer();
         
     private:
         EtatCouloir _etat;

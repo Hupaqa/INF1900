@@ -4,6 +4,13 @@
 
 #include "couloir.h"
 
+volatile uint16_t compteur = 0;
+
+ISR(TIMER2_OVF_vect)
+{
+    ++compteur;
+}
+
 Couloir::Couloir(uint8_t vitesse, LCM* lcd):
     SuiveurLigne(vitesse),
     _etat(EtatCouloir::ligneDebut),
@@ -11,7 +18,19 @@ Couloir::Couloir(uint8_t vitesse, LCM* lcd):
     _isDone(false)
 {
     DDRC = 0x00; //DDRC en entree
-    _lcd->write("Couloir", 0, true); 
+    _lcd->write("Couloir", 0, true);
+}
+
+void partirTimer()
+{
+    TCCR2B |= ((1 << CS22) | (1 << CS21) | (1 << CS20)) // Active le compteur avec un prescaler de 1024
+    TIMSK2 |= (1 << TOIE2);
+}
+
+void desactiverTimer()
+{
+    TCCR2B = 0;
+    TIMSK2 &= ~(1 << TOIE2);
 }
 
 void Couloir::run()
@@ -74,6 +93,7 @@ void Couloir::changeState()
     {
         case EtatCouloir::ligneDebut:
             _etat = EtatCouloir::avancer_droite;
+            partirTimer();
             break;
         case EtatCouloir::limite_gauche:
             _etat = EtatCouloir::avancer_droite;
@@ -81,25 +101,11 @@ void Couloir::changeState()
         case EtatCouloir::limite_droite:
             _etat = EtatCouloir::avancer_gauche;
             break;
-            /*
-            if (finCouloir())
-            {
-                _delay_ms(DEBOUNCE);
-                if(finCouloir()) {
-                    _etat = EtatCouloir::ligneFin;
-                    break;
-                }
-            }
-            
-            if (PINC & (1 << EXTREME_GAUCHE))
-            {
-                _etat = EtatCouloir::droite;
-            }
-            */
         case EtatCouloir::avancer_gauche:
             if (PINC & (1 << EXTREME_GAUCHE))
             {
                 _etat = EtatCouloir::limite_gauche;
+                compteur = 0;
             }
             else if (finCouloir())
             {
@@ -110,32 +116,13 @@ void Couloir::changeState()
             if (PINC & (1 << EXTREME_DROITE))
             {
                 _etat = EtatCouloir::limite_droite;
+                compteur = 0;
             }
             else if (finCouloir())
             {
                 _etat = EtatCouloir::ligneFin;
             }
             break;
-        /*
-        case EtatCouloir::droite:
-            _etat = EtatCouloir::avancer;
-            
-            if (finCouloir())
-            {
-                _delay_ms(DEBOUNCE);
-                if(finCouloir()) {
-                    _etat = EtatCouloir::ligneFin;
-                    break;
-                }
-            }
-            
-            if (PINC & (1 << EXTREME_DROITE))
-            {
-                _etat = EtatCouloir::gauche;
-            }
-            
-            break;
-            */
         case EtatCouloir::ligneFin:
             _etat = EtatCouloir::virageFin;
             break;
