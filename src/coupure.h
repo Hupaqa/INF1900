@@ -13,19 +13,22 @@ class Coupure : public SuiveurLigne {
 public:
     /*  
      *  Constructeur par paramètres
-     *  @param vitesse : Represent la vitesse du robot
+     *  @param : 
+     *      uint8_t vitesse : Represent la vitesse du robot
+     *      LCM* ecran : permet d'afficher l'état sur le LCD
+     * 
      *  Ce constructeur initialise d'abord le suiveur de ligne, 
      *  puis tous les attributs en initialisant les états courants et futur à
      *  COUPURE1.
      * 
-     *  Le constructeur initilise églement le port C en entrée et le port D en sortie
+     *  Le constructeur initialise également le port C en entrée et le port D en sortie
      *  et affiche sur le LCD que l'état actuel est Coupure
      */ 
-    Coupure(int vitesse, LCM* ecran);
+    Coupure(uint8_t vitesse, LCM* ecran);
     
     /*
      *  run
-     *  @param 
+     *   
      *  Cette fonction est la boucle principale de cette classe. Elle appelle les
      *  fonction doAction et changeState tant que l'étape n'est pas terminée.
      */ 
@@ -33,7 +36,7 @@ public:
 
     /*
      *  doAction
-     *  @param
+     *  
      *  Cette fonction représente un switch case qui exécute les actions en fonction
      *  de l'état courant.
      */
@@ -41,7 +44,7 @@ public:
 
     /*
      *  changeState
-     *  @param
+     *  
      *  Cette fonction change l'état courant à l'état suivant de la machine à état
      */
     void changeState();
