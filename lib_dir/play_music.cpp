@@ -8,6 +8,7 @@ void start_sound (uint8_t note)
 {
     TCNT0 = 0;
 
+    // clock du CPU/ (2 * prescaler) = 8 000 000/(2*256) = 15625
     OCR0A = (15625/(NOTES[note%45]))-1;
     
     TCCR0A = (1<<COM0A0) | (1<<WGM01);
@@ -17,9 +18,7 @@ void start_sound (uint8_t note)
 void stop_sound ()
 {
     TCNT0 = 0;
-
-    OCR0A = 0;
-    
+    OCR0A = 0;  
     TCCR0A = 0;
     TCCR0B = 0;
 };

@@ -309,3 +309,11 @@ void LCM::operator-=(uint8_t rem) {
 	}
 	_last_index -= rem;
 }
+
+
+void LCM::printUINT8(uint8_t valeur)
+{
+    char carac[6];
+    sprintf(carac,"%d",valeur);
+    write(carac, 0, true);
+}

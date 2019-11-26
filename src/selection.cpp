@@ -96,25 +96,25 @@ void Selection::runStep()
     {
         case EtapesParcours::couloir:
         {
-            Couloir couloir(89, _lcd);
+            Couloir couloir(85, _lcd);
             couloir.run();
             break;
         }
         case EtapesParcours::mur:
         {
-            Mur mur(95, _lcd);
+            Mur mur(85, _lcd);
             mur.run();
             break;
         }
         case EtapesParcours::boucles:
         {
-            Boucle boucle(95, _lcd);
+            Boucle boucle(85, _lcd);
             boucle.run();
             break;
         }
         case EtapesParcours::coupures:
         {
-            Coupure coupure(95, _lcd);
+            Coupure coupure(85, _lcd);
             coupure.run();
             break;
         }

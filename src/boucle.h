@@ -5,7 +5,8 @@
 
 enum class ETAT_BOUCLE {
     ALLER_GROSSE_BOUCLE,
-    FAIRE_BOUCLE,
+    GROSSE_BOUCLE,
+    PETITE_BOUCLE,
     FIN_BOUCLE,
     QUIT
 };
@@ -56,11 +57,37 @@ public:
      */
     bool boucleDetectee();
 
-
+    /*
+     *  allerGrosseBoucle
+     *  
+     *  Cette fonction suis la ligne tant que le robot n'a pas croisé trois intersection
+     *  soit le nombre d'intersection pour atteindre la grosse boucle
+     */
     void allerGrosseBoucle();
-    void suivreBoucles();
 
-    static const uint8_t intersectionGrosseBoucle = 2;
+    /*
+     *  faireGrosseBoucles
+     *  
+     *  Cette fonction permet de faire le tour de la grosse boucle une fois celle-ci atteinte et engagée
+     */
+    void faireGrosseBoucle();
+
+    /*
+     *  fairePetiteBoucles
+     *  
+     *  Cette fonction permet de faire le tour de la petite boucle une fois celle-ci atteinte et engagée
+     */
+    void fairePetiteBoucle();
+
+    /*
+     *  virageCarrePetiteBoucle
+     *  
+     *  Cette fonction permet de faire un virage carré. Le robot tourne tant que la lumiène ne s'est
+     *  allumé deux fois
+     */
+    void virageCarrePetiteBoucle();
+
+    static const uint8_t intersectionGrosseBoucle = 3;
     static const uint8_t nBoucles = 2;
     static const uint8_t nSegments = 3;
 

@@ -4,7 +4,7 @@
 
 #include "coupure.h"
 
-Coupure::Coupure(int vitesse, LCM* ecran) : 
+Coupure::Coupure(uint8_t vitesse, LCM* ecran) : 
     SuiveurLigne(vitesse),
     etatCourant(ETAT_COUPURE::COUPURE1), 
     etatFutur(ETAT_COUPURE::COUPURE1), 

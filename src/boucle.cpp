@@ -21,15 +21,57 @@ void Boucle::run(){
     }
 };
 
+void Boucle::doAction()
+{
+    switch (_etat)
+    {
+        case ETAT_BOUCLE::ALLER_GROSSE_BOUCLE : 
+            allerGrosseBoucle();
+            break;
+        case ETAT_BOUCLE::GROSSE_BOUCLE: 
+            faireGrosseBoucle();
+            break;
+        case ETAT_BOUCLE::PETITE_BOUCLE:
+            fairePetiteBoucle();
+            break;
+        case ETAT_BOUCLE::FIN_BOUCLE: 
+            while(suivreLigne());
+            virageGaucheCaree();           
+            break;
+        case ETAT_BOUCLE::QUIT: 
+            break;
+    }
+};
+
+void Boucle::changeState(){
+    switch(_etat)
+    {
+        case ETAT_BOUCLE::ALLER_GROSSE_BOUCLE : 
+            _etat = ETAT_BOUCLE::GROSSE_BOUCLE;
+            break;
+        case ETAT_BOUCLE::GROSSE_BOUCLE:
+            _etat = ETAT_BOUCLE::PETITE_BOUCLE;
+            break;
+        case ETAT_BOUCLE::PETITE_BOUCLE:
+            _etat = ETAT_BOUCLE::FIN_BOUCLE;
+            break;
+        case ETAT_BOUCLE::FIN_BOUCLE: 
+            _etat = ETAT_BOUCLE::QUIT;
+            break;
+        case ETAT_BOUCLE::QUIT: 
+            break;
+    }
+};
+
 bool Boucle::boucleDetectee()
 {
-    if ((PINC & EXTREME_GAUCHE) && (PINC & GAUCHE) && (PINC & MILIEU))
+    if (PINC & (1 << EXTREME_GAUCHE))
     {
         do
         {
             suivreLigne();
         } 
-        while (!((PINC & EXTREME_GAUCHE) && (PINC & GAUCHE && (PINC & MILIEU))));
+        while (PINC & (1 << EXTREME_GAUCHE));
         return true;
     }
     else
@@ -52,55 +94,39 @@ void Boucle::allerGrosseBoucle()
     }
 }
 
-void Boucle::suivreBoucles()
+void Boucle::faireGrosseBoucle()
 {
-    for(uint8_t boucleCourante = 0; boucleCourante < nBoucles; ++boucleCourante)
+    
+    while(boucleDetectee())
     {
-        while(boucleDetectee())
-        {
-            suivreLigne();
-        }
-        tournerGauche();
-        for (uint8_t segmentEnCours = 0; segmentEnCours < nSegments; ++segmentEnCours)
-        {
-            while(suivreLigne());
-            tournerGauche();
-        }
+        suivreLigne();
+    }
+    virageGaucheCaree();
+    for (uint8_t segmentEnCours = 0; segmentEnCours < nSegments; ++segmentEnCours)
+    {
+        while(suivreLigne());
+        virageGaucheCaree();
+    }
+    while (!(PINC & (1 << MILIEU)));
+}
+
+void Boucle::fairePetiteBoucle()
+{
+    while(!boucleDetectee())
+    {
+        suivreLigne();
+    }
+    virageCarrePetiteBoucle();
+
+    for (uint8_t segmentEnCours = 0; segmentEnCours < nSegments; ++segmentEnCours)
+    {
+        while(suivreLigne());
+        virageCarrePetiteBoucle();
     }
 }
 
-void Boucle::doAction()
-{
-    switch (_etat)
-    {
-        case ETAT_BOUCLE::ALLER_GROSSE_BOUCLE : 
-            allerGrosseBoucle();
-            break;
-        case ETAT_BOUCLE::FAIRE_BOUCLE: 
-            suivreBoucles();
-            break;
-        case ETAT_BOUCLE::FIN_BOUCLE: 
-            while(suivreLigne());
-            virageGaucheCaree();           
-            break;
-        case ETAT_BOUCLE::QUIT: 
-            break;
-    }
-};
 
-void Boucle::changeState(){
-    switch(_etat)
-    {
-        case ETAT_BOUCLE::ALLER_GROSSE_BOUCLE : 
-            _etat = ETAT_BOUCLE::FAIRE_BOUCLE;
-            break;
-        case ETAT_BOUCLE::FAIRE_BOUCLE:
-            _etat = ETAT_BOUCLE::FIN_BOUCLE;
-            break;
-        case ETAT_BOUCLE::FIN_BOUCLE: 
-            _etat = ETAT_BOUCLE::QUIT;            
-            break;
-        case ETAT_BOUCLE::QUIT: 
-            break;
-    }
+void Boucle::virageCarrePetiteBoucle(){
+    ajustementPWM(_vitesse, DIRECTION::AVANT, 0, DIRECTION::ARRIERE);
+    while(!(PINC & (1 << EXTREME_GAUCHE)));
 };
