@@ -8,8 +8,18 @@
 
 class Led {
     public:
+        /**
+         *  Constructeur par default
+         *  
+         *  Ce constructeur initialise le portB pour que les bits les moins
+         *  significatif soit en sortie.
+         */
         Led();
 
+        /**
+         * 
+         * 
+         */ 
         void turnRed();
         void turnGreen();
         void turnOff();
