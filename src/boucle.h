@@ -4,6 +4,7 @@
 #include "suiveurLigne.h"
 
 enum class ETAT_BOUCLE {
+    SUIVRE_LIGNE,
     ALLER_GROSSE_BOUCLE,
     GROSSE_BOUCLE,
     PETITE_BOUCLE,

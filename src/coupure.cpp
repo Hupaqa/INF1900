@@ -29,33 +29,41 @@ void Coupure::doAction(){
     {
         case ETAT_COUPURE::COUPURE1:
             if(!suivreLigne()){
-                isStateDone = true;
+                start_sound(75);
                 tournerDroit();
+                stop_sound();
+                isStateDone = true;
             }
             break;
         case ETAT_COUPURE::COUPURE2:
             if(!suivreLigne()){
-                isStateDone = true;
+                start_sound(45);
                 tournerGauche();
+                stop_sound();
+                isStateDone = true;
             }
             break;
         case ETAT_COUPURE::COUPURE3:
             if(!suivreLigne()){
-                isStateDone = true;
+                start_sound(75);
                 tournerDroit();
+                stop_sound();
+                isStateDone = true;
             }
             break;
         case ETAT_COUPURE::COUPURE4:
             if(!suivreLigne()){
+                start_sound(45);
                 isStateDone = true;
+                stop_sound();
                 tournerGauche();
             }
             break;
         case ETAT_COUPURE::FIN:
             if(!suivreLigne()){
-                isStateDone = true;
                 tournerGauche();
                 isDone = true;
+                isStateDone = true;
             }
             break;                                                      
     }          

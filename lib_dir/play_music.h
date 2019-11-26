@@ -6,13 +6,25 @@
 #include <avr/interrupt.h>
 #include "notes.h"
 
+/*
+*  start_sound
+*   
+*  Initialise la minuterie 0 pour produire le son à la fréquence désiré, avec les paramètres suivants:
+*       OCR0A = (15625/(NOTES[note%45]))-1; 
+*            la valeur 15625 vient du calcul suivant : clock du CPU/ (2 * prescaler) = 8 000 000/(2*256)
+*       PWM mode : CTC
+*       Prescaler : 256
+*/ 
 void start_sound (uint8_t note);
+
+/*
+*  stop_sound
+*   
+*  Arrete la minuterie 0
+*/ 
 void stop_sound ();
-void play_noir(uint8_t note);
-void play_blanche(uint8_t note);
-void play_ronde(uint8_t note);
-void play_demitemps(uint8_t note);
-void play_note(uint8_t note, uint8_t delais);
+
+void play_song(uint8_t notes[], uint8_t delais[]);
 
 //La playlist
 void play_HarryPotter();

@@ -50,6 +50,16 @@ const uint16_t NOTES [36]= {
     C4,Cd4,D4,Dd4,E4,F4,Fd4,G4,Gd4,A4,Ad4,B4,
     C5,Cd5,D5,Dd5,E5,F5,Fd5,G5,Gd5
 };
-    
+
+/*
+*   Définition des durée des notes en ms
+*/    
+
+enum class DUREE_NOTE {
+    DEMI_NOIR = 250,
+    NOIR = 500,
+    BLANCHE = 1000,
+    RONDE = 2000
+};
 
 #endif// NOTES_H 

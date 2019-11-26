@@ -62,6 +62,8 @@ Mur::Mur(uint8_t vitesse, LCM* lcd) :
 Mur::~Mur()
 {
     EICRA &= ~(1 << ISC20); // Desactive les interruptions sur INT2
+    TIMSK2 &= ~(1 << TOIE2); // Interrupt on overflow OFF
+    TCCR2B = 0; // Desactive le compteur 2
 }
 
 void Mur::run()
@@ -88,7 +90,7 @@ void Mur::doAction()
             repositionnerSurLigne();
             break;
         case EtatMur::virageGauche:
-            virageGaucheCaree();
+            tournerGauche();
             break;
     }
 }
@@ -113,9 +115,7 @@ void Mur::changeState()
             _etat = EtatMur::virageGauche;
             break;
         case EtatMur::virageGauche:
-            stopPWM();
             _isDone = true;
-            _lcd->write("fin", 0, true);
             break;
     }
 }

@@ -10,13 +10,13 @@
 #include "mur.h"
 #include "coupure.h"
 #include "uart.h"
+#include "suiveurLigne.h"
 
 enum EtatSelection
 {
     selection,
     appeler,
     afficherFin,
-    finParcours
 };
 
 enum EtapesParcours
@@ -117,6 +117,7 @@ class Selection
         EtatSelection _etat;
         EtapesParcours _etapeCourrante;
         LCM* _lcd;
+        bool _isDone = false;
         
         
 };

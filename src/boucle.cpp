@@ -6,14 +6,15 @@
 
 Boucle::Boucle(uint8_t vitesse, LCM* lcd) :
     SuiveurLigne(vitesse), 
-    _etat(ETAT_BOUCLE::ALLER_GROSSE_BOUCLE),
+    _etat(ETAT_BOUCLE::SUIVRE_LIGNE),
     _lcd(lcd)
 {
     DDRC = 0x00; // Met le port D en entrée
     _lcd->write("Les deux boucles", 0, true);
 };
 
-void Boucle::run(){
+void Boucle::run()
+{
     while(_etat != ETAT_BOUCLE::QUIT)
     {
         doAction();
@@ -25,6 +26,13 @@ void Boucle::doAction()
 {
     switch (_etat)
     {
+        case ETAT_BOUCLE::SUIVRE_LIGNE:
+            _lcd->write("SUIVRELIGNE", 0, true);
+            while (!(PINC & (1 << EXTREME_GAUCHE)))
+            {
+                suivreLigne();
+            }
+            break;
         case ETAT_BOUCLE::ALLER_GROSSE_BOUCLE : 
             allerGrosseBoucle();
             break;
@@ -46,6 +54,9 @@ void Boucle::doAction()
 void Boucle::changeState(){
     switch(_etat)
     {
+        case ETAT_BOUCLE::SUIVRE_LIGNE:
+            _etat = ETAT_BOUCLE::ALLER_GROSSE_BOUCLE;
+            break;
         case ETAT_BOUCLE::ALLER_GROSSE_BOUCLE : 
             _etat = ETAT_BOUCLE::GROSSE_BOUCLE;
             break;
@@ -84,11 +95,13 @@ bool Boucle::boucleDetectee()
 void Boucle::allerGrosseBoucle()
 {
     uint8_t intersectionCourrante = 0;
+
     while (intersectionCourrante != intersectionGrosseBoucle)
     {
         if (boucleDetectee()) 
         {
             intersectionCourrante++;
+            _lcd->printUINT8(intersectionCourrante);
         }
         suivreLigne();
     }

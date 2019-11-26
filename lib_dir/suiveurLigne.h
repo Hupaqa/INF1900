@@ -46,7 +46,7 @@ class SuiveurLigne
         * 
         *  Cette fonction permet de mettre OCR1A et OCR1B à 0 pour arreter le PWM
         */ 
-        void stopPWM();
+        static void stopPWM();
 
         /*  
         *  avancerDroit
