@@ -9,7 +9,7 @@ Boucle::Boucle(uint8_t vitesse, LCM* lcd) :
     _etat(ETAT_BOUCLE::ALLER_GROSSE_BOUCLE),
     _lcd(lcd)
 {
-    DDRC = 0x00; // Suiveur de lignes
+    DDRC = 0x00; // Met le port D en entrée
     _lcd->write("Les deux boucles", 0, true);
 };
 

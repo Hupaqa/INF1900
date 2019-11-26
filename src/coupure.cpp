@@ -85,7 +85,7 @@ void Coupure::changeState(){
             case ETAT_COUPURE::FIN:
                 break;                                                      
         } 
-
+        isStateDone = false;
         etatCourant = etatFutur;
     }
 }
