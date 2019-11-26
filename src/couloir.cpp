@@ -149,12 +149,12 @@ bool Couloir::finCouloir()
 
 void Couloir::devierGauche()
 {
-    ajustementPWM(_vitesse, DIRECTION::AVANT, 32, DIRECTION::AVANT);
+    ajustementPWM(_vitesse + 50, DIRECTION::AVANT, 32, DIRECTION::AVANT);
 };
 
 void Couloir::devierDroite()
 {
-    ajustementPWM(32, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    ajustementPWM(32, DIRECTION::AVANT, _vitesse + 50, DIRECTION::AVANT);
 };
 
 void Couloir::avancerGauche()

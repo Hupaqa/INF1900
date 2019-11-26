@@ -155,7 +155,7 @@ void Mur::moveAgainstWall()
 
 void Mur::repositionnerSurLigne()
 {
-    const uint16_t DEPASSER_LIGNE = 2500;
+    const uint16_t DEPASSER_LIGNE = 1000;
     const uint8_t POSITIONNER_SUR_LIGNE = 100;
 
     avancerDroit();

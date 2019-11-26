@@ -35,7 +35,7 @@ class Couloir : public SuiveurLigne
         void avancerDroite();
         void reinitialiserCompteur();
 
-        static const uint8_t BOUNCE_RAPIDE = 55;
+        static const uint8_t BOUNCE_RAPIDE = 40;
         static const uint8_t PWM_REFRESH = 50;
     private:
         EtatCouloir _etat;
