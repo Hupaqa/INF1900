@@ -8,6 +8,7 @@ Coupure::Coupure(int vitesse, LCM* ecran) :
     SuiveurLigne(vitesse),
     etatCourant(ETAT_COUPURE::COUPURE1), 
     etatFutur(ETAT_COUPURE::COUPURE1), 
+    isStateDone(false),
     isDone(false),
     afficheur(ecran)
 {
@@ -16,35 +17,43 @@ Coupure::Coupure(int vitesse, LCM* ecran) :
     afficheur->write("Coupure", 0, true);
 }
 
+void Coupure::run(){
+    while(!isDone){
+        doAction();
+        changeState();
+    }    
+}
+
 void Coupure::doAction(){
     switch (etatCourant)
     {
         case ETAT_COUPURE::COUPURE1:
             if(!suivreLigne()){
-                etatFutur = ETAT_COUPURE::COUPURE2;
+                isStateDone = true;
                 tournerDroit();
             }
             break;
         case ETAT_COUPURE::COUPURE2:
             if(!suivreLigne()){
-                etatFutur = ETAT_COUPURE::COUPURE3;
+                isStateDone = true;
                 tournerGauche();
             }
             break;
         case ETAT_COUPURE::COUPURE3:
             if(!suivreLigne()){
-                etatFutur = ETAT_COUPURE::COUPURE4;
+                isStateDone = true;
                 tournerDroit();
             }
             break;
         case ETAT_COUPURE::COUPURE4:
             if(!suivreLigne()){
-                etatFutur = ETAT_COUPURE::FIN;
+                isStateDone = true;
                 tournerGauche();
             }
             break;
         case ETAT_COUPURE::FIN:
             if(!suivreLigne()){
+                isStateDone = true;
                 tournerGauche();
                 isDone = true;
             }
@@ -53,9 +62,32 @@ void Coupure::doAction(){
 
 }
 
-void Coupure::run(){
-    while(!isDone){
-        doAction();
+void Coupure::changeState(){
+    if (isStateDone){  
+        switch (etatCourant)
+        {
+            case ETAT_COUPURE::COUPURE1:
+                etatFutur = ETAT_COUPURE::COUPURE2;
+                break;
+
+            case ETAT_COUPURE::COUPURE2:
+                etatFutur = ETAT_COUPURE::COUPURE3;
+                break;
+
+            case ETAT_COUPURE::COUPURE3:
+                etatFutur = ETAT_COUPURE::COUPURE4;
+                break;
+
+            case ETAT_COUPURE::COUPURE4:
+                etatFutur = ETAT_COUPURE::FIN;
+                break;
+
+            case ETAT_COUPURE::FIN:
+                break;                                                      
+        } 
+
         etatCourant = etatFutur;
-    }    
+    }
 }
+
+
