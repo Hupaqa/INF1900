@@ -63,9 +63,9 @@ Mur::Mur(uint8_t vitesse, LCM* lcd) :
 Mur::~Mur()
 {
     EICRA &= ~(1 << ISC20); // Desactive les interruptions sur INT2
+    EIMSK &= ~(1 << INT2); // Desactive les inteeruptions sur INT2
     TIMSK2 &= ~(1 << TOIE2); // Interrupt on overflow OFF
     TCCR2B = 0; // Desactive le compteur 2
-    EIMSK &= ~(1 << INT2);
 }
 
 void Mur::run()
