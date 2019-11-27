@@ -29,7 +29,7 @@ void Coupure::doAction(){
     {
         case ETAT_COUPURE::COUPURE1:
             if(!suivreLigne()){
-                start_sound(75);
+                start_sound(45);
                 tournerDroit();
                 stop_sound();
                 isStateDone = true;
@@ -37,7 +37,7 @@ void Coupure::doAction(){
             break;
         case ETAT_COUPURE::COUPURE2:
             if(!suivreLigne()){
-                start_sound(45);
+                start_sound(75);
                 tournerGauche();
                 stop_sound();
                 isStateDone = true;
@@ -45,7 +45,7 @@ void Coupure::doAction(){
             break;
         case ETAT_COUPURE::COUPURE3:
             if(!suivreLigne()){
-                start_sound(75);
+                start_sound(45);
                 tournerDroit();
                 stop_sound();
                 isStateDone = true;
@@ -53,7 +53,7 @@ void Coupure::doAction(){
             break;
         case ETAT_COUPURE::COUPURE4:
             if(!suivreLigne()){
-                start_sound(45);
+                start_sound(75);
                 isStateDone = true;
                 stop_sound();
                 tournerGauche();

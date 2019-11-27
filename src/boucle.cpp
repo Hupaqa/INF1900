@@ -27,8 +27,7 @@ void Boucle::doAction()
     switch (_etat)
     {
         case ETAT_BOUCLE::SUIVRE_LIGNE:
-            _lcd->write("SUIVRELIGNE", 0, true);
-            while (!(PINC & (1 << EXTREME_GAUCHE)))
+            while (!(PINC & (1 << MILIEU)))
             {
                 suivreLigne();
             }
