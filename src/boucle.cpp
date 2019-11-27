@@ -100,7 +100,6 @@ void Boucle::allerGrosseBoucle()
         if (boucleDetectee()) 
         {
             intersectionCourrante++;
-            _lcd->printUINT8(intersectionCourrante);
         }
         suivreLigne();
     }

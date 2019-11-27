@@ -2,13 +2,17 @@
 #define F_CPU 8000000UL
 #endif
 
-#include "play_music.h"
+#include "music.h"
 
-void start_sound (uint8_t note)
+Music::Music()
+{
+    DDRB |= (1 << PINB3) | ( 1<<  PINB5);
+    PORTB &= ~(1 << PINB5);
+}
+
+void Music::start_sound(uint8_t note)
 {
     TCNT0 = 0;
-    DDRB |= (1<< PINB3) | (1<< PINB5);
-    PORTB &= ~(1 << PINB5);
 
     // clock du CPU/ (2 * prescaler) = 8 000 000/(2*256) = 15625
     OCR0A = (15625/(NOTES[note%45]))-1;
@@ -18,9 +22,9 @@ void start_sound (uint8_t note)
 
     //Prescaler de 256
     TCCR0B = (1<<CS02);
-};
+}
 
-void stop_sound ()
+void Music::stop_sound()
 {
     TCNT0 = 0;
     OCR0A = 0;  

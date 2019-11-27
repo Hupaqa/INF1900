@@ -1,5 +1,5 @@
 #include "suiveurLigne.h"
-#include "play_music.h"
+#include "music.h"
 
 enum class ETAT_COUPURE {
     COUPURE1, 
@@ -51,9 +51,10 @@ public:
     void changeState();
 
 private:
-    ETAT_COUPURE etatCourant;
-    ETAT_COUPURE etatFutur;
-    bool isStateDone;
-    bool isDone;
-    LCM*  afficheur;
+    ETAT_COUPURE _etatCourant;
+    ETAT_COUPURE _etatFutur;
+    LCM*  _afficheur;
+    Music _music;
+    bool _isStateDone;
+    bool _isDone;
 };

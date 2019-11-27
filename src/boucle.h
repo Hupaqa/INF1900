@@ -2,6 +2,7 @@
 #define BOUCLE_H
 
 #include "suiveurLigne.h"
+#include "music.h"
 
 enum class ETAT_BOUCLE {
     SUIVRE_LIGNE,

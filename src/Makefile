@@ -21,7 +21,7 @@
 
 # Nom de votre projet
 # (utilisez un seul mot, exemple: 'monprojet')
-PROJECTNAME=main
+PROJECTNAME=robot
 
 # Fichiers sources
 # Utilisez le suffixe .cpp pour les fichiers C++

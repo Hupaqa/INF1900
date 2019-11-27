@@ -4,7 +4,7 @@ LIB_FOLDER=lib_dir
 SRC_FOLDER=src
 MAKE_FLAGS=--no-print-directory
 
-all: clean
+all:
 	$(MAKE) $(MAKE_FLAGS) -C $(LIB_FOLDER)
 	$(MAKE) $(MAKE_FLAGS) -C $(SRC_FOLDER)
 
