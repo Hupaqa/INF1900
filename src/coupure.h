@@ -1,42 +1,60 @@
 #include "suiveurLigne.h"
+#include "music.h"
 
 enum class ETAT_COUPURE {
-    COUPURE1, COUPURE2, COUPURE3, COUPURE4, FIN
+    COUPURE1, 
+    COUPURE2, 
+    COUPURE3, 
+    COUPURE4, 
+    FIN
 };
 
 class Coupure : public SuiveurLigne {
 
 public:
     /*  
-     *  Parameter constructor
-     *  @param vitesse : Represent speed of the robot.
-     *  This constructor first call the SuiveurLigne parameter constructor
-     *  with the vitesse parameter.  It then sets the variable etatCourant
-     *  and etatFutur to ETAT_COUPURE::DEBUT.
+     *  Constructeur par paramètres
+     *  @param : 
+     *      uint8_t vitesse : Represent la vitesse du robot
+     *      LCM* ecran : permet d'afficher l'état sur le LCD
+     * 
+     *  Ce constructeur initialise d'abord le suiveur de ligne, 
+     *  puis tous les attributs en initialisant les états courants et futur à
+     *  COUPURE1.
+     * 
+     *  Le constructeur initialise également le port C en entrée et le port D en sortie
+     *  et affiche sur le LCD que l'état actuel est Coupure
      */ 
-    Coupure(int vitesse, LCM* ecran);
+    Coupure(uint8_t vitesse, LCM* ecran);
     
     /*
-     *  This funtion is the main loop of thi class, it calls doAction and
-     *  changeState until the end of the section is reached.
+     *  run
+     *   
+     *  Cette fonction est la boucle principale de cette classe. Elle appelle les
+     *  fonction doAction et changeState tant que l'étape n'est pas terminée.
      */ 
     void run();
 
     /*
-     *  This funtion is a big switch case from etatPresent, it does the action of each section 
-     *  and is called repeatedly until the robot reaches the end of the coupure section.
+     *  doAction
+     *  
+     *  Cette fonction représente un switch case qui exécute les actions en fonction
+     *  de l'état courant.
      */
     void doAction();
 
     /*
-     *  This function is called in a while loop until the etatPresent finishes
-     *  ETAT_COUPURE::FIN and only changes the state etatPresent to etatFutur.
+     *  changeState
+     *  
+     *  Cette fonction change l'état courant à l'état suivant de la machine à état
      */
     void changeState();
 
 private:
-    ETAT_COUPURE etatCourant;
-    ETAT_COUPURE etatFutur;
-    bool isDone;
-    LCM*  afficheur;
+    ETAT_COUPURE _etatCourant;
+    ETAT_COUPURE _etatFutur;
+    LCM*  _afficheur;
+    Music _music;
+    bool _isStateDone;
+    bool _isDone;
 };

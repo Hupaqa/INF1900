@@ -41,6 +41,7 @@ class LCM {
 	void en_blink(const bool);
 	void en_cur(const bool);
 	void set_bc_index(const uint8_t);
+	void printUINT8(uint8_t valeur);
 	LCM& operator<<(const char*);
 	LCM& operator<<(const uint16_t);
 	LCM& operator<<(const int16_t);

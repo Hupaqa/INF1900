@@ -6,8 +6,7 @@
 
 void initialisationUART() 
 {
-    // 2400 bauds. Nous vous donnons la valeur des deux
-    // premier registres pour vous éviter des complications
+    // 2400 bauds.
     UBRR0H = 0;
     UBRR0L = 0xCF;
 
