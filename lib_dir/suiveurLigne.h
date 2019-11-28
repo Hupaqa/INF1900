@@ -123,11 +123,13 @@ class SuiveurLigne
         *  Cette fonction verifie si le suiveur de ligne detecte une ligne et retourne le resultat
         */ 
         bool suiveurLigneAllume();
-    protected:
-        uint8_t _vitesse;
+
+        // Constantes propres au suiveurLigne
         static const uint8_t HAUTE_INTENSITE = 90;
         static const uint8_t BASSE_INTENSITE = 32;
         static const uint8_t OFF = 0;
+    protected:
+        uint8_t _vitesse;
 };
 
 #endif

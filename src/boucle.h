@@ -4,7 +4,7 @@
 #include "suiveurLigne.h"
 #include "music.h"
 
-enum class ETAT_BOUCLE {
+enum ETAT_BOUCLE {
     SUIVRE_LIGNE,
     ALLER_GROSSE_BOUCLE,
     GROSSE_BOUCLE,
@@ -32,7 +32,7 @@ public:
     *  run
     *  
     *  Cette fonction est la boucle principale de cette classe. Elle appelle les
-    *  fonction doAction et changeState tant que tous l'état actuel n'est pas QUIT.
+    *  fonction doAction et changeState tant que l'état actuel n'est pas QUIT.
     */ 
     void run();
 
@@ -89,6 +89,7 @@ public:
      */
     void virageCarrePetiteBoucle();
 
+    // Constantes propres à l'état
     static const uint8_t intersectionGrosseBoucle = 3;
     static const uint8_t nBoucles = 2;
     static const uint8_t nSegments = 3;

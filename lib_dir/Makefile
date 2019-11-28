@@ -81,7 +81,7 @@ HEXFORMAT=ihex
 CFLAGS=-I. -MMD $(INC) -mmcu=$(MCU) -O$(OPTLEVEL) \
 	-fpack-struct -fshort-enums             \
 	-funsigned-bitfields -funsigned-char    \
-	-Wall #-g                                        
+	-Wall -Wno-return-type                                        
 
 # Flags pour le compilateur en C++
 CXXFLAGS=-fno-exceptions -std=c++14   

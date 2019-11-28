@@ -114,13 +114,12 @@ bool SuiveurLigne::suivreLigne()
         {
             redressementDroit();
         }
-        return true;
     }
     else
     {
         avancerDroit();
-        return true;
     }
+    return true;
 };
 
 bool SuiveurLigne::suiveurLigneAllume()

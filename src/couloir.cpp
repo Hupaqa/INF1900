@@ -4,9 +4,20 @@
 
 #include "couloir.h"
 
+// Variable globale des interruptions
+// Compteur qui détermine si le robot fait un rebond rapide entre la ligne
+// latérale et ligne du milieu. Le compteur est initialisé à la limite de
+// ce constitue un repond rapide pour ignorer le premier rebond.
 volatile uint16_t compteur = Couloir::BOUNCE_RAPIDE;
 
-// Interruption a chaque 0.032 sec qui incremente le compteur
+/* 
+ *  ISR(TIMER2_COMPA_vect)
+ *  @param:
+ *       TIMER2_COMPA_vect : vecteur correspondant à output compare match
+ * 
+ *  Routine d'interruption appelée à chaque 0.032 seconde qui incrémente le
+ *  compteur. 
+ */
 ISR(TIMER2_COMPA_vect)
 {
     ++compteur;
@@ -19,23 +30,23 @@ Couloir::Couloir(uint8_t vitesse, LCM* lcd):
     _isDone(false)
 {
     DDRC = 0x00; //DDRC en entree
-    _lcd->write("Couloir", 0, true);
-    cli();
+    _lcd->write("le couloir", 0, true);
+    cli(); // Désactive les interruptions
     TCCR2A |= (1 << WGM21); // Activer le mode CTC
     TCCR2B |= ((1 << CS22) | (1 << CS21) | (1 << CS20)); // Activer compteur prescaler 1024
     OCR2A = 249; // Equivaut a 0.032 sec
-    TIMSK2 |= (1 << OCIE2A); // Interrupt on compare match
-    sei();
+    TIMSK2 |= (1 << OCIE2A); // Active les interruptions sur compare match
+    sei(); // Active les interruptions
 }
 
 Couloir::~Couloir()
 {
-    cli();
-    TCCR2A &= ~(1 << WGM21);
-    TCCR2B &= ~((1 << CS22) | (1 << CS21) | (1 << CS20));
-    OCR2A = 0;
-    TIMSK2 &= ~(1 << OCIE2A);
-    sei();
+    cli(); // Désactive les interruptions
+    TCCR2A &= ~(1 << WGM21); // Désactive le mode CTC
+    TCCR2B &= ~((1 << CS22) | (1 << CS21) | (1 << CS20)); // Désactive le compteur
+    OCR2A = 0; // Réinitialise le output compare register à 0
+    TIMSK2 &= ~(1 << OCIE2A); // Désacive les interruptions sur compare match
+    sei(); // Active les interruptions
 }
 
 void Couloir::run()
@@ -47,13 +58,6 @@ void Couloir::run()
     }
 }
 
-void Couloir::reinitialiserCompteur()
-{
-    cli();
-    compteur = 0;
-    sei();
-}
-
 void Couloir::doAction()
 {
     switch (_etat)
@@ -63,6 +67,7 @@ void Couloir::doAction()
             while (suivreLigne());
             break;
         case EtatCouloir::limite_gauche:
+            _lcd->printUINT8(compteur);
             devierDroite();
             reinitialiserCompteur();
             while(PINC & (1<< EXTREME_GAUCHE) || PINC & (1<< GAUCHE));
@@ -72,6 +77,7 @@ void Couloir::doAction()
             _delay_ms(PWM_REFRESH);
             break;
         case EtatCouloir::limite_droite:
+            _lcd->printUINT8(compteur);
             devierGauche();
             reinitialiserCompteur();
             while(PINC & (1<< EXTREME_DROITE) || PINC & (1<<DROITE));
@@ -105,6 +111,7 @@ void Couloir::changeState()
             {
                 if (compteur < BOUNCE_RAPIDE)
                 {
+                    _lcd->printUINT8(compteur);    
                     _etat = EtatCouloir::ligneFin;
                 }
                 else
@@ -122,6 +129,7 @@ void Couloir::changeState()
             {
                 if (compteur < BOUNCE_RAPIDE)
                 {
+                    _lcd->printUINT8(compteur);
                     _etat = EtatCouloir::ligneFin;
                 }
                 else
@@ -142,6 +150,13 @@ void Couloir::changeState()
     }
 }
 
+void Couloir::reinitialiserCompteur()
+{
+    cli();
+    compteur = 0;
+    sei();
+}
+
 bool Couloir::finCouloir()
 {
     return ((PINC & (1 << MILIEU)) || (PINC & (1 << GAUCHE)) || (PINC & (1 << DROITE)));
@@ -149,22 +164,22 @@ bool Couloir::finCouloir()
 
 void Couloir::devierGauche()
 {
-    ajustementPWM(_vitesse + 50, DIRECTION::AVANT, 32, DIRECTION::AVANT);
+    ajustementPWM(100, DIRECTION::AVANT, 32, DIRECTION::AVANT);
 };
 
 void Couloir::devierDroite()
 {
-    ajustementPWM(32, DIRECTION::AVANT, _vitesse + 50, DIRECTION::AVANT);
-};
+    ajustementPWM(32, DIRECTION::AVANT, 100, DIRECTION::AVANT);
+}; //145 pour batterie faible (1.446)
 
 void Couloir::avancerGauche()
 {
-    ajustementPWM(_vitesse, DIRECTION::AVANT, 60, DIRECTION::AVANT);
+    ajustementPWM(_vitesse, DIRECTION::AVANT, 32, DIRECTION::AVANT);
 };
         
 void Couloir::avancerDroite()
 {
-    ajustementPWM(60, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    ajustementPWM(32, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 };
 
 

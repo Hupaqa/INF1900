@@ -3,16 +3,36 @@
 
 #include <avr/io.h>
 
-#define SortieLED 0b00000011
-#define Entree 0x00
-
 class Led {
-    public:
-        Led();
+public:
+    /*
+     *  Constructeur par défaut
+     * 
+     *  Initialise le data direction register pour que PINB0 (+) et PINB1 (-) 
+     *  soient en sortie pour la LED.
+     */
+    Led();
 
-        void turnRed();
-        void turnGreen();
-        void turnOff();
+    /*
+     *  turnRed
+     * 
+     *  Configure PINB0 (+) et PINB1 (-) pour que la LED soit rouge.
+     */
+    void turnRed();
+
+    /*
+     *  turnRed
+     * 
+     *  Configure PINB0 (+) et PINB1 (-) pour que la LED soit verte.
+     */
+    void turnGreen();
+
+    /*
+     *  turnRed
+     * 
+     *  Configure PINB0 (+) et PINB1 (-) pour que la LED soit éteinte.
+     */
+    void turnOff();
 };
 
 #endif //DEL_H
