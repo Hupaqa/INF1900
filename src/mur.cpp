@@ -13,7 +13,6 @@ volatile bool partirCompteur;
 // sonar.
 volatile bool repondu;
 
-
 /* 
  *  ISR(INT2_vect)
  *  @param:

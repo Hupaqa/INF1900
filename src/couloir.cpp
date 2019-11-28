@@ -4,9 +4,20 @@
 
 #include "couloir.h"
 
+// Variable globale des interruptions
+// Compteur qui détermine si le robot fait un rebond rapide entre la ligne
+// latérale et ligne du milieu. Le compteur est initialisé à la limite de
+// ce constitue un repond rapide pour ignorer le premier rebond.
 volatile uint16_t compteur = Couloir::BOUNCE_RAPIDE;
 
-// Interruption a chaque 0.032 sec qui incremente le compteur
+/* 
+ *  ISR(TIMER2_COMPA_vect)
+ *  @param:
+ *       TIMER2_COMPA_vect : vecteur correspondant à output compare match
+ * 
+ *  Routine d'interruption appelée à chaque 0.032 seconde qui incrémente le
+ *  compteur. 
+ */
 ISR(TIMER2_COMPA_vect)
 {
     ++compteur;
@@ -20,22 +31,22 @@ Couloir::Couloir(uint8_t vitesse, LCM* lcd):
 {
     DDRC = 0x00; //DDRC en entree
     _lcd->write("Couloir", 0, true);
-    cli();
+    cli(); // Désactive les interruptions
     TCCR2A |= (1 << WGM21); // Activer le mode CTC
     TCCR2B |= ((1 << CS22) | (1 << CS21) | (1 << CS20)); // Activer compteur prescaler 1024
     OCR2A = 249; // Equivaut a 0.032 sec
-    TIMSK2 |= (1 << OCIE2A); // Interrupt on compare match
-    sei();
+    TIMSK2 |= (1 << OCIE2A); // Active les interruptions sur compare match
+    sei(); // Active les interruptions
 }
 
 Couloir::~Couloir()
 {
-    cli();
-    TCCR2A &= ~(1 << WGM21);
-    TCCR2B &= ~((1 << CS22) | (1 << CS21) | (1 << CS20));
-    OCR2A = 0;
-    TIMSK2 &= ~(1 << OCIE2A);
-    sei();
+    cli(); // Désactive les interruptions
+    TCCR2A &= ~(1 << WGM21); // Désactive le mode CTC
+    TCCR2B &= ~((1 << CS22) | (1 << CS21) | (1 << CS20)); // Désactive le compteur
+    OCR2A = 0; // Réinitialise le output compare register à 0
+    TIMSK2 &= ~(1 << OCIE2A); // Désacive les interruptions sur compare match
+    sei(); // Active les interruptions
 }
 
 void Couloir::run()
@@ -45,13 +56,6 @@ void Couloir::run()
         doAction();
         changeState();
     }
-}
-
-void Couloir::reinitialiserCompteur()
-{
-    cli();
-    compteur = 0;
-    sei();
 }
 
 void Couloir::doAction()
@@ -140,6 +144,13 @@ void Couloir::changeState()
         case EtatCouloir::virageFin:
             break;
     }
+}
+
+void Couloir::reinitialiserCompteur()
+{
+    cli();
+    compteur = 0;
+    sei();
 }
 
 bool Couloir::finCouloir()

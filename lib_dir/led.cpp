@@ -4,8 +4,9 @@
 
 #include "led.h"
 
-Led::Led(){
-    DDRB |= SortieLED;
+Led::Led()
+{
+    DDRB |= ((1 << PINB0) | (1 << PINB1));
 }
 
 void Led::turnRed()

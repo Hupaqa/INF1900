@@ -19,16 +19,16 @@ class Mur : public SuiveurLigne
 {
 public:
     /* 
-     * Constructeur par paramètres
-     * @param :
-     *       uint8_t vitesse
-     *       LCM* ecran : permet d'afficher l'état sur le LCD
-     * 
-     * Ce constructeur initialise l'état de la machine à état à debutLigne 
-     * et configure les data direction registers pour la led en en sortie 
-     * et le capteur de ligne en entrée. Il active également les interruptions
-     * sur les deux fronts pour la sortie du sonar. Il écrit également la 
-     * partie de l'épreuve sur le LCD.
+     *  Constructeur par paramètres
+     *  @param :
+     *        uint8_t vitesse
+     *        LCM* ecran : permet d'afficher l'état sur le LCD
+     *  
+     *  Ce constructeur initialise l'état de la machine à état à debutLigne 
+     *  et configure les data direction registers pour la led en en sortie 
+     *  et le capteur de ligne en entrée. Il active également les interruptions
+     *  sur les deux fronts pour la sortie du sonar. Il écrit également la 
+     *  partie de l'épreuve sur le LCD.
      */
     Mur(uint8_t vitesse, LCM* lcd);
 
@@ -41,12 +41,12 @@ public:
      */
     ~Mur();
 
-    /*
-    *  run
-    *  
-    *  Cette méthode est la boucle principale de cette classe. Elle appelle les
-    *  méthode doAction et changeState tant que la variable _isDone soit vraie.
-    */ 
+     /*
+     *  run
+     *  
+     *  Cette méthode est la boucle principale de cette classe. Elle appelle les
+     *  méthode doAction et changeState tant que la variable _isDone soit vraie.
+     */ 
     void run();
 
     /*
@@ -82,19 +82,19 @@ public:
     void fetchSonar();
 
     /*
-    *  moveToWall
-    *  
-    *  Cette méthode configure le PWM matériel pour que le robot s'approche
-    *  du mur.
-    */ 
+     *  moveToWall
+     *  
+     *  Cette méthode configure le PWM matériel pour que le robot s'approche
+     *  du mur.
+     */ 
     void moveToWall();
 
     /*
-    *  moveToWall
-    *  
-    *  Cette méthode configure le PWM matériel pour que le robot s'éloigne
-    *  du mur.
-    */ 
+     *  moveToWall
+     *  
+     *  Cette méthode configure le PWM matériel pour que le robot s'éloigne
+     *  du mur.
+     */ 
     void moveAgainstWall();
 
     /*
