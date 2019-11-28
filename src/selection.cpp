@@ -12,9 +12,11 @@ int main()
 Selection::Selection(LCM* lcd): 
     _etat(EtatSelection::selection),
     _etapeCourrante(EtapesParcours::couloir),
-    _lcd(lcd)
+    _lcd(lcd),
+    _isDone(false)
 {
     DDRD &= ~((1 << BOUTON_BREADBOARD) | (1 << BOUTON_INTERRUPT)); // Pin des boutons en lecture
+    _lcd->write("Le couloir", 0, true);
 }
 
 bool Selection::breadboardDebounced()
@@ -96,25 +98,25 @@ void Selection::runStep()
     {
         case EtapesParcours::couloir:
         {
-            Couloir couloir(110, _lcd);
+            Couloir couloir(90, _lcd);
             couloir.run();
             break;
         }
         case EtapesParcours::mur:
         {
-            Mur mur(105, _lcd);
+            Mur mur(85, _lcd);
             mur.run();
             break;
         }
         case EtapesParcours::boucles:
         {
-            Boucle boucle(105, _lcd);
+            Boucle boucle(90, _lcd);
             boucle.run();
             break;
         }
         case EtapesParcours::coupures:
         {
-            Coupure coupure(105, _lcd);
+            Coupure coupure(90, _lcd);
             coupure.run();
             break;
         }
@@ -140,8 +142,7 @@ void Selection::doAction()
             break;
         case EtatSelection::afficherFin:
             _lcd->write("FIN", 0, true);
-            break;
-        case EtatSelection::finParcours:
+            SuiveurLigne::stopPWM();
             break;
     }
 }
@@ -163,18 +164,14 @@ void Selection::changeState()
             _etat = EtatSelection::afficherFin;
             break;
         case EtatSelection::afficherFin:
-            _etat = EtatSelection::finParcours;
-            break;
-        case EtatSelection::finParcours:
+            _isDone = true;
             break;
     }
 }
 
 void Selection::run()
 {
-    _lcd->write("Le couloir", 0, true);
-
-    while(_etat != EtatSelection::finParcours)
+    while(!_isDone)
     {
         doAction();
         changeState();

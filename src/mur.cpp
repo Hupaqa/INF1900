@@ -54,6 +54,7 @@ Mur::Mur(uint8_t vitesse, LCM* lcd) :
     _isDone(false)
 {
     DDRB |= ((1 << PORTB0) | (1 << PORTB1)); // Port en sortie pour la led
+    DDRC = 0x00;
     EICRA |= (1 << ISC20); // Active les interruptions sur any edge on INT2
     _lcd->write("Le mur", 0, true); // Ecrire sur la led l'etat en cours
 }
@@ -62,6 +63,9 @@ Mur::Mur(uint8_t vitesse, LCM* lcd) :
 Mur::~Mur()
 {
     EICRA &= ~(1 << ISC20); // Desactive les interruptions sur INT2
+    EIMSK &= ~(1 << INT2); // Desactive les inteeruptions sur INT2
+    TIMSK2 &= ~(1 << TOIE2); // Interrupt on overflow OFF
+    TCCR2B = 0; // Desactive le compteur 2
 }
 
 void Mur::run()
@@ -113,9 +117,7 @@ void Mur::changeState()
             _etat = EtatMur::virageGauche;
             break;
         case EtatMur::virageGauche:
-            stopPWM();
             _isDone = true;
-            _lcd->write("fin", 0, true);
             break;
     }
 }
@@ -155,7 +157,7 @@ void Mur::moveAgainstWall()
 
 void Mur::repositionnerSurLigne()
 {
-    const uint16_t DEPASSER_LIGNE = 2500;
+    const uint16_t DEPASSER_LIGNE = 1000;
     const uint8_t POSITIONNER_SUR_LIGNE = 100;
 
     avancerDroit();
