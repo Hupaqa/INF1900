@@ -16,7 +16,7 @@ Selection::Selection(LCM* lcd):
     _isDone(false)
 {
     DDRD &= ~((1 << BOUTON_BREADBOARD) | (1 << BOUTON_INTERRUPT)); // Pin des boutons en lecture
-    _lcd->write("Le couloir", 0, true);
+    _lcd->write("le couloir", 0, true);
 }
 
 bool Selection::breadboardDebounced()
@@ -78,16 +78,16 @@ void Selection::updateFirstStep()
 
     switch(_etapeCourrante){
         case(EtapesParcours::couloir):
-            _lcd->write("Le couloir", 0, true);
+            _lcd->write("le couloir", 0, true);
             break;
         case(EtapesParcours::mur):
-            _lcd->write("Le mur", 0, true);
+            _lcd->write("le mur", 0, true);
             break;
         case(EtapesParcours::boucles):
-            _lcd->write("Les deux boucles", 0, true);
+            _lcd->write("les deux boucles", 0, true);
             break;
         case(EtapesParcours::coupures):
-            _lcd->write("Les coupures", 0, true);
+            _lcd->write("les coupures", 0, true);
             break;
     }
 }
@@ -98,25 +98,25 @@ void Selection::runStep()
     {
         case EtapesParcours::couloir:
         {
-            Couloir couloir(90, _lcd);
+            Couloir couloir(75, _lcd);
             couloir.run();
             break;
         }
         case EtapesParcours::mur:
         {
-            Mur mur(85, _lcd);
+            Mur mur(70, _lcd);
             mur.run();
             break;
         }
         case EtapesParcours::boucles:
         {
-            Boucle boucle(90, _lcd);
+            Boucle boucle(75, _lcd);
             boucle.run();
             break;
         }
         case EtapesParcours::coupures:
         {
-            Coupure coupure(90, _lcd);
+            Coupure coupure(75, _lcd);
             coupure.run();
             break;
         }
@@ -141,7 +141,7 @@ void Selection::doAction()
             }
             break;
         case EtatSelection::afficherFin:
-            _lcd->write("FIN", 0, true);
+            _lcd->write("fin", 0, true);
             SuiveurLigne::stopPWM();
             break;
     }

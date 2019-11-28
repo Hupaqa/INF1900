@@ -29,6 +29,8 @@ public:
     *  Arrete la minuterie 0
     */ 
     void stop_sound();
+
+    static void play_mario();
     
 };
 

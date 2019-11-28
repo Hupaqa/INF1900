@@ -56,7 +56,7 @@ Mur::Mur(uint8_t vitesse, LCM* lcd) :
     DDRB |= ((1 << PORTB0) | (1 << PORTB1)); // Port en sortie pour la led
     DDRC = 0x00;
     EICRA |= (1 << ISC20); // Active les interruptions sur any edge on INT2
-    _lcd->write("Le mur", 0, true); // Ecrire sur la led l'etat en cours
+    _lcd->write("le mur", 0, true); // Ecrire sur la led l'etat en cours
 }
 
 // Detruit l'objet

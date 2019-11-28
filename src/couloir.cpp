@@ -19,7 +19,7 @@ Couloir::Couloir(uint8_t vitesse, LCM* lcd):
     _isDone(false)
 {
     DDRC = 0x00; //DDRC en entree
-    _lcd->write("Couloir", 0, true);
+    _lcd->write("le couloir", 0, true);
     cli();
     TCCR2A |= (1 << WGM21); // Activer le mode CTC
     TCCR2B |= ((1 << CS22) | (1 << CS21) | (1 << CS20)); // Activer compteur prescaler 1024
@@ -63,6 +63,7 @@ void Couloir::doAction()
             while (suivreLigne());
             break;
         case EtatCouloir::limite_gauche:
+            _lcd->printUINT8(compteur);
             devierDroite();
             reinitialiserCompteur();
             while(PINC & (1<< EXTREME_GAUCHE) || PINC & (1<< GAUCHE));
@@ -72,6 +73,7 @@ void Couloir::doAction()
             _delay_ms(PWM_REFRESH);
             break;
         case EtatCouloir::limite_droite:
+            _lcd->printUINT8(compteur);
             devierGauche();
             reinitialiserCompteur();
             while(PINC & (1<< EXTREME_DROITE) || PINC & (1<<DROITE));
@@ -105,6 +107,7 @@ void Couloir::changeState()
             {
                 if (compteur < BOUNCE_RAPIDE)
                 {
+                    _lcd->printUINT8(compteur);    
                     _etat = EtatCouloir::ligneFin;
                 }
                 else
@@ -122,6 +125,7 @@ void Couloir::changeState()
             {
                 if (compteur < BOUNCE_RAPIDE)
                 {
+                    _lcd->printUINT8(compteur);
                     _etat = EtatCouloir::ligneFin;
                 }
                 else
@@ -149,22 +153,22 @@ bool Couloir::finCouloir()
 
 void Couloir::devierGauche()
 {
-    ajustementPWM(_vitesse + 50, DIRECTION::AVANT, 32, DIRECTION::AVANT);
+    ajustementPWM(100, DIRECTION::AVANT, 32, DIRECTION::AVANT);
 };
 
 void Couloir::devierDroite()
 {
-    ajustementPWM(32, DIRECTION::AVANT, _vitesse + 50, DIRECTION::AVANT);
-};
+    ajustementPWM(32, DIRECTION::AVANT, 100, DIRECTION::AVANT);
+}; //145 pour batterie faible (1.446)
 
 void Couloir::avancerGauche()
 {
-    ajustementPWM(_vitesse, DIRECTION::AVANT, 60, DIRECTION::AVANT);
+    ajustementPWM(_vitesse, DIRECTION::AVANT, 32, DIRECTION::AVANT);
 };
         
 void Couloir::avancerDroite()
 {
-    ajustementPWM(60, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    ajustementPWM(32, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 };
 
 

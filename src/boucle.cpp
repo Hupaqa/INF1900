@@ -10,7 +10,7 @@ Boucle::Boucle(uint8_t vitesse, LCM* lcd) :
     _lcd(lcd)
 {
     DDRC = 0x00; // Met le port D en entrée
-    _lcd->write("Les deux boucles", 0, true);
+    _lcd->write("les deux boucles", 0, true);
 };
 
 void Boucle::run()
