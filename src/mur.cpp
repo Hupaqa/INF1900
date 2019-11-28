@@ -4,39 +4,65 @@
 
 #include "mur.h"
 
+// Variables globales pour les interruptions :
+// Correspond à la distance entre le robot et le mur.
 volatile uint8_t distance = 0;
-volatile bool partirCompteur;
+// Permet de distinguer le début et la fin de l'output du sonar.
+volatile bool partirCompteur; 
+// S'assure qu'une seule routine d'interruption est exécutée à la réponse du 
+// sonar.
 volatile bool repondu;
 
-// Interruption pour le output du sonar
+
+/* 
+ *  ISR(INT2_vect)
+ *  @param:
+ *       INT2_vect : vecteur correspondant à INT2 (PINB2)
+ * 
+ *  Routine d'interruption appelée lors d'un front montant ou d'un front
+ *  descendant sur la PINB2 correspondant à l'output du sonar.
+ */
 ISR(INT2_vect)
 {
-    // Reinitialise la valeur du compteur a 0 lors de la premiere interruption
+    // Interruption lors du front montant qui remet le compteur 2 à zéro et qui
+    // active l'interruption en cas d'overflow du compteur 2. 
     if (partirCompteur)
     {
         TCNT2 = 0; // Reinitialise la valeur du compteur
         TIMSK2 |= (1 << TOIE2); // Interrupt on overflow
         partirCompteur = false;
     }
-    // Calcule la distance si la reponse precede l'overflow du compteur
+    // Interruption sur le front descendant du sonar. Si le sonar répond avant
+    // l'overflow du compteur, la routine calcule la distance entre le mur
+    // et le robot. Elle désactive ensuite le le compteur pour s'assurer qu'il
+    // n'y a plus d'interruptions à chaque overflow du compteur.
     else if (!repondu)
     {   
-        cli(); // Stop interrupts
+        cli(); // Désactive les interruptions
+        distance = (TCNT2 * 8) / 58; // 
         TCCR2B = 0; // Desactive le compteur 2
         TIMSK2 &= ~(1 << TOIE2); // Interrupt on overflow OFF
-        distance = (TCNT2 * 8) / 58; // Source : documentation
         repondu = true;
-        sei();
+        sei(); // Active les interruptions
     }
 }
 
-// Interruption lors de l'overflow du compteur
+/* 
+ *  ISR(TIMER2_OVF_vect)
+ *  @param:
+ *       TIMER2_OVF_vect : vecteur correspondant à l'overflow du compteur 2
+ * 
+ *  Routine d'interruption appelée lorsque le compteur 2 overflow. Cela se
+ *  produit lorsque le robot est très loin du mur. Le cas échéance, la routine
+ *  fixe la distance à la distance maximale supportée par le compteur 2 pour
+ *  que le robot s'approche du mur si et seulement si le sonar n'a pas déjà
+ *  répondu précédemment.
+ */
 ISR(TIMER2_OVF_vect)
 {
-    // Prevoit une distance maximale en l'absence d'une reponse du sonar
     if (!repondu)
     {
-        cli(); // Desactive les interruptions
+        cli(); // Désactive les interruptions
         TCCR2B = 0; // Desactive le compteur 2
         TIMSK2 &= ~(1 << TOIE2); // Interrupt on overflow OFF
         distance = 35; // La distance equivalente a TCNT2 = UINT8_MAX
@@ -45,7 +71,6 @@ ISR(TIMER2_OVF_vect)
     }
 }
 
-// Construit l'objet Mur 
 Mur::Mur(uint8_t vitesse, LCM* lcd) : 
     SuiveurLigne(vitesse), 
     _etat(EtatMur::debutLigne),
@@ -53,19 +78,18 @@ Mur::Mur(uint8_t vitesse, LCM* lcd) :
     _lcd(lcd),
     _isDone(false)
 {
-    DDRB |= ((1 << PORTB0) | (1 << PORTB1)); // Port en sortie pour la led
-    DDRC = 0x00;
-    EICRA |= (1 << ISC20); // Active les interruptions sur any edge on INT2
-    _lcd->write("Le mur", 0, true); // Ecrire sur la led l'etat en cours
+    DDRB |= ((1 << PORTB0) | (1 << PORTB0)); // PORTB0 et PORTB0 en sortie
+    DDRC = 0x00; // PINC en entrée
+    EICRA |= (1 << ISC20); // Active les interruptions sur les deux fronts de INT2
+    _lcd->write("Le mur", 0, true);
 }
 
-// Detruit l'objet
 Mur::~Mur()
 {
-    EICRA &= ~(1 << ISC20); // Desactive les interruptions sur INT2
-    EIMSK &= ~(1 << INT2); // Desactive les inteeruptions sur INT2
+    EICRA &= ~(1 << ISC20); // Désactive les interruptions sur INT2
+    EIMSK &= ~(1 << INT2); // Désactive les interruptions sur INT2
     TIMSK2 &= ~(1 << TOIE2); // Interrupt on overflow OFF
-    TCCR2B = 0; // Desactive le compteur 2
+    TCCR2B = 0; // Désactive le compteur 2
 }
 
 void Mur::run()
@@ -122,11 +146,8 @@ void Mur::changeState()
     }
 }
 
-// Active le signal enable du sonar pour 10us
 void Mur::enableSonar()
 {
-    const uint8_t SONAR_DELAY = 10;
-
     PORTB |= (1 << PORTB4);
     _delay_us(SONAR_DELAY);
     PORTB &= ~(1 << PORTB4);
@@ -134,14 +155,12 @@ void Mur::enableSonar()
 
 void Mur::fetchSonar()
 {
-    cli(); // Desactive temporairement les interruptions
-    enableSonar();
-
+    cli(); // Désactive les interruptions
     partirCompteur = true;
     repondu = false;
-
     TCCR2B |= (1 << CS22); // Initialise le compteur avec un prescaler de 64
     EIMSK |= (1 << INT2); // Active les interruptions sur INT2
+    enableSonar();
     sei(); // Active les interruptions
 }
 
@@ -157,23 +176,17 @@ void Mur::moveAgainstWall()
 
 void Mur::repositionnerSurLigne()
 {
-    const uint16_t DEPASSER_LIGNE = 1000;
-    const uint8_t POSITIONNER_SUR_LIGNE = 100;
-
     avancerDroit();
     _delay_ms(DEPASSER_LIGNE);
     ajustementPWM(_vitesse, DIRECTION::ARRIERE, _vitesse, DIRECTION::AVANT);
     while (!(PINC & (1 << MILIEU)));
-    avancerDroit();
-    _delay_ms(POSITIONNER_SUR_LIGNE);
 }
 
 void Mur::followWall()
 {
-    const uint8_t FETCH_DELAY = 75;
-    
     fetchSonar();
-    while(!repondu); // Attendre la réponse du sonar
+    while(!repondu);
+
     if (distance < 14 && distance > 1)
     {
         moveAgainstWall();
