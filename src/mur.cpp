@@ -80,7 +80,7 @@ Mur::Mur(uint8_t vitesse, LCM* lcd) :
     DDRB |= ((1 << PORTB0) | (1 << PORTB0)); // PORTB0 et PORTB0 en sortie
     DDRC = 0x00; // PINC en entrée
     EICRA |= (1 << ISC20); // Active les interruptions sur les deux fronts de INT2
-    _lcd->write("Le mur", 0, true);
+    _lcd->write("le mur", 0, true);
 }
 
 Mur::~Mur()

@@ -15,7 +15,7 @@ Coupure::Coupure(uint8_t vitesse, LCM* ecran) :
 {
     DDRC = 0x00;
     DDRD = 0xff;
-    _afficheur->write("Coupure", 0, true);
+    _afficheur->write("les coupures", 0, true);
 }
 
 void Coupure::run(){
@@ -30,7 +30,7 @@ void Coupure::doAction(){
     {
         case ETAT_COUPURE::COUPURE1:
             if(!suivreLigne()){
-                _music.start_sound(45);
+                _music.start_sound(75);
                 tournerDroit();
                 _music.stop_sound();
                 _isStateDone = true;
@@ -38,7 +38,7 @@ void Coupure::doAction(){
             break;
         case ETAT_COUPURE::COUPURE2:
             if(!suivreLigne()){
-                _music.start_sound(75);
+                _music.start_sound(45);
                 tournerGauche();
                 _music.stop_sound();
                 _isStateDone = true;
@@ -46,7 +46,7 @@ void Coupure::doAction(){
             break;
         case ETAT_COUPURE::COUPURE3:
             if(!suivreLigne()){
-                _music.start_sound(45);
+                _music.start_sound(75);
                 tournerDroit();
                 _music.stop_sound();
                 _isStateDone = true;
@@ -54,7 +54,7 @@ void Coupure::doAction(){
             break;
         case ETAT_COUPURE::COUPURE4:
             if(!suivreLigne()){
-                _music.start_sound(75);
+                _music.start_sound(45);
                 tournerGauche();
                 _music.stop_sound();
                 _isStateDone = true;
