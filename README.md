@@ -14,7 +14,7 @@
  * make
 
 ### Compilation  
-Pour compiler uniquement, il suffit d'exécuter à la racine :  
+Pour compiler, il suffit d'exécuter à la racine :  
 ```
 make
 ```  
