@@ -22,6 +22,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/*  Tableau des etats
++--------------+----------------------+------------+
+| Etat courant | suiveurLigneAllume() | Etat futur |
++--------------+----------------------+------------+
+| COUPURE1     | true                 | COUPUR1    |
++--------------+----------------------+------------+
+| COUPURE1     | false                | COUPURE2   |
++--------------+----------------------+------------+
+| COUPURE2     | true                 | COUPURE2   |
++--------------+----------------------+------------+
+| COUPURE2     | false                | COUPURE3   |
++--------------+----------------------+------------+
+| COUPURE3     | true                 | COUPURE3   |
++--------------+----------------------+------------+
+| COUPURE3     | false                | COUPURE4   |
++--------------+----------------------+------------+
+| COUPURE4     | true                 | COUPURE4   |
++--------------+----------------------+------------+
+| COUPURE4     | false                | FIN        |
++--------------+----------------------+------------+
+| FIN          | x                    | FIN        |
++--------------+----------------------+------------+
+*/
+
 #include "suiveurLigne.h"
 #include "music.h"
 
