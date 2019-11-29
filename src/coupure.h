@@ -75,6 +75,8 @@ public:
     void changeState();
 
 private:
+    static const uint8_t SON_GRAVE = 45;
+    static const uint8_t SON_AIGU = 75;
     ETAT_COUPURE _etatCourant;
     ETAT_COUPURE _etatFutur;
     LCM*  _afficheur;

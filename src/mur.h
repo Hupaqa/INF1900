@@ -142,6 +142,10 @@ public:
     static const uint8_t SONAR_DELAY = 10;
     static const uint16_t DEPASSER_LIGNE = 1000; 
     static const uint8_t FETCH_DELAY = 75;
+    static const uint8_t BORNE_INFERIEUR = 14;
+    static const uint8_t BORNE_SUPERIEUR = 16;
+    static const uint8_t DISTANCE_MAXIMUM = 36;
+    static const uint8_t DISTANCE_MINIMUM = 1;
 
 private:
     EtatMur _etat;
