@@ -210,12 +210,12 @@ void Mur::followWall()
     fetchSonar();
     while(!repondu);
 
-    if (distance < 14 && distance > 1)
+    if (distance < BORNE_INFERIEUR && distance > DISTANCE_MINIMUM)
     {
         moveAgainstWall();
         _led.turnRed();
     }
-    else if (distance > 16 && distance < 36)
+    else if (distance > BORNE_SUPERIEUR && distance < DISTANCE_MAXIMUM)
     {
         moveToWall();
         _led.turnRed();

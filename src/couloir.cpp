@@ -184,22 +184,22 @@ bool Couloir::finCouloir()
 
 void Couloir::devierGauche()
 {
-    ajustementPWM(105, DIRECTION::AVANT, 32, DIRECTION::AVANT);
+    ajustementPWM(VITESSE_HAUTE_DEVIATION, DIRECTION::AVANT, VITESSE_BASE_DEVIATION, DIRECTION::AVANT);
 };
 
 void Couloir::devierDroite()
 {
-    ajustementPWM(32, DIRECTION::AVANT, 105, DIRECTION::AVANT);
+    ajustementPWM(VITESSE_BASE_DEVIATION, DIRECTION::AVANT, VITESSE_HAUTE_DEVIATION, DIRECTION::AVANT);
 }; //145 pour batterie faible (1.446)
 
 void Couloir::avancerGauche()
 {
-    ajustementPWM(_vitesse, DIRECTION::AVANT, 32, DIRECTION::AVANT);
+    ajustementPWM(_vitesse, DIRECTION::AVANT, VITESSE_BASE_DEVIATION, DIRECTION::AVANT);
 };
         
 void Couloir::avancerDroite()
 {
-    ajustementPWM(32, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
+    ajustementPWM(VITESSE_BASE_DEVIATION, DIRECTION::AVANT, _vitesse, DIRECTION::AVANT);
 };
 
 

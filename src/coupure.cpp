@@ -54,7 +54,7 @@ void Coupure::doAction(){
     {
         case ETAT_COUPURE::COUPURE1:
             if(!suivreLigne()){
-                _music.start_sound(75);
+                _music.start_sound(SON_AIGU);
                 tournerDroit();
                 _music.stop_sound();
                 _isStateDone = true;
@@ -62,7 +62,7 @@ void Coupure::doAction(){
             break;
         case ETAT_COUPURE::COUPURE2:
             if(!suivreLigne()){
-                _music.start_sound(45);
+                _music.start_sound(SON_GRAVE);
                 tournerGauche();
                 _music.stop_sound();
                 _isStateDone = true;
@@ -70,7 +70,7 @@ void Coupure::doAction(){
             break;
         case ETAT_COUPURE::COUPURE3:
             if(!suivreLigne()){
-                _music.start_sound(75);
+                _music.start_sound(SON_AIGU);
                 tournerDroit();
                 _music.stop_sound();
                 _isStateDone = true;
@@ -78,7 +78,7 @@ void Coupure::doAction(){
             break;
         case ETAT_COUPURE::COUPURE4:
             if(!suivreLigne()){
-                _music.start_sound(45);
+                _music.start_sound(SON_GRAVE);
                 tournerGauche();
                 _music.stop_sound();
                 _isStateDone = true;

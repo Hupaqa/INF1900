@@ -122,25 +122,25 @@ void Selection::runStep()
     {
         case EtapesParcours::couloir:
         {
-            Couloir couloir(75, _lcd);
+            Couloir couloir(VITESSE_NORMAL, _lcd);
             couloir.run();
             break;
         }
         case EtapesParcours::mur:
         {
-            Mur mur(70, _lcd);
+            Mur mur(VITESSE_BASSE, _lcd);
             mur.run();
             break;
         }
         case EtapesParcours::boucles:
         {
-            Boucle boucle(75, _lcd);
+            Boucle boucle(VITESSE_NORMAL, _lcd);
             boucle.run();
             break;
         }
         case EtapesParcours::coupures:
         {
-            Coupure coupure(70, _lcd);
+            Coupure coupure(VITESSE_BASSE, _lcd);
             coupure.run();
             break;
         }
@@ -166,7 +166,7 @@ void Selection::doAction()
             break;
         case EtatSelection::afficherFin:
             {
-            SuiveurLigne suiveurLigne(75);
+            SuiveurLigne suiveurLigne(VITESSE_NORMAL);
             while (!(PINC & (1 << MILIEU)))
             {
                 suiveurLigne.suivreLigne();
