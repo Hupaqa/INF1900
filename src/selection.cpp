@@ -166,7 +166,7 @@ void Selection::doAction()
             break;
         case EtatSelection::afficherFin:
             {
-            SuiveurLigne suiveurLigne(VITESSE_NORMAL);
+            SuiveurLigne suiveurLigne(VITESSE_FINALE);
             while (!(PINC & (1 << MILIEU)))
             {
                 suiveurLigne.suivreLigne();
