@@ -1,19 +1,25 @@
-# INF1900
+# Projet initial de système embarqué
 
-## Liste des ports (0-7)
-### PORTA
-A0 à A7 : Display (0-7)
+## Détails du microcontrolleur
+ * ATMega324PA  
+ * Cristal de 8MHz
 
-### PORTB
-B0 et B1 : DEL
-B3 et B5 : Son (OC0A)
-B2 et B4 : Sonar
+## Configuration de l'environnement   
 
-### PORTC
-C2 à C7 : Capteur de ligne
+### Logiciels nécessaires  
+ * avr-binutils   
+ * avr-gcc   
+ * avr-libc  
+ * avrdude  
+ * make
 
-### PORTD
-D0 et D1 : RS-232
-D2 : Bouton interrupt
-D3 : Bouton breadboard
-D4-D7 : Direction pour les roues (PWM sur D4, D5)
+### Compilation  
+Pour compiler uniquement, il suffit d'exécuter à la racine :  
+```
+make
+```  
+
+Pour compiler et configurer le microcontrolleur, il suffit d'exécuter à la racine (utilise avrdude) :
+```
+make install
+```
