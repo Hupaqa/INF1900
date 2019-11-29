@@ -1,5 +1,11 @@
 # Projet initial de système embarqué
 
+## Auteurs
+ * Jordan Lecourtois  
+ * Hugo Paquin  
+ * William Trépanier  
+ * Benjamin Theriault  
+
 ## Détails du microcontrolleur
  * ATMega324PA  
  * Cristal de 8MHz
