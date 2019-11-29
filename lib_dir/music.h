@@ -51,7 +51,7 @@ public:
     *       PWM mode : CTC
     *       Prescaler : 256
     */ 
-    static void start_sound(uint8_t note);
+    void start_sound(uint8_t note);
 
     /*
     *  stop_sound
