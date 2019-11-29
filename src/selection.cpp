@@ -116,7 +116,7 @@ void Selection::runStep()
         }
         case EtapesParcours::coupures:
         {
-            Coupure coupure(75, _lcd);
+            Coupure coupure(70, _lcd);
             coupure.run();
             break;
         }
@@ -141,9 +141,16 @@ void Selection::doAction()
             }
             break;
         case EtatSelection::afficherFin:
-            _lcd->write("fin", 0, true);
+            {
+            SuiveurLigne suiveurLigne(75);
+            while (!(PINC & (1 << MILIEU)))
+            {
+                suiveurLigne.suivreLigne();
+            }
             SuiveurLigne::stopPWM();
+            _lcd->write("fin", 0, true);
             break;
+            }
     }
 }
 

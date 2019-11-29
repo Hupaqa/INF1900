@@ -67,7 +67,6 @@ void Couloir::doAction()
             while (suivreLigne());
             break;
         case EtatCouloir::limite_gauche:
-            _lcd->printUINT8(compteur);
             devierDroite();
             reinitialiserCompteur();
             while(PINC & (1<< EXTREME_GAUCHE) || PINC & (1<< GAUCHE));
@@ -77,7 +76,6 @@ void Couloir::doAction()
             _delay_ms(PWM_REFRESH);
             break;
         case EtatCouloir::limite_droite:
-            _lcd->printUINT8(compteur);
             devierGauche();
             reinitialiserCompteur();
             while(PINC & (1<< EXTREME_DROITE) || PINC & (1<<DROITE));
@@ -111,7 +109,6 @@ void Couloir::changeState()
             {
                 if (compteur < BOUNCE_RAPIDE)
                 {
-                    _lcd->printUINT8(compteur);    
                     _etat = EtatCouloir::ligneFin;
                 }
                 else
@@ -129,7 +126,6 @@ void Couloir::changeState()
             {
                 if (compteur < BOUNCE_RAPIDE)
                 {
-                    _lcd->printUINT8(compteur);
                     _etat = EtatCouloir::ligneFin;
                 }
                 else
@@ -164,12 +160,12 @@ bool Couloir::finCouloir()
 
 void Couloir::devierGauche()
 {
-    ajustementPWM(100, DIRECTION::AVANT, 32, DIRECTION::AVANT);
+    ajustementPWM(105, DIRECTION::AVANT, 32, DIRECTION::AVANT);
 };
 
 void Couloir::devierDroite()
 {
-    ajustementPWM(32, DIRECTION::AVANT, 100, DIRECTION::AVANT);
+    ajustementPWM(32, DIRECTION::AVANT, 105, DIRECTION::AVANT);
 }; //145 pour batterie faible (1.446)
 
 void Couloir::avancerGauche()

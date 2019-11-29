@@ -114,7 +114,7 @@ public:
     void avancerDroite();
 
     // Constantes propres à l'objet couloir
-    static const uint8_t BOUNCE_RAPIDE = 35;
+    static const uint8_t BOUNCE_RAPIDE = 40;
     static const uint8_t PWM_REFRESH = 50;
 
 private:

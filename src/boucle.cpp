@@ -136,8 +136,7 @@ void Boucle::fairePetiteBoucle()
     }
 }
 
-
 void Boucle::virageCarrePetiteBoucle(){
-    ajustementPWM(_vitesse, DIRECTION::AVANT, 0, DIRECTION::ARRIERE);
+    ajustementPWM(_vitesse, DIRECTION::AVANT, _vitesse, DIRECTION::ARRIERE);
     while(!(PINC & (1 << EXTREME_GAUCHE)));
 };
