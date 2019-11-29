@@ -1,7 +1,3 @@
-#ifndef F_CPU
-#define F_CPU 8000000UL
-#endif
-
 /*
  LCM-SO1602DTR/M driver for the ATmega16 (or any other compatible AVR chip).
  Copyright (C) 2009  Philippe Proulx (philippe.proulx@polymtl.ca)
@@ -22,6 +18,10 @@
  You should have received a copy of the GNU Lesser General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#ifndef F_CPU
+#define F_CPU 8000000UL
+#endif
 
 #include <avr/io.h>
 #include <util/delay.h>
