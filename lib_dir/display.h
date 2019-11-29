@@ -2,6 +2,9 @@
 C++ framework wrapping the LCM-SO1602DTR/M driver.
 Copyright (C) 2009  Philippe Proulx (philippe.proulx@polymtl.ca)
 
+Ajout (sous la même license) :
+void printUINT8(uint8_t valeur) : 2019 William Trépanier
+
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
 the Free Software Foundation, either version 3 of the License, or

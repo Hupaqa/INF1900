@@ -1,10 +1,9 @@
-#ifndef F_CPU
-#define F_CPU 8000000UL
-#endif
-
 /*
 C++ framework wrapping the LCM-SO1602DTR/M driver.
 Copyright (C) 2009  Philippe Proulx (philippe.proulx@polymtl.ca)
+
+Ajout (sous la même license) :
+void printUINT8(uint8_t valeur) : 2019 William Trépanier
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -19,6 +18,10 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#ifndef F_CPU
+#define F_CPU 8000000UL
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -310,7 +313,11 @@ void LCM::operator-=(uint8_t rem) {
 	_last_index -= rem;
 }
 
-
+/**
+ * Affiche sur l'écran une valeur UINT8
+ * 
+ * @param valeur : la valeur a afficher
+ */
 void LCM::printUINT8(uint8_t valeur)
 {
     char carac[6];

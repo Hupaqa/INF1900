@@ -1,7 +1,3 @@
-#ifndef F_CPU
-#define F_CPU 8000000UL
-#endif
-
 /*
 Custom procedures, mainly related to character arrays.
 Copyright (C) 2009  Philippe Proulx (philippe.proulx@polymtl.ca)
@@ -19,6 +15,10 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+#ifndef F_CPU
+#define F_CPU 8000000UL
+#endif
 
 #include <avr/io.h>
 #include <util/delay.h>
