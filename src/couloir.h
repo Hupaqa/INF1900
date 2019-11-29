@@ -22,6 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/*
+╔═══════════════════════════════════════╗
+║            Table des états            ║
+╠════════════════╦══════════════════════╣
+║  État courant  ║ suiveurLigneAllume() ║
+╠════════════════╬══════════════════════╣
+║   ligneDebut   ║    avancer_droite    ║
+╠════════════════╬══════════════════════╣
+║ avancer_droite ║     limite_droite    ║
+╠════════════════╬══════════════════════╣
+║  limite_gauche ║    avancer_droite    ║
+╠════════════════╬══════════════════════╣
+║ avancer_gauche ║     limite_gauche    ║
+╠════════════════╬══════════════════════╣
+║  limite_droite ║    avancer_gauche    ║
+╠════════════════╬══════════════════════╣
+║    ligneFin    ║       virageFin      ║
+╠════════════════╬══════════════════════╣
+║    virageFin   ║       virageFin      ║
+╚════════════════╩══════════════════════╝
+*/
+
 #ifndef COULOIR_H
 #define COULOIR_H
 
