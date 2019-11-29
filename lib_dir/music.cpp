@@ -28,18 +28,21 @@ SOFTWARE.
 
 #include "music.h"
 
+
 Music::Music()
 {
     DDRB |= (1 << PINB3) | ( 1<<  PINB5);
     PORTB &= ~(1 << PINB5);
 }
 
+
 void Music::start_sound(uint8_t note)
 {
     TCNT0 = 0;
 
-    // clock du CPU/ (2 * prescaler) = 8 000 000/(2*256) = 15625
-    OCR0A = (15625/(NOTES[note%45]))-1;
+    // clock du CPU/ (prescaler) = 8 000 000/256 = 31250
+    const uint16_t CPU_SUR_PRESCALER = 31250;
+    OCR0A = (CPU_SUR_PRESCALER/(NOTES[note%45] * 2))-1;
     
     //Toggle on compare match et CTC mode
     TCCR0A = (1<<COM0A0) | (1<<WGM01);
@@ -56,41 +59,15 @@ void Music::stop_sound()
     TCCR0B = 0;
 };
 
-//void play_song(uint8_t notes[], uint8_t delais[]){
-    uint8_t i = 0;
 
-    //while(note[i]){
-    //    
-    //    i++;
-    //}
+void Music::play_song(uint8_t indexNote){
+    
+    uint8_t note = 0;
+    while(FUR_ELISE_NOTE[note]){
+        start_sound(FUR_ELISE_NOTE[note]);
+        _delay_ms((uint16_t) DUREE_NOTE::DEMI_NOIR);
+        note++;
+    }
+};
 
-
-
-//}
-
-//void play_HarryPotter(){
-//    uint8_t HarryPotter[30] = {
-//        59, 1, 
-//        64, 1, 
-//        67, 3, 
-//        66, 3, 
-//        64, 1, 
-//        71, 3, 
-//        69, 2, 
-//        66, 2, 
-//        64, 0, 
-//        67, 3,  
-//        66, 3,  
-//        63, 1, 
-//        65, 0, 
-//        59, 2
-//    };
-//
-//    uint8_t i=0;
-//    while(HarryPotter[i]){
-//        play_note(HarryPotter[i], HarryPotter[i+1]);
-//        i += 2;
-//    }
-//}
-//
 

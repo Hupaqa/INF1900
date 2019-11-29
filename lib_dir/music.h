@@ -34,7 +34,13 @@ SOFTWARE.
 class Music
 {
 public:
+    /**
+     * Constructeur par défaut
+     * 
+     * Initialise les pins 3 et 5 du port B en sortie et la pin 5 à 0
+     */
     Music();
+
     
     /*
     *  start_sound
@@ -54,14 +60,19 @@ public:
     */ 
     void stop_sound();
 
-    static void play_mario();
+    void play_song(uint8_t indexNote);
+
+
+private:
+    //La playlist
+    uint16_t FUR_ELISE_NOTE[35] = {
+        E4, Dd4, E4, Dd4, E4, B3, D4, C4, A3,
+        C3, E3, A3, B3, E3, Gd3, B3, C4, E3,
+        E4, Dd4, E4, Dd4, E4, B3, D4, C4, A3,
+        C3, E3, A3, B3, E3, C4, B3, A3
+
+    };
     
 };
-
-// 
-// void play_song(uint8_t notes[], uint8_t delais[]);
-// 
-// //La playlist
-// void play_HarryPotter();
 
 #endif
