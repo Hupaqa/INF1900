@@ -137,8 +137,10 @@ class Selection
         bool interruptDebounced();
 
         static const uint8_t NOMBRE_ETAPES = 4;
-        static const uint8_t VITESSE_NORMAL = 75;
-        static const uint8_t VITESSE_BASSE = 70;
+        static const uint8_t VITESSE_BOUCLE = 75;
+        static const uint8_t VITESSE_COULOIR = 75;
+        static const uint8_t VITESSE_COUPURE = 70;
+        static const uint8_t VITESSE_MUR = 70;
     private:
         EtatSelection _etat;
         EtapesParcours _etapeCourrante;
