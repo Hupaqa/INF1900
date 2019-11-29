@@ -1,19 +1,50 @@
-# INF1900
+# Projet initial de système embarqué
 
-## Liste des ports (0-7)
-### PORTA
-A0 à A7 : Display (0-7)
+## Auteurs
+ * Jordan Lecourtois  
+ * Hugo Paquin  
+ * William Trépanier  
+ * Benjamin Theriault  
 
-### PORTB
-B0 et B1 : DEL
-B3 et B5 : Son (OC0A)
-B2 et B4 : Sonar
+## Détails du microcontrolleur
+ * ATMega324PA  
+ * Cristal de 8MHz
 
-### PORTC
-C2 à C7 : Capteur de ligne
+## Configuration de l'environnement   
 
-### PORTD
-D0 et D1 : RS-232
-D2 : Bouton interrupt
-D3 : Bouton breadboard
-D4-D7 : Direction pour les roues (PWM sur D4, D5)
+### Logiciels nécessaires  
+ * avr-binutils   
+ * avr-gcc   
+ * avr-libc  
+ * avrdude  
+ * make
+
+### Compilation  
+Pour compiler, il suffit d'exécuter à la racine :  
+```
+make
+```  
+
+Pour compiler et configurer le microcontrolleur, il suffit d'exécuter à la racine (utilise avrdude) :
+```
+make install
+```
+
+### Classes :
+#### Dans le répertoire src
+ * Boucle : Classe qui exécute les deux boucles
+ * Couloir : Classe qui exécute le couloir
+ * Coupure : Classe qui exécute les coupures
+ * Mur : Classe qui exécute le mur
+ * Selection : Classe permettant la sélection de la première épreuve et qui exécute les quatres étapes
+ 
+#### Dans la librairie
+ * LCM : Classe permettant d'écrire sur l'écran LCD
+ * Led : Classe permettant le contrôle de la LED
+ * Music : Classe permettant le contrôle du piézoélectrique et de faire de la musique
+ * SuiveurLigne : Classe qui permet de suivre la ligne
+
+### Informations complémentaires
+ * La fonction main() se retrouve dans selection.cpp
+ * [Utilisation des ports](https://github.com/wtrep/INF1900/wiki/Utilisation-des-ports)
+ * [Trajet](https://github.com/wtrep/INF1900/wiki/Trajet-pour-le-cours-INF1900-de-l'automne-2019)

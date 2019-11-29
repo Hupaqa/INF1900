@@ -140,7 +140,7 @@ public:
     // Constantes propres à l'objet couloir
     static const uint8_t BOUNCE_RAPIDE = 40;
     static const uint8_t PWM_REFRESH = 50;
-    static const uint8_t VITESSE_BASE_DEVIATION = 32;
+    static const uint8_t VITESSE_BASSE_DEVIATION = 32;
     static const uint8_t VITESSE_HAUTE_DEVIATION = 105;
 
 private:
