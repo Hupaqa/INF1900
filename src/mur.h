@@ -22,6 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/*
+╔═════════════════════════════════════════════════════╗
+║                   Table des états                   ║
+╠══════════════╦═══════════════════════╦══════════════╣
+║ État courant ║ SuiveurLigneAllumee() ║  État futur  ║
+╠══════════════╬═══════════════════════╬══════════════╣
+║  debutLigne  ║           X           ║   suivreMur  ║
+╠══════════════╬═══════════════════════╬══════════════╣
+║   suivreMur  ║         false         ║   suivreMur  ║
+╠══════════════╬═══════════════════════╬══════════════╣
+║   suivreMur  ║          true         ║  virageDroit ║
+╠══════════════╬═══════════════════════╬══════════════╣
+║  virageDroit ║           X           ║   finLigne   ║
+╠══════════════╬═══════════════════════╬══════════════╣
+║   finLigne   ║           X           ║ virageGauche ║
+╚══════════════╩═══════════════════════╩══════════════╝
+*/
+
 #ifndef MUR_H
 #define MUR_H
 
