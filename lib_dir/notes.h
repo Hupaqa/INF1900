@@ -56,10 +56,10 @@ const uint16_t NOTES [36]= {
 */    
 
 enum class DUREE_NOTE {
-    DEMI_NOIR = 250,
-    NOIR = 500,
-    BLANCHE = 1000,
-    RONDE = 2000
+    DEMI_NOIR = 25,
+    NOIR = 50,
+    BLANCHE = 100,
+    RONDE = 200
 };
 
 #endif// NOTES_H 
