@@ -41,12 +41,6 @@ public:
      */
     Music();
 
-    /**
-     * Destructeur
-     * 
-     * Désinitialise les compteurs et les interruptions
-     */ 
-    ~Music();
     
     /*
     *  start_sound
@@ -66,65 +60,19 @@ public:
     */ 
     void stop_sound();
 
-    void start_song();
+    void play_song(uint8_t indexNote);
 
-    static void play_song(uint8_t indexNote);
 
-    void stop_song();
+private:
+    //La playlist
+    uint16_t FUR_ELISE_NOTE[35] = {
+        E4, Dd4, E4, Dd4, E4, B3, D4, C4, A3,
+        C3, E3, A3, B3, E3, Gd3, B3, C4, E3,
+        E4, Dd4, E4, Dd4, E4, B3, D4, C4, A3,
+        C3, E3, A3, B3, E3, C4, B3, A3
 
+    };
     
-
-    static volatile uint8_t DelaisCourrant;
-    static volatile uint8_t IndexNoteCourrante;
-    
 };
-
-
-//La playlist
-static const uint16_t FUR_ELISE_NOTE[] = {
-    E4, Dd4, E4, Dd4, E4, B3, D4, C4, A3,
-    C3, E3, A3, B3, E3, Gd3, B3, C4, E3,
-    E4, Dd4, E4, Dd4, E4, B3, D4, C4, A3,
-    C3, E3, A3, B3, E3, C4, B3, A3
-
-};
-static const uint8_t FUR_ELISE_DELAIS[] = {
-    (uint8_t)DUREE_NOTE::DEMI_NOIR, 
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR, 
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR, 
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR, 
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR, 
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR, 
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR, 
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR,
-    (uint8_t)DUREE_NOTE::DEMI_NOIR
-};
-
 
 #endif
