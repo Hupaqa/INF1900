@@ -84,6 +84,8 @@ void Music::start_song(){
 
     DelaisCourrant = 0;
     IndexNoteCourrante = 0;
+
+    play_song(IndexNoteCourrante);
 }
 
 void Music::play_song(uint8_t indexNote){
@@ -104,34 +106,4 @@ void Music::stop_song(){
     DelaisCourrant = 0;
     IndexNoteCourrante = 0;
 }
-
-
-
-//}
-
-//void play_HarryPotter(){
-//    uint8_t HarryPotter[30] = {
-//        59, 1, 
-//        64, 1, 
-//        67, 3, 
-//        66, 3, 
-//        64, 1, 
-//        71, 3, 
-//        69, 2, 
-//        66, 2, 
-//        64, 0, 
-//        67, 3,  
-//        66, 3,  
-//        63, 1, 
-//        65, 0, 
-//        59, 2
-//    };
-//
-//    uint8_t i=0;
-//    while(HarryPotter[i]){
-//        play_note(HarryPotter[i], HarryPotter[i+1]);
-//        i += 2;
-//    }
-//}
-//
 

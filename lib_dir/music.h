@@ -66,15 +66,12 @@ public:
     */ 
     void stop_sound();
 
-    void initialisationTimer2();
-
     void start_song();
 
     static void play_song(uint8_t indexNote);
 
     void stop_song();
 
-    //static void play_mario();
     
 
     static volatile uint8_t DelaisCourrant;
