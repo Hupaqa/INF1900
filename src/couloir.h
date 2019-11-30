@@ -22,6 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/*
+╔════════════════════════════════════════════════════════╗
+║                     Table des états                    ║
+╠════════════════╦══════════════════════╦════════════════╣
+║  État courant  ║ suiveurLigneAllume() ║   État futur   ║
+╠════════════════╬══════════════════════╬════════════════╣
+║   ligneDebut   ║         false        ║ avancer_droite ║
+╠════════════════╬══════════════════════╬════════════════╣
+║ avancer_droite ║         true         ║  limite_droite ║
+╠════════════════╬══════════════════════╬════════════════╣
+║  limite_gauche ║         false        ║ avancer_droite ║
+╠════════════════╬══════════════════════╬════════════════╣
+║ avancer_gauche ║         true         ║  limite_gauche ║
+╠════════════════╬══════════════════════╬════════════════╣
+║  limite_droite ║         false        ║ avancer_gauche ║
+╠════════════════╬══════════════════════╬════════════════╣
+║    ligneFin    ║         true         ║    virageFin   ║
+╚════════════════╩══════════════════════╩════════════════╝
+*/
+
 #ifndef COULOIR_H
 #define COULOIR_H
 

@@ -22,6 +22,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/*
+╔═══════════════════════════════════════════════════╗
+║                  Table des états                  ║
+╠══════════════╦══════════════════════╦═════════════╣
+║ État courant ║ interruptDebounced() ║  État futur ║
+╠══════════════╬══════════════════════╬═════════════╣
+║   selection  ║         true         ║   appeler   ║
+╠══════════════╬══════════════════════╬═════════════╣
+║   selection  ║         false        ║  selection  ║
+╠══════════════╬══════════════════════╬═════════════╣
+║    appeler   ║           X          ║ afficherFin ║
+╚══════════════╩══════════════════════╩═════════════╝
+*/
+
 #ifndef SELECTION_H
 #define SELECTION_H
 
