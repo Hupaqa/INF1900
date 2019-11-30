@@ -59,20 +59,6 @@ public:
     *  Arrete la minuterie 0
     */ 
     void stop_sound();
-
-    void play_song(uint8_t indexNote);
-
-
-private:
-    //La playlist
-    uint16_t FUR_ELISE_NOTE[35] = {
-        E4, Dd4, E4, Dd4, E4, B3, D4, C4, A3,
-        C3, E3, A3, B3, E3, Gd3, B3, C4, E3,
-        E4, Dd4, E4, Dd4, E4, B3, D4, C4, A3,
-        C3, E3, A3, B3, E3, C4, B3, A3
-
-    };
-    
 };
 
 #endif

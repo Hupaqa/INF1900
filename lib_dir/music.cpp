@@ -60,14 +60,3 @@ void Music::stop_sound()
 };
 
 
-void Music::play_song(uint8_t indexNote){
-    
-    uint8_t note = 0;
-    while(FUR_ELISE_NOTE[note]){
-        start_sound(FUR_ELISE_NOTE[note]);
-        _delay_ms((uint16_t) DUREE_NOTE::DEMI_NOIR);
-        note++;
-    }
-};
-
-
