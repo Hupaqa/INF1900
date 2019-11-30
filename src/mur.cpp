@@ -199,6 +199,7 @@ void Mur::moveAgainstWall()
 
 void Mur::repositionnerSurLigne()
 {
+    _led.turnOff();
     avancerDroit();
     _delay_ms(DEPASSER_LIGNE);
     ajustementPWM(_vitesse, DIRECTION::ARRIERE, _vitesse, DIRECTION::AVANT);
