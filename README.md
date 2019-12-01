@@ -9,6 +9,7 @@
 ## Détails du microcontrolleur
  * ATMega324PA  
  * Cristal de 8MHz
+ * ATMega8 pour le programmeur USB ([USBasp](https://www.fischl.de/usbasp/))
 
 ## Configuration de l'environnement   
 
